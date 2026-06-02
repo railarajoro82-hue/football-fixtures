@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="description" content="Football League Manager system for generating fixtures, tracking results, and league standings.">
     <meta name="google-site-verification" content="lMeAAdnYD4wXTH5-a-QgzK3_d8l0HLf4Z5CIQNjHyFA" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>League Manager | Fixtures & Tournament System</title>
@@ -164,6 +165,15 @@
         background:#1e3a8a;
         color:white;
        }
+       @media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+    }
+
+    input {
+        width: 100%;
+    }
+}
     </style>
 </head>
 <body>
@@ -179,7 +189,7 @@
         </ul>
     </nav>
      <section id="home" class="hero">
-        <h1>Fixtures & Tournament Management System</h1>
+        <h1>Football League Manager System</h1>
         <p>Create fixtures, manage teams and track standings easily.</p>
         <a href="#" class="btn">Get Started</a>
     </section>
@@ -210,8 +220,9 @@
         <tr>
             <th>Date</th>
             <th>Match</th>
-            <th>status</th>
             <th>venue</th>
+            <th>status</th>
+            
         </tr>
     </thead>
 
@@ -220,7 +231,7 @@
     </section>
     <section id="teams">
       <header>
-        <h1>Team Management</h1>
+        <h2>Team Management</h2>
     </header>
     <div class="container">
         <div class="form-box">
@@ -244,7 +255,7 @@
     </section>
     <section id="fixtures">
     <header>
-        <h1>Fixtures Generator</h1>
+        <h2>Fixtures Generator</h2>
     </header>
     <div class="container">
         <div class="card">
@@ -274,7 +285,7 @@
     </section>
 <section id="result">
     <header>
-        <h1>Match Results</h1>
+        <h2>Match Results</h2>
     </header>
     <div class="container">
         <div class="card">
@@ -303,7 +314,7 @@
 </section>
 <section id="table">
     <header>
-        <h1>League Table</h1>
+        <h2>League Table</h2>
     </header>
 
     <div class="container">
@@ -332,10 +343,160 @@
         </div>
     </div>
 </section>
+<section id="scorers">
+    <header>
+        <h2>Top Scorers</h2>
+    </header>
+
+    <div class="container">
+        <div class="card">
+
+            <input type="text" id="playerName" placeholder="Player Name">
+            <input type="text" id="playerTeam" placeholder="Team">
+            <input type="number" id="playerGoals" placeholder="Goals">
+            <button onclick="addScorer()">Add Scorer</button>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th>Player</th>
+                        <th>Team</th>
+                        <th>Goals</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="scorersTable"></tbody>
+            </table>
+
+        </div>
+    </div>
+</section>
     <footer>
         <p>&copy;2026 League Manager.All Rights Reserved</p>
     </footer>
     <script>
+        let scorers =
+JSON.parse(localStorage.getItem("scorers")) || [];
+function addScorer() {
+
+    const player =
+        document.getElementById("playerName").value;
+
+    const team =
+        document.getElementById("playerTeam").value;
+
+    const goals =
+        parseInt(
+            document.getElementById("playerGoals").value
+        );
+
+    if (!player || !team || isNaN(goals)) {
+        alert("Fill all fields");
+        return;
+    }
+
+    scorers.push({
+        player,
+        team,
+        goals
+    });
+
+    localStorage.setItem(
+        "scorers",
+        JSON.stringify(scorers)
+    );
+
+    renderScorers();
+
+    document.getElementById("playerName").value = "";
+    document.getElementById("playerTeam").value = "";
+    document.getElementById("playerGoals").value = "";
+}
+function renderScorers() {
+
+    const table =
+        document.getElementById("scorersTable");
+
+    table.innerHTML = "";
+
+    const sortedScorers =
+        [...scorers].sort(
+            (a, b) => b.goals - a.goals
+        );
+sortedScorers.forEach((player, index) => {
+
+    table.innerHTML += `
+    <tr>
+        <td>${index + 1}</td>
+        <td>${player.player}</td>
+        <td>${player.team}</td>
+        <td>${player.goals}</td>
+        <td>
+            <button onclick="editScorer(${index})">Edit</button>
+            <button onclick="deleteScorer(${index})">Delete</button>
+        </td>
+    </tr>
+    `;
+});
+}
+function deleteScorer(index) {
+
+    if (!confirm("Delete this scorer?")) {
+        return;
+    }
+
+    scorers.splice(index, 1);
+
+    localStorage.setItem(
+        "scorers",
+        JSON.stringify(scorers)
+    );
+
+    renderScorers();
+}
+function editScorer(index) {
+
+    const scorer = scorers[index];
+
+    const newPlayer =
+        prompt(
+            "Edit Player Name:",
+            scorer.player
+        );
+
+    if (newPlayer === null) return;
+
+    const newTeam =
+        prompt(
+            "Edit Team:",
+            scorer.team
+        );
+
+    if (newTeam === null) return;
+
+    const newGoals =
+        prompt(
+            "Edit Goals:",
+            scorer.goals
+        );
+
+    if (newGoals === null) return;
+
+    scorers[index] = {
+        player: newPlayer,
+        team: newTeam,
+        goals: parseInt(newGoals)
+    };
+
+    localStorage.setItem(
+        "scorers",
+        JSON.stringify(scorers)
+    );
+
+    renderScorers();
+}
         let fixtures=[];
         //Load teams from localStorage (from Team page)
         function getTeams(){
@@ -415,6 +576,7 @@ fixtures.push({
     <td>${team.coach}</td>
     <td>${team.players}</td>
     <td class="actions">
+        <button onclick="editTeam(${index})">Edit</button>
         <button onclick="deleteTeam(${index})">Delete</button>
     </td>
 </tr>
@@ -426,7 +588,30 @@ fixtures.push({
             localStorage.setItem('teams',JSON.stringify(teams));
             renderTable();
         }
-        let results=[];
+      function editTeam(index) {
+
+    const team = teams[index];
+
+    const newName = prompt("Edit Team Name:", team.name);
+    if (newName === null) return;
+
+    const newCoach = prompt("Edit Coach Name:", team.coach);
+    if (newCoach === null) return;
+
+    const newPlayers = prompt("Edit Number of Players:", team.players);
+    if (newPlayers === null) return;
+
+    teams[index] = {
+        name: newName,
+        coach: newCoach,
+        players: newPlayers
+    };
+
+    localStorage.setItem("teams", JSON.stringify(teams));
+
+    renderTable();
+}
+       let results = JSON.parse(localStorage.getItem("results")) || [];
         function addResult(){
             const homeTeam=
             document.getElementById("homeTeam").value;
@@ -449,6 +634,7 @@ fixtures.push({
                   match: `${homeTeam} vs ${awayTeam}`,
                    result: `${homeScore} - ${awayScore}`
             });
+            localStorage.setItem("results", JSON.stringify(results));
             renderResult();
             updateLeagueTable();
             document.getElementById("homeTeam").value="";
@@ -538,8 +724,10 @@ function updateLeagueTable() {
             tableData[homeTeam].points += 1;
             tableData[awayTeam].points += 1;
         }
-if (!tableData[homeTeam] || !tableData[awayTeam]) return;
+if (!tableData[homeTeam] || !tableData[awayTeam]){
+    alert("Team not found in the system")
     return;
+}
 
     });
 
@@ -559,7 +747,7 @@ if (!tableData[homeTeam] || !tableData[awayTeam]) return;
     renderLeagueTable(sortedTeams);
 }
 function renderLeagueTable(data) {
-
+localStorage.setItem("leagueTable", JSON.stringify(tableData));
     const table =
         document.getElementById("leagueTable");
 
@@ -643,6 +831,7 @@ updateMatchStatuses();
 setInterval(updateMatchStatuses, 60000); // every 1 minute
 renderTable();
 renderFixtures();
+renderResult();
 updateLeagueTable();
     </script>
 </body>
