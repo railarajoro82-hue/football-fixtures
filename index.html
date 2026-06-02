@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>League Manager</title>
+    <title>Team Management</title>
+    <title>Fixtures Generator</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, sans-serif;
+        }
+        body{
+            background:#f4f4f4;
+            font-family:Arial,sans serif;
+            margin:0;
+        }
+        /*Navigaton*/
+        nav{
+            background:#1e3a8a;
+            color:white;
+            padding:15px 50px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        nav ul{
+            list-style:none;
+            display:flex;
+            gap:20px;
+        }
+        nav ul li a{
+            color:white;
+            text-decoration:darkgoldenrod;
+            font-weight:bold;
+        }
+        /*Hero Section*/
+        .hero{
+            height:80vh;
+            color:chartreuse;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            background-image:url("matata.png.jpg");
+            background-size:cover;
+            background-position:center;
+            background-repeat:no-repeat;
+            background-attachment:fixed;
+
+        }
+        .hero h1{
+            font-size:3rem;
+            margin-bottom:15px;
+        }
+        .hero p{
+            font-size:1.2rem;
+            margin-bottom:20px;
+        }
+        .btn{
+            background:#f59e0b;
+            color:white;
+            padding:12px 25px;
+            text-decoration:none;
+            border-radius:5px;
+        }
+        /*Features*/
+        .features{
+            padding:50px;
+            text-align:center;
+        }
+        .feature-container{
+            display:flex;
+            justify-content:center;
+            gap:20px;
+            flex-wrap:wrap;
+            margin-top:30px;
+        }
+        .card{
+            background:white;
+            padding:20px;
+            width:300px;
+            border-radius:10px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.2);
+            margin-bottom:20px;
+        }
+        /*Upcoming Matches*/
+        .matches{
+            padding:50px;
+            background:white;
+        }
+        .matches table{
+            width:100%;
+            border-collapse:collapse;
+        }
+        .matches th,
+        .matches td{
+            border:1px solid #ddd;
+            padding:12px;
+            text-align:center;
+        }
+        .matches th{
+            background:#1e3a8a;
+            color:white;
+        }
+        /*Footer*/
+        footer{
+            background:#1e3a8a;
+            color:white;
+            text-align:center;
+            padding:20px;
+        } header{
+            background:#1e3a8a;
+            color:white;
+            padding:15px;
+            text-align:center;
+        }
+        .container{
+            padding:20px;
+            max-width:1000px;
+            margin:auto;
+        }
+        .form-box{
+            background:white;
+            padding:15px;
+            border-radius:8px;
+            margin-bottom:20px;
+            box-shadow:0 2px 5px rgba(0,0,0,0.1);
+        }
+        input{
+            padding:10px;
+            margin:5px;
+            width: calc(25% - 12px);
+        }
+        button{
+            padding:10px 15px;
+            background:#1e3a8a;
+            color:white;
+            border:none;
+            cursor:pointer;
+            border-radius:5px;
+        }
+        button:hover{
+            background:#3749b0;
+        }
+       table{
+        width:100%;
+        border-collapse:collapse;
+        background:white;
+        box-shadow:0 2px 5px rgba(0,0,0,0.1);
+       } 
+       th ,td{
+        padding:12px;
+        border-bottom:1px solid #ddd;
+        text-align:left;
+       }
+       .actions button{
+        margin-right:5px;
+       }
+       th{
+        background:#1e3a8a;
+        color:white;
+       }
+    </style>
+</head>
+<body>
+     <nav>
+        <h2>League Manager</h2>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#teams">Teams</a></li>
+            <li><a href="#fixtures">Fixtures</a></li>
+            <li><a href="#result">Results</a></li>
+            <li><a href="#table">Table</a></li>
+    
+        </ul>
+    </nav>
+     <section id="home" class="hero">
+        <h1>Fixtures & Tournament Management System</h1>
+        <p>Create fixtures, manage teams and track standings easily.</p>
+        <a href="#" class="btn">Get Started</a>
+    </section>
+     <section class="features">
+        <h2>Our Features</h2>
+        <div class="feature-container">
+            <div class="card">
+                <h3>Team Registration</h3>
+                <p>Add and manage participating teams</p>
+            </div>
+            <div class="card">
+                <h3>Fixture Generator</h3>
+                <p>Automatically generate match schedules</p>
+            </div>
+        
+            <div class="card">
+                <h3>League Table</h3>
+                <p>Track standings and team performance</p>
+
+
+            </div>
+        </div>
+    </section>
+    <section class="matches">
+        <h2>Upcoming Fixtures</h2>
+       <table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Match</th>
+            <th>Venue</th>
+        </tr>
+    </thead>
+
+    <tbody id="upcomingMatchesTable"></tbody>
+</table>
+    </section>
+    <section id="teams">
+      <header>
+        <h1>Team Management</h1>
+    </header>
+    <div class="container">
+        <div class="form-box">
+            <input type="text" id="teamName" placeholder="Team Name"/>
+            <input type="text" id="coach" placeholder="Coach"/>
+            <input type="text" id="players" placeholder="No. of Players"/>
+            <button onclick="addTeam()">Add Team</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Team Name</th>
+                    <th>Coach</th>
+                    <th>Players</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="teamTable"></tbody>
+        </table>
+    </div>
+    </section>
+    <section id="fixtures">
+    <header>
+        <h1>Fixtures Generator</h1>
+    </header>
+    <div class="container">
+        <div class="card">
+            <h2>Generate Fixtures</h2>
+            <p>Click the button to generate match fixtures from save teams.</p>
+            <input
+    type="text"
+    id="venue"
+    placeholder="Venue">
+            <button onclick="generateFixtures()">Generate Fixtures</button>
+            <button onclick="clearFixtures()">Clear</button>
+        </div>
+        <div class="card">
+            <h2>Fixtures List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Match</th>
+                        <th>Date</th>
+                        <th>Venue</th>
+                    </tr>
+                </thead>
+                <tbody id="fixturesTable"></tbody>
+            </table>
+        </div>
+    </div>
+    </section>
+<section id="result">
+    <header>
+        <h1>Match Results</h1>
+    </header>
+    <div class="container">
+        <div class="card">
+            <h2>Enter Match Result</h2>
+            <input type="text" id="homeTeam" placeholder="Home Team">
+            <input type="number" id="homeScore" placeholder="Score">
+            <input type="text" id="awayTeam" placeholder="Away Team">
+            <input type="number" id="awayScore" placeholder="Score">
+            <button onclick="addResult()">
+                Save Result
+            </button>
+        </div>
+        <div class="card">
+            <h2>Result List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Match</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody id="resultTable"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<section id="table">
+    <header>
+        <h1>League Table</h1>
+    </header>
+
+    <div class="container">
+        <div class="card">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th>Team</th>
+                        <th>P</th>
+                        <th>W</th>
+                        <th>D</th>
+                        <th>L</th>
+                        <th>GF</th>
+                        <th>GA</th>
+                        <th>GD</th>
+                        <th>Pts</th>
+                    </tr>
+                </thead>
+
+                <tbody id="leagueTable"></tbody>
+
+            </table>
+
+        </div>
+    </div>
+</section>
+    <footer>
+        <p>&copy;2026 League Manager.All Rights Reserved</p>
+    </footer>
+    <script>
+        let fixtures=[];
+        //Load teams from localStorage (from Team page)
+        function getTeams(){
+            return JSON.parse(localStorage.getItem('teams'))||[];
+        }
+        function generateFixtures(){
+            const venue =
+    document.getElementById("venue").value ||
+    "venue";
+        const teams=getTeams();
+        if(teams.length<2){
+            alert("Add at least 2 teams first");
+            return;
+        }
+        
+        fixtures=[];
+        for(let i=0;i<teams.length;i++){
+            for(let j=i+1;j<teams.length;j++){
+             const matchDate = new Date();
+
+matchDate.setDate(matchDate.getDate() + fixtures.length);
+
+fixtures.push({
+    match: `${teams[i].name} vs ${teams[j].name}`,
+    date: matchDate.toLocaleDateString(),
+    venue: venue
+});
+            }
+        }
+        renderFixtures();
+    renderUpcomingMatches();
+    }
+        function renderFixtures(){
+            const table=document.getElementById('fixturesTable');
+            table.innerHTML='';
+            fixtures.forEach(f=>{
+                table.innerHTML +=`
+                <tr>
+                    <td>${f.match}</td>
+                    <td>${f.date}</td>
+                    <td>${f.venue}</td>
+                    </tr>
+               `;      
+            });
+        }
+        function clearFixtures(){
+            fixtures=[];
+            renderFixtures();
+        }
+        let teams=JSON.parse(localStorage.getItem('teams'))||[];
+    renderTable();
+        function addTeam(){
+            const name=document.getElementById('teamName').value;
+            const coach=document.getElementById('coach').value;
+            const players=document.getElementById('players').value;
+            if(!name || !coach || !players){
+                alert('please fill all fields');
+                return;
+            }
+            teams.push({name,coach,players});
+            localStorage.setItem('teams',JSON.stringify(teams));
+            renderTable();
+            document.getElementById('teamName').value='';
+            document.getElementById('coach').value='';
+            document.getElementById('players').value='';
+        }
+        function renderTable(){
+            const table=document.getElementById('teamTable');
+            table.innerHTML='';
+            teams.forEach((team,index)=>{
+                table.innerHTML += `
+<tr>
+    <td>${team.name}</td>
+    <td>${team.coach}</td>
+    <td>${team.players}</td>
+    <td class="actions">
+        <button onclick="deleteTeam(${index})">Delete</button>
+    </td>
+</tr>
+`;
+            });
+        }
+        function deleteTeam(index){
+            teams.splice(index,1);
+            localStorage.setItem('teams',JSON.stringify(teams));
+            renderTable();
+        }
+        let results=[];
+        function addResult(){
+            const homeTeam=
+            document.getElementById("homeTeam").value;
+            const homeScore=
+            document.getElementById("homeScore").value;
+            const awayTeam=
+            document.getElementById("awayTeam").value;
+            const awayScore=
+            document.getElementById("awayScore").value;
+            if(
+                !homeTeam||
+                !awayTeam||
+                homeScore===""||
+                awayScore===""
+            ){
+                alert("Fill all field");
+                return;
+            }
+            results.push({
+                  match: `${homeTeam} vs ${awayTeam}`,
+                   result: `${homeScore} - ${awayScore}`
+            });
+            renderResult();
+            updateLeagueTable();
+            document.getElementById("homeTeam").value="";
+            document.getElementById("homeScore").value="";
+             document.getElementById("awayTeam").value = "";
+             document.getElementById("awayScore").value = "";
+        }
+       function renderResult() {
+
+    const table =
+        document.getElementById("resultTable");
+
+    table.innerHTML = "";
+
+    results.forEach(result => {
+
+        table.innerHTML += `
+        <tr>
+            <td>${result.match}</td>
+            <td>${result.result}</td>
+        </tr>
+        `;
+    });
+} 
+function updateLeagueTable() {
+
+    const tableData = {};
+
+    teams.forEach(team => {
+
+        tableData[team.name] = {
+            team: team.name,
+            played: 0,
+            won: 0,
+            drawn: 0,
+            lost: 0,
+            gf: 0,
+            ga: 0,
+            gd: 0,
+            points: 0
+        };
+
+    });
+
+    results.forEach(result => {
+
+        const parts = result.match.split(" vs ");
+
+        const homeTeam = parts[0];
+        const awayTeam = parts[1];
+
+        const score = result.result.split(" - ");
+
+        const homeGoals = parseInt(score[0]);
+        const awayGoals = parseInt(score[1]);
+
+        tableData[homeTeam].played++;
+        tableData[awayTeam].played++;
+
+        tableData[homeTeam].gf += homeGoals;
+        tableData[homeTeam].ga += awayGoals;
+
+        tableData[awayTeam].gf += awayGoals;
+        tableData[awayTeam].ga += homeGoals;
+
+        if (homeGoals > awayGoals) {
+
+            tableData[homeTeam].won++;
+            tableData[awayTeam].lost++;
+
+            tableData[homeTeam].points += 3;
+
+        }
+        else if (homeGoals < awayGoals) {
+
+            tableData[awayTeam].won++;
+            tableData[homeTeam].lost++;
+
+            tableData[awayTeam].points += 3;
+
+        }
+        else {
+
+            tableData[homeTeam].drawn++;
+            tableData[awayTeam].drawn++;
+
+            tableData[homeTeam].points += 1;
+            tableData[awayTeam].points += 1;
+        }
+if(!tableData[homeTeam] || !tableData[awayTeam]){
+    return;
+}
+    });
+
+    Object.values(tableData).forEach(team => {
+
+        team.gd = team.gf - team.ga;
+
+    });
+
+    const sortedTeams = Object.values(tableData)
+        .sort((a, b) =>
+            b.points - a.points ||
+            b.gd - a.gd ||
+            b.gf - a.gf
+        );
+
+    renderLeagueTable(sortedTeams);
+}
+function renderLeagueTable(data) {
+
+    const table =
+        document.getElementById("leagueTable");
+
+    table.innerHTML = "";
+
+    data.forEach((team, index) => {
+
+        table.innerHTML += `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${team.team}</td>
+            <td>${team.played}</td>
+            <td>${team.won}</td>
+            <td>${team.drawn}</td>
+            <td>${team.lost}</td>
+            <td>${team.gf}</td>
+            <td>${team.ga}</td>
+            <td>${team.gd}</td>
+            <td>${team.points}</td>
+        </tr>
+        `;
+    });
+}
+function renderUpcomingMatches() {
+
+    const table =
+        document.getElementById("upcomingMatchesTable");
+
+    table.innerHTML = "";
+
+    fixtures.forEach(match => {
+
+        table.innerHTML += `
+        <tr>
+            <td>${match.date}</td>
+            <td>${match.match}</td>
+            <td>${match.venue}</td>
+        </tr>
+        `;
+    });
+}
+renderTable();
+renderFixtures();
+updateLeagueTable();
+    </script>
+</body>
+</html>
