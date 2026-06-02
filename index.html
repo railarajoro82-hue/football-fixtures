@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="google-site-verification" content="lMeAAdnYD4wXTH5-a-QgzK3_d8l0HLf4Z5CIQNjHyFA" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>League Manager | Fixtures Generator & Team Management</title>  
+<title>League Manager | Fixtures & Tournament System</title>
     <style>
         *{
             margin:0;
@@ -210,7 +210,8 @@
         <tr>
             <th>Date</th>
             <th>Match</th>
-            <th>Venue</th>
+            <th>status</th>
+            <th>venue</th>
         </tr>
     </thead>
 
@@ -354,13 +355,15 @@
         for(let i=0;i<teams.length;i++){
             for(let j=i+1;j<teams.length;j++){
              const matchDate = new Date();
+matchDate.setHours(14, 0, 0); // default kick-off time 2:00 PM
 
 matchDate.setDate(matchDate.getDate() + fixtures.length);
 
 fixtures.push({
     match: `${teams[i].name} vs ${teams[j].name}`,
-    date: matchDate.toLocaleDateString(),
-    venue: venue
+    date: matchDate,
+    venue: venue,
+    status: "upcoming"   // NEW
 });
             }
         }
@@ -373,9 +376,10 @@ fixtures.push({
             fixtures.forEach(f=>{
                 table.innerHTML +=`
                 <tr>
-                    <td>${f.match}</td>
-                    <td>${f.date}</td>
-                    <td>${f.venue}</td>
+                   <td>${f.match}</td>
+                   <td>${f.date}</td>
+                   <td>${f.venue}</td>
+                   <td>${getStatusBadge(f.status)}</td>
                     </tr>
                `;      
             });
@@ -534,9 +538,9 @@ function updateLeagueTable() {
             tableData[homeTeam].points += 1;
             tableData[awayTeam].points += 1;
         }
-if(!tableData[homeTeam] || !tableData[awayTeam]){
+if (!tableData[homeTeam] || !tableData[awayTeam]) return;
     return;
-}
+
     });
 
     Object.values(tableData).forEach(team => {
@@ -585,18 +589,58 @@ function renderUpcomingMatches() {
         document.getElementById("upcomingMatchesTable");
 
     table.innerHTML = "";
-
-    fixtures.forEach(match => {
+const upcoming = fixtures.filter(f => f.status === "upcoming");
+    upcoming.forEach(match => {
 
         table.innerHTML += `
         <tr>
             <td>${match.date}</td>
             <td>${match.match}</td>
             <td>${match.venue}</td>
+            <td>${getStatusBadge(match.status)}</td>
         </tr>
         `;
     });
+    status:"upcoming"
 }
+function getStatusBadge(status) {
+    if (status === "upcoming") {
+        return `<span style="color:orange;font-weight:bold;">Upcoming</span>`;
+    }
+    if (status === "live") {
+        return `<span style="color:red;font-weight:bold;">LIVE</span>`;
+    }
+    if (status === "finished") {
+        return `<span style="color:green;font-weight:bold;">Finished</span>`;
+    }
+    return status;
+}
+function updateMatchStatuses() {
+    const now = new Date();
+
+    fixtures.forEach(match => {
+        const matchTime = new Date(match.date);
+
+        // match duration = 90 minutes
+        const endTime = new Date(matchTime);
+        endTime.setMinutes(endTime.getMinutes() + 90);
+
+        if (now < matchTime) {
+            match.status = "upcoming";
+        } 
+        else if (now >= matchTime && now <= endTime) {
+            match.status = "live";
+        } 
+        else {
+            match.status = "finished";
+        }
+    });
+
+    renderFixtures();
+    renderUpcomingMatches();
+}
+updateMatchStatuses();
+setInterval(updateMatchStatuses, 60000); // every 1 minute
 renderTable();
 renderFixtures();
 updateLeagueTable();
