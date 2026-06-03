@@ -559,8 +559,7 @@ fixtures.push({
     }
         function renderFixtures(){
             const table=document.getElementById('fixturesTable');
-            const selectedDate =
-document.getElementById("matchDateTime").value;
+          
             table.innerHTML='';
             fixtures.forEach((f,index)=>{
                 table.innerHTML +=`
@@ -570,9 +569,11 @@ document.getElementById("matchDateTime").value;
 ${f.date ? new Date(f.date).toLocaleString() : "Not Set"}
 </td>
                    <td>${f.venue}</td>
+                   <td>
                 <button onclick="editFixture(${index})">
          Set Date
       </button>
+      </td>
                     </tr>
                `;      
             });
