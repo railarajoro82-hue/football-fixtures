@@ -38,21 +38,20 @@
             font-weight:bold;
         }
         /*Hero Section*/
-        .hero{
-            height:80vh;
-            color:chartreuse;
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
-            align-items:center;
-            text-align:center;
-            background-image:url("matata.png.jpg");
-            background-size:cover;
-            background-position:center;
-            background-repeat:no-repeat;
-            background-attachment:fixed;
-
-        }
+      .hero{
+    min-height:100vh;
+    color:chartreuse;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    background-image:url("matata.png.jpg");
+    background-size:cover;
+    background-position:center center;
+    background-repeat:no-repeat;
+    background-attachment:scroll;
+}
         .hero h1{
             font-size:3rem;
             margin-bottom:15px;
@@ -299,10 +298,12 @@
     <div class="container">
         <div class="card">
             <h2>Enter Match Result</h2>
-            <input type="text" id="homeTeam" placeholder="Home Team">
-            <input type="number" id="homeScore" placeholder="Score">
-            <input type="text" id="awayTeam" placeholder="Away Team">
-            <input type="number" id="awayScore" placeholder="Score">
+          <select id="fixtureSelect">
+    <option value="">Select Fixture</option>
+</select>
+
+<input type="number" id="homeScore" placeholder="Home Score">
+<input type="number" id="awayScore" placeholder="Away Score">
             <button onclick="addResult()">
                 Save Result
             </button>
@@ -611,6 +612,7 @@ JSON.parse(localStorage.getItem("fixtures")) || [];
 
     renderFixtures();
     renderUpcomingMatches();
+    loadFixtureOptions();
 }
      function renderFixtures() {
 
@@ -743,36 +745,54 @@ teams[index] = {
     renderTable();
 }
        let results = JSON.parse(localStorage.getItem("results")) || [];
-        function addResult(){
-            const homeTeam=
-            document.getElementById("homeTeam").value;
-            const homeScore=
-            document.getElementById("homeScore").value;
-            const awayTeam=
-            document.getElementById("awayTeam").value;
-            const awayScore=
-            document.getElementById("awayScore").value;
-            if(
-                !homeTeam||
-                !awayTeam||
-                homeScore===""||
-                awayScore===""
-            ){
-                alert("Fill all field");
-                return;
-            }
-            results.push({
-                  match: `${homeTeam} vs ${awayTeam}`,
-                   result: `${homeScore} - ${awayScore}`
-            });
-            localStorage.setItem("results", JSON.stringify(results));
-            renderResult();
-            updateLeagueTable();
-            document.getElementById("homeTeam").value="";
-            document.getElementById("homeScore").value="";
-             document.getElementById("awayTeam").value = "";
-             document.getElementById("awayScore").value = "";
-        }
+       function addResult() {
+
+    const fixtureIndex =
+        document.getElementById("fixtureSelect").value;
+
+    const homeScore =
+        document.getElementById("homeScore").value;
+
+    const awayScore =
+        document.getElementById("awayScore").value;
+
+    if (
+        fixtureIndex === "" ||
+        homeScore === "" ||
+        awayScore === ""
+    ) {
+        alert("Fill all fields");
+        return;
+    }
+
+    const fixture =
+        fixtures[fixtureIndex];
+
+    results.push({
+        match: fixture.match,
+        result: `${homeScore} - ${awayScore}`
+    });
+
+    fixture.status = "finished";
+
+    localStorage.setItem(
+        "results",
+        JSON.stringify(results)
+    );
+
+    localStorage.setItem(
+        "fixtures",
+        JSON.stringify(fixtures)
+    );
+
+    renderResult();
+    updateLeagueTable();
+    renderFixtures();
+    renderUpcomingMatches();
+
+    document.getElementById("homeScore").value = "";
+    document.getElementById("awayScore").value = "";
+}
        function renderResult() {
 
     const table =
@@ -1053,6 +1073,24 @@ function editFixture(index){
     renderFixtures();
     renderUpcomingMatches();
 }
+function loadFixtureOptions() {
+
+    const select =
+        document.getElementById("fixtureSelect");
+
+    select.innerHTML =
+        '<option value="">Select Fixture</option>';
+
+    fixtures.forEach((fixture, index) => {
+
+        select.innerHTML += `
+        <option value="${index}">
+            GW ${fixture.gameweek} -
+            ${fixture.match}
+        </option>
+        `;
+    });
+}
 updateMatchStatuses();
 setInterval(updateMatchStatuses, 60000); // every 1 minute
 renderTable();
@@ -1061,6 +1099,7 @@ renderResult();
 updateLeagueTable();
 renderUpcomingMatches();
 renderScorers();
+loadFixtureOptions();
     </script>
 </body>
 </html>
