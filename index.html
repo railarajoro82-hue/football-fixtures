@@ -279,11 +279,13 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Match</th>
-                        <th>Date</th>
-                        <th>Venue</th>
-                        <th>Actions</th>
-                    </tr>
+    <th>Week</th>
+    <th>Leg</th>
+    <th>Match</th>
+    <th>Date</th>
+    <th>Venue</th>
+    <th>Actions</th>
+</tr>
                 </thead>
                 <tbody id="fixturesTable"></tbody>
             </table>
@@ -518,66 +520,144 @@ JSON.parse(localStorage.getItem("fixtures")) || [];
         function getTeams(){
             return JSON.parse(localStorage.getItem('teams'))||[];
         }
-        function generateFixtures(){
-            const venue =
-    document.getElementById("venue").value ||
-    "venue";
-        const teams=getTeams();
-        if(teams.length<2){
-            alert("Add at least 2 teams first");
-            return;
-        }
-        
-        fixtures=[];
-  for(let i = 0; i < teams.length; i++) {
+      function generateFixtures() {
 
-    for(let j = i + 1; j < teams.length; j++) {
+    const teams = getTeams();
 
-      // First leg
-fixtures.push({
-    match: `${teams[i].name} vs ${teams[j].name}`,
-    date: "",
-    venue: teams[i].venue,
-    status: "upcoming"
-});
-
-// Return leg
-fixtures.push({
-    match: `${teams[j].name} vs ${teams[i].name}`,
-    date: "",
-    venue: teams[j].venue,
-    status: "upcoming"
-});
+    if (teams.length < 2) {
+        alert("Add at least 2 teams first");
+        return;
     }
-}
-      localStorage.setItem(
-    "fixtures",
-    JSON.stringify(fixtures)
-);  
-        renderFixtures();
+
+    fixtures = [];
+
+    let teamList = [...teams];
+
+    // Add BYE if odd number of teams
+    if (teamList.length % 2 !== 0) {
+        teamList.push({
+            name: "BYE",
+            venue: ""
+        });
+    }
+
+    const totalTeams = teamList.length;
+    const rounds = totalTeams - 1;
+    const matchesPerRound = totalTeams / 2;
+
+    let rotation = [...teamList];
+
+    // FIRST LEG
+    for (let round = 0; round < rounds; round++) {
+
+        for (let match = 0; match < matchesPerRound; match++) {
+
+            const home = rotation[match];
+            const away =
+                rotation[totalTeams - 1 - match];
+
+            if (
+                home.name !== "BYE" &&
+                away.name !== "BYE"
+            ) {
+                fixtures.push({
+                    gameweek: round + 1,
+                    leg: "First Leg",
+                    match:
+                        `${home.name} vs ${away.name}`,
+                    date: "",
+                    venue: home.venue,
+                    status: "upcoming"
+                });
+            }
+        }
+
+        const fixed = rotation[0];
+
+        const rotated =
+            rotation.slice(1);
+
+        rotated.unshift(rotated.pop());
+
+        rotation =
+            [fixed, ...rotated];
+    }
+
+    // SECOND LEG
+    const firstLeg =
+        [...fixtures];
+
+    firstLeg.forEach(fixture => {
+
+        const teams =
+            fixture.match.split(" vs ");
+
+        fixtures.push({
+            gameweek:
+                fixture.gameweek + rounds,
+            leg: "Second Leg",
+            match:
+                `${teams[1]} vs ${teams[0]}`,
+            date: "",
+           venue: fixture.venue,
+            status: "upcoming"
+        });
+    });
+
+    localStorage.setItem(
+        "fixtures",
+        JSON.stringify(fixtures)
+    );
+
+    renderFixtures();
     renderUpcomingMatches();
-    }
-        function renderFixtures(){
-            const table=document.getElementById('fixturesTable');
-          
-            table.innerHTML='';
-            fixtures.forEach((f,index)=>{
-                table.innerHTML +=`
-                <tr>
-                   <td>${f.match}</td>
-                   <td>
-${f.date ? new Date(f.date).toLocaleString() : "Not Set"}
-</td>
-                   <td>${f.venue}</td>
-                   <td>
-                <button onclick="editFixture(${index})">
-         Set Date
-      </button>
-      </td>
-                    </tr>
-               `;      
-            });
+}
+     function renderFixtures() {
+
+    const table =
+        document.getElementById("fixturesTable");
+
+    table.innerHTML = "";
+
+    let currentWeek = null;
+
+    fixtures.forEach((f, index) => {
+
+        if (currentWeek !== f.gameweek) {
+
+            currentWeek = f.gameweek;
+
+            table.innerHTML += `
+            <tr>
+                <td colspan="6"
+                    style="
+                    background:#1e3a8a;
+                    color:white;
+                    font-weight:bold;
+                    text-align:center;">
+                    GAME WEEK ${f.gameweek}
+                    (${f.leg})
+                </td>
+            </tr>
+            `;
         }
+
+        table.innerHTML += `
+        <tr>
+            <td>GW ${f.gameweek}</td>
+            <td>${f.leg}</td>
+            <td>${f.match}</td>
+            <td>${f.date || "Not Set"}</td>
+            <td>${f.venue}</td>
+            <td>
+                <button onclick="editFixture(${index})">
+                    Set Date
+                </button>
+            </td>
+        </tr>
+        `;
+    });
+}
       function clearFixtures(){
     fixtures = [];
 
