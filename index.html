@@ -633,22 +633,25 @@ JSON.parse(localStorage.getItem("fixtures")) || [];
     const firstLeg =
         [...fixtures];
 
-    firstLeg.forEach(fixture => {
+  firstLeg.forEach(fixture => {
 
-        const teams =
-            fixture.match.split(" vs ");
+    const matchTeams = fixture.match.split(" vs ");
 
-        fixtures.push({
-            gameweek:
-                fixture.gameweek + rounds,
-            leg: "Second Leg",
-            match:
-                `${teams[1]} vs ${teams[0]}`,
-            date: "",
-           venue: fixture.venue,
-            status: "upcoming"
-        });
+    const homeTeam = matchTeams[1]; // now home in second leg
+
+    const homeTeamData = teams.find(
+        team => team.name === homeTeam
+    );
+
+    fixtures.push({
+        gameweek: fixture.gameweek + rounds,
+        leg: "Second Leg",
+        match: `${matchTeams[1]} vs ${matchTeams[0]}`,
+        date: "",
+        venue: homeTeamData ? homeTeamData.venue : "",
+        status: "upcoming"
     });
+});
 
     localStorage.setItem(
         "fixtures",
