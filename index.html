@@ -216,6 +216,9 @@
         width: 100%;
     }
 }
+.admin-only{
+    display:none;
+}
     </style>
 </head>
 <body>
@@ -230,6 +233,7 @@
             <li><a href="#scorers">Top Scorers</a></li>
     
         </ul>
+      
     </nav>
    <section id="home" class="hero">
     <img src="matata.png.jpg" alt="Hero Background" class="hero-image">
@@ -238,6 +242,61 @@
         <h1>Football League Manager System</h1>
         <p>Create fixtures, manage teams and track standings easily.</p>
         <a href="#" class="btn">Get Started</a>
+    </div>
+</section>
+<section id="login">
+    <div class="container">
+
+        <div id="loginForms">
+
+            <!-- Admin Login -->
+            <div class="card">
+                <h2>Admin Login</h2>
+                <input type="text" id="adminUsername" placeholder="Username">
+               <input type="password" id="adminPassword" placeholder="Password">
+<label>
+<input type="checkbox" onclick="togglePassword('adminPassword')">
+Show Password
+</label>
+                <button onclick="adminLogin()">Admin Login</button>
+            </div>
+
+            <!-- Visitor Signup -->
+            <div class="card">
+                <h2>Visitor Sign Up</h2>
+                <input type="text" id="signupUsername" placeholder="Username">
+               <input type="password" id="signupPassword" placeholder="Password">
+<label>
+<input type="checkbox" onclick="togglePassword('signupPassword')">
+Show Password
+</label>
+                <button onclick="signupVisitor()">Sign Up</button>
+            </div>
+
+            <!-- Visitor Login -->
+            <div class="card">
+                <h2>Visitor Login</h2>
+                <input type="text" id="visitorUsername" placeholder="Username">
+               <input type="password" id="visitorPassword" placeholder="Password">
+<label>
+<input type="checkbox" onclick="togglePassword('visitorPassword')">
+Show Password
+</label>
+                <button onclick="visitorLogin()">Login</button>
+            </div>
+
+        </div>
+
+        <p id="loginStatus"></p>
+<button onclick="forgotPassword()">
+Forgot Password?
+</button>
+        <button id="logoutBtn"
+                onclick="logout()"
+                style="display:none;">
+            Logout
+        </button>
+
     </div>
 </section>
      <section class="features">
@@ -281,7 +340,7 @@
         <h2>Team Management</h2>
     </header>
     <div class="container">
-        <div class="form-box">
+        <div class="form-box admin-only">
             <input type="text" id="teamName" placeholder="Team Name"/>
             <input type="text" id="coach" placeholder="Coach"/>
             <input type="text" id="players" placeholder="No. of Players"/>
@@ -308,8 +367,8 @@
         <h2>Fixtures Generator</h2>
     </header>
     <div class="container">
-        <div class="card">
-            <h2>Generate Fixtures</h2>
+        <div class="card admin-only">
+    <h2>Generate Fixtures</h2>
             <p>Click the button to generate match fixtures from save teams.</p>
             <input
     type="text"
@@ -341,8 +400,8 @@
         <h2>Match Results</h2>
     </header>
     <div class="container">
-        <div class="card">
-            <h2>Enter Match Result</h2>
+       <div class="card admin-only">
+    <h2>Enter Match Result</h2>
           <select id="fixtureSelect">
     <option value="">Select Fixture</option>
 </select>
@@ -433,10 +492,284 @@
         <p>&copy;2026 League Manager.All Rights Reserved</p>
     </footer>
     <script>
-        let scorers =
+let currentUser =
+    JSON.parse(localStorage.getItem("currentUser")) || null;
+
+let isAdmin =
+    JSON.parse(localStorage.getItem("isAdmin")) || false;
+function adminLogin() {
+
+    const username =
+        document.getElementById("adminUsername").value;
+
+    const password =
+        document.getElementById("adminPassword").value;
+
+    if (
+        username === "admin" &&
+        password === "Rajo10"
+    ) {
+
+        isAdmin = true;
+
+        localStorage.setItem(
+            "isAdmin",
+            true
+        );
+
+        document.getElementById(
+            "loginStatus"
+        ).innerText =
+            "Logged in as Admin";
+document.getElementById("loginForms").style.display = "none";
+document.getElementById("logoutBtn").style.display = "inline-block";
+document.getElementById("adminUsername").value = "";
+document.getElementById("adminPassword").value = "";
+        applyPermissions();
+
+    } else {
+
+        alert("Invalid Admin Login");
+
+    }
+}
+function signupVisitor() {
+
+    const username =
+        document.getElementById(
+            "signupUsername"
+        ).value;
+
+    const password =
+        document.getElementById(
+            "signupPassword"
+        ).value;
+
+    if (!username || !password) {
+
+        alert("Fill all fields");
+        return;
+    }
+
+    let visitors =
+        JSON.parse(
+            localStorage.getItem("visitors")
+        ) || [];
+
+    const exists =
+        visitors.find(
+            v => v.username === username
+        );
+
+    if (exists) {
+
+        alert("Username already exists");
+        return;
+    }
+
+    visitors.push({
+        username,
+        password
+    });
+
+ localStorage.setItem(
+    "visitors",
+    JSON.stringify(visitors)
+);
+
+// Copy username to login form
+document.getElementById("visitorUsername").value = username;
+
+// Clear signup form
+document.getElementById("signupUsername").value = "";
+document.getElementById("signupPassword").value = "";
+
+alert("Account created successfully");
+}
+function visitorLogin() {
+
+    const username =
+        document.getElementById(
+            "visitorUsername"
+        ).value;
+
+    const password =
+        document.getElementById(
+            "visitorPassword"
+        ).value;
+
+    const visitors =
+        JSON.parse(
+            localStorage.getItem("visitors")
+        ) || [];
+
+    const user =
+        visitors.find(
+            v =>
+                v.username === username &&
+                v.password === password
+        );
+
+    if (!user) {
+
+        alert("Invalid Login");
+        return;
+    }
+
+    currentUser = username;
+isAdmin = false;
+localStorage.setItem("isAdmin", false);
+    localStorage.setItem(
+        "currentUser",
+        JSON.stringify(username)
+    );
+
+    document.getElementById(
+        "loginStatus"
+    ).innerText =
+        "Logged in as Visitor: " +
+        username;
+document.getElementById("loginForms").style.display = "none";
+document.getElementById("logoutBtn").style.display = "inline-block";
+document.getElementById("visitorUsername").value = "";
+document.getElementById("visitorPassword").value = "";
+    applyPermissions();
+}
+
+function logout() {
+
+    isAdmin = false;
+    currentUser = null;
+
+    localStorage.removeItem("isAdmin");
+    localStorage.removeItem("currentUser");
+
+    document.getElementById(
+        "loginStatus"
+    ).innerText = "Logged Out";
+
+    document.getElementById(
+        "loginForms"
+    ).style.display = "block";
+document.getElementById("loginForms").style.display = "block";
+document.getElementById("logoutBtn").style.display = "none";
+// Clear Admin Login fields
+document.getElementById("adminUsername").value = "";
+document.getElementById("adminPassword").value = "";
+
+// Clear Visitor Login fields
+document.getElementById("visitorUsername").value = "";
+document.getElementById("visitorPassword").value = "";
+
+// Clear Visitor Signup fields
+document.getElementById("signupUsername").value = "";
+document.getElementById("signupPassword").value = "";
+    applyPermissions();
+}
+function checkLoginState(){
+
+    if(isAdmin){
+
+        document.getElementById("loginStatus").innerText =
+            "Logged in as Admin";
+
+        document.getElementById("loginForms").style.display =
+            "none";
+
+        document.getElementById("logoutBtn").style.display =
+            "inline-block";
+    }
+
+    else if(currentUser){
+
+        document.getElementById("loginStatus").innerText =
+            "Logged in as Visitor: " + currentUser;
+
+        document.getElementById("loginForms").style.display =
+            "none";
+
+        document.getElementById("logoutBtn").style.display =
+            "inline-block";
+    }
+
+    else{
+
+        document.getElementById("loginForms").style.display =
+            "block";
+
+        document.getElementById("logoutBtn").style.display =
+            "none";
+    }
+}
+function applyPermissions(){
+
+    // Admin sections
+    document.querySelectorAll(".admin-only")
+    .forEach(section => {
+
+        section.style.display =
+            isAdmin ? "block" : "none";
+
+    });
+
+    // Visitor sections
+    document.querySelectorAll(".visitor-access")
+    .forEach(section => {
+
+        section.style.display =
+            (isAdmin || currentUser)
+            ? "block"
+            : "none";
+
+    });
+
+    renderFixtures();
+    renderResult();
+    renderScorers();
+}
+function forgotPassword(){
+
+    const username =
+        prompt("Enter your username");
+
+    if(!username) return;
+
+    let visitors =
+        JSON.parse(
+            localStorage.getItem("visitors")
+        ) || [];
+
+    const user =
+        visitors.find(
+            v => v.username === username
+        );
+
+    if(!user){
+        alert("Username not found");
+        return;
+    }
+
+    const newPassword =
+        prompt("Enter New Password");
+
+    if(!newPassword) return;
+
+    user.password = newPassword;
+
+    localStorage.setItem(
+        "visitors",
+        JSON.stringify(visitors)
+    );
+
+    alert("Password changed successfully");
+}
+let scorers =
 JSON.parse(localStorage.getItem("scorers")) || [];
 function addScorer() {
-
+if(!isAdmin){
+    alert("Only Admin can add scorers");
+    return;
+}
     const player =
         document.getElementById("playerName").value;
 
@@ -496,16 +829,25 @@ sortedScorers.forEach((player, index) => {
         <td>${player.player}</td>
         <td>${player.team}</td>
         <td>${player.goals}</td>
-        <td>
-            <button onclick="editScorer(${index})">Edit</button>
-            <button onclick="deleteScorer(${index})">Delete</button>
-        </td>
+       <td>
+    ${
+        isAdmin
+        ? `
+        <button onclick="editScorer(${originalIndex})">Edit</button>
+        <button onclick="deleteScorer(${originalIndex})">Delete</button>
+        `
+        : "View Only"
+    }
+</td>
     </tr>
     `;
 });
 }
 function deleteScorer(index) {
-
+if(!isAdmin){
+    alert("Only Admin can delete scorer");
+    return;
+}
     if (!confirm("Delete this scorer?")) {
         return;
     }
@@ -520,7 +862,10 @@ function deleteScorer(index) {
     renderScorers();
 }
 function editScorer(index) {
-
+if(!isAdmin){
+    alert("Only Admin can edit scorers");
+    return;
+}
     const scorer = scorers[index];
 
     const newPlayer =
@@ -567,7 +912,10 @@ JSON.parse(localStorage.getItem("fixtures")) || [];
             return JSON.parse(localStorage.getItem('teams'))||[];
         }
       function generateFixtures() {
-
+if(!isAdmin){
+    alert("Only Admin can render fixtures");
+    return;
+}
     const teams = getTeams();
 
     if (teams.length < 2) {
@@ -700,15 +1048,22 @@ JSON.parse(localStorage.getItem("fixtures")) || [];
             <td>${f.date || "Not Set"}</td>
             <td>${f.venue}</td>
             <td>
-                <button onclick="editFixture(${index})">
-                    Set Date
-                </button>
-            </td>
+               <td>
+    ${
+        isAdmin
+        ? `<button onclick="editFixture(${index})">Set Date</button>`
+        : "View Only"
+    }
+</td>
         </tr>
         `;
     });
 }
       function clearFixtures(){
+        if(!isAdmin){
+            alert("Only Admin can clear fixtures");
+            return;
+        }
     fixtures = [];
 
     localStorage.removeItem("fixtures");
@@ -719,6 +1074,10 @@ JSON.parse(localStorage.getItem("fixtures")) || [];
         let teams=JSON.parse(localStorage.getItem('teams'))||[];
     renderTable();
         function addTeam(){
+            if(!isAdmin){
+                alert("Only Admin can add teams");
+                return;
+            }
             const name=document.getElementById('teamName').value;
             const coach=document.getElementById('coach').value;
             const players=document.getElementById('players').value;
@@ -751,20 +1110,29 @@ JSON.parse(localStorage.getItem("fixtures")) || [];
     <td>${team.players}</td>
     <td>${team.venue}</td>
     <td class="actions">
-        <button onclick="editTeam(${index})">Edit</button>
-        <button onclick="deleteTeam(${index})">Delete</button>
-    </td>
+${isAdmin ? `
+<button onclick="editTeam(${index})">Edit</button>
+<button onclick="deleteTeam(${index})">Delete</button>
+` : ''}
+</td>
 </tr>
 `;
             });
         }
         function deleteTeam(index){
+            if(!isAdmin){
+                alert("Only Admin can delete teams");
+                return;
+            }
             teams.splice(index,1);
             localStorage.setItem('teams',JSON.stringify(teams));
             renderTable();
         }
       function editTeam(index) {
-
+if(!isAdmin){
+    alert("Only Admin can edit teams");
+    return;
+}
     const team = teams[index];
 
     const newName = prompt("Edit Team Name:", team.name);
@@ -794,7 +1162,10 @@ teams[index] = {
 }
        let results = JSON.parse(localStorage.getItem("results")) || [];
        function addResult() {
-
+if(!isAdmin){
+    alert("Only Admin can add results");
+    return;
+}
     const fixtureIndex =
         document.getElementById("fixtureSelect").value;
 
@@ -853,21 +1224,25 @@ results.forEach((result, index) => {
     <tr>
         <td>${result.match}</td>
         <td>${result.result}</td>
-        <td>
-             <button onclick="editResult(${index})">
-                Edit
-                </button>
-            <button onclick="deleteResult(${index})">
-                Delete
-            </button>
-           
-        </td>
+       <td>
+    ${
+        isAdmin
+        ? `
+        <button onclick="editResult(${index})">Edit</button>
+        <button onclick="deleteResult(${index})">Delete</button>
+        `
+        : "View Only"
+    }
+</td>
     </tr>
     `;
 });
 } 
 function deleteResult(index) {
-
+if(!isAdmin){
+    alert("Only Admin can delete results");
+    return;
+}
     if (!confirm("Delete this result?")) {
         return;
     }
@@ -883,7 +1258,10 @@ function deleteResult(index) {
     updateLeagueTable();
 }
 function editResult(index) {
-
+if(!isAdmin){
+    alert("Only Admin can edit results");
+return;
+}
     const result = results[index];
 
     const teams = result.match.split(" vs ");
@@ -1045,7 +1423,13 @@ function renderUpcomingMatches() {
         document.getElementById("upcomingMatchesTable");
 
     table.innerHTML = "";
-const upcoming = fixtures.filter(f => f.status === "upcoming");
+const playedMatches =
+    results.map(r => r.match);
+
+const upcoming =
+    fixtures.filter(
+        f => !playedMatches.includes(f.match)
+    );
     upcoming.forEach(match => {
 
         table.innerHTML += `
@@ -1104,7 +1488,10 @@ const matchTime = new Date(match.date);
     renderUpcomingMatches();
 }
 function editFixture(index){
-
+if(!isAdmin){
+    alert("Only Admin can edit fixtures");
+    return;
+}
     const newDate = prompt(
         "Enter date and time (YYYY-MM-DD HH:MM)"
     );
@@ -1139,6 +1526,17 @@ function loadFixtureOptions() {
         `;
     });
 }
+function togglePassword(id){
+
+    const field =
+        document.getElementById(id);
+
+    if(field.type === "password"){
+        field.type = "text";
+    }else{
+        field.type = "password";
+    }
+}
 updateMatchStatuses();
 setInterval(updateMatchStatuses, 60000); // every 1 minute
 renderTable();
@@ -1148,6 +1546,8 @@ updateLeagueTable();
 renderUpcomingMatches();
 renderScorers();
 loadFixtureOptions();
+checkLoginState();
+applyPermissions();
     </script>
 </body>
 </html>
