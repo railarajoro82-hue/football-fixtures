@@ -392,6 +392,10 @@ Forgot Password?
                 </thead>
                 <tbody id="fixturesTable"></tbody>
             </table>
+            <button id="fixturesMoreBtn"
+onclick="showMoreFixtures()">
+See More Fixtures
+</button>
         </div>
     </div>
     </section>
@@ -408,9 +412,18 @@ Forgot Password?
 
 <input type="number" id="homeScore" placeholder="Home Score">
 <input type="number" id="awayScore" placeholder="Away Score">
-            <button onclick="addResult()">
-                Save Result
-            </button>
+
+<div id="homeScorerInputs"></div>
+
+<div id="awayScorerInputs"></div>
+
+<button type="button" onclick="generateScorerInputs()">
+Generate Scorer Fields
+</button>
+
+<button onclick="addResult()">
+    Save Result
+</button>
         </div>
         <div class="card">
             <h2>Result List</h2>
@@ -424,6 +437,10 @@ Forgot Password?
                 </thead>
                 <tbody id="resultTable"></tbody>
             </table>
+           <button id="resultsMoreBtn"
+onclick="showMoreResults()">
+See More Results
+</button> 
         </div>
     </div>
 </section>
@@ -484,7 +501,13 @@ Forgot Password?
 
                 <tbody id="scorersTable"></tbody>
             </table>
+<div id="scorersPagination" style="margin-top:10px;text-align:center;">
+    <button onclick="prevScorersPage()">Previous</button>
 
+    <span id="scorersPageInfo"></span>
+
+    <button onclick="nextScorersPage()">Next</button>
+</div>
         </div>
     </div>
 </section>
@@ -765,6 +788,9 @@ function forgotPassword(){
 }
 let scorers =
 JSON.parse(localStorage.getItem("scorers")) || [];
+
+let scorersPage = 1;
+const scorersPerPage = 10;
 function addScorer() {
 if(!isAdmin){
     alert("Only Admin can add scorers");
@@ -812,36 +838,85 @@ function renderScorers() {
 
     const sortedScorers =
         [...scorers].sort(
-            (a, b) => b.goals - a.goals
+            (a,b) => b.goals - a.goals
         );
-    
-sortedScorers.forEach((player, index) => {
- const originalIndex =
+
+    const start =
+        (scorersPage - 1) * scorersPerPage;
+
+    const end =
+        start + scorersPerPage;
+
+    const pageScorers =
+        sortedScorers.slice(start,end);
+
+    pageScorers.forEach((player,index)=>{
+
+        const originalIndex =
             scorers.findIndex(
                 s =>
-                    s.player === player.player &&
-                    s.team === player.team &&
-                    s.goals === player.goals
+                s.player === player.player &&
+                s.team === player.team &&
+                s.goals === player.goals
             );
-    table.innerHTML += `
-    <tr>
-        <td>${index + 1}</td>
-        <td>${player.player}</td>
-        <td>${player.team}</td>
-        <td>${player.goals}</td>
-       <td>
-    ${
-        isAdmin
-        ? `
-        <button onclick="editScorer(${originalIndex})">Edit</button>
-        <button onclick="deleteScorer(${originalIndex})">Delete</button>
-        `
-        : "View Only"
+
+        table.innerHTML += `
+        <tr>
+            <td>${start + index + 1}</td>
+            <td>${player.player}</td>
+            <td>${player.team}</td>
+            <td>${player.goals}</td>
+            <td>
+            ${
+                isAdmin
+                ?
+                `
+                <button onclick="editScorer(${originalIndex})">Edit</button>
+                <button onclick="deleteScorer(${originalIndex})">Delete</button>
+                `
+                :
+                "View Only"
+            }
+            </td>
+        </tr>
+        `;
+    });
+
+    const totalPages =
+        Math.ceil(
+            sortedScorers.length /
+            scorersPerPage
+        );
+
+    document.getElementById(
+        "scorersPageInfo"
+    ).innerText =
+        `Page ${scorersPage} of ${totalPages || 1}`;
+}
+function nextScorersPage(){
+
+    const totalPages =
+        Math.ceil(
+            scorers.length /
+            scorersPerPage
+        );
+
+    if(scorersPage < totalPages){
+
+        scorersPage++;
+
+        renderScorers();
     }
-</td>
-    </tr>
-    `;
-});
+}
+
+function prevScorersPage(){
+
+    if(scorersPage > 1){
+
+        scorersPage--;
+scorersPage = 1;
+        renderScorers();
+    }
 }
 function deleteScorer(index) {
 if(!isAdmin){
@@ -858,7 +933,7 @@ if(!isAdmin){
         "scorers",
         JSON.stringify(scorers)
     );
-
+scorersPage = 1;
     renderScorers();
 }
 function editScorer(index) {
@@ -907,7 +982,10 @@ if(!isAdmin){
 }
        let fixtures =
 JSON.parse(localStorage.getItem("fixtures")) || [];
+let fixturesVisible=10;
+
         //Load teams from localStorage (from Team page)
+
         function getTeams(){
             return JSON.parse(localStorage.getItem('teams'))||[];
         }
@@ -1019,7 +1097,8 @@ if(!isAdmin){
 
     let currentWeek = null;
 
-    fixtures.forEach((f, index) => {
+  fixtures.slice(0, fixturesVisible)
+.forEach((f, index) => {
 
         if (currentWeek !== f.gameweek) {
 
@@ -1160,7 +1239,45 @@ teams[index] = {
 
     renderTable();
 }
+function generateScorerInputs(){
+
+    const homeScore =
+        parseInt(document.getElementById("homeScore").value) || 0;
+
+    const awayScore =
+        parseInt(document.getElementById("awayScore").value) || 0;
+
+    const homeContainer =
+        document.getElementById("homeScorerInputs");
+
+    const awayContainer =
+        document.getElementById("awayScorerInputs");
+
+    homeContainer.innerHTML = "";
+    awayContainer.innerHTML = "";
+
+    for(let i = 1; i <= homeScore; i++){
+
+        homeContainer.innerHTML += `
+        <input
+            type="text"
+            class="homeScorer"
+            placeholder="Home Goal ${i} Scorer">
+        `;
+    }
+
+    for(let i = 1; i <= awayScore; i++){
+
+        awayContainer.innerHTML += `
+        <input
+            type="text"
+            class="awayScorer"
+            placeholder="Away Goal ${i} Scorer">
+        `;
+    }
+}
        let results = JSON.parse(localStorage.getItem("results")) || [];
+       let resultsVisible = 10;
        function addResult() {
 if(!isAdmin){
     alert("Only Admin can add results");
@@ -1187,10 +1304,33 @@ if(!isAdmin){
     const fixture =
         fixtures[fixtureIndex];
 
-    results.push({
-        match: fixture.match,
-        result: `${homeScore} - ${awayScore}`
-    });
+   const homeScorers =
+Array.from(
+    document.querySelectorAll(".homeScorer")
+).map(input => input.value.trim())
+.filter(name => name);
+
+const awayScorers =
+Array.from(
+    document.querySelectorAll(".awayScorer")
+).map(input => input.value.trim())
+.filter(name => name);
+if(homeScorers.length != parseInt(homeScore)){
+    alert("Home scorers must equal Home Score");
+    return;
+}
+
+if(awayScorers.length != parseInt(awayScore)){
+    alert("Away scorers must equal Away Score");
+    return;
+}
+
+results.push({
+    match: fixture.match,
+    result: `${homeScore} - ${awayScore}`,
+    homeScorers,
+    awayScorers
+});
 
     fixture.status = "finished";
 
@@ -1205,12 +1345,95 @@ if(!isAdmin){
     );
 
     renderResult();
+    rebuildScorers();
     updateLeagueTable();
     renderFixtures();
     renderUpcomingMatches();
 
-    document.getElementById("homeScore").value = "";
-    document.getElementById("awayScore").value = "";
+   document.getElementById("homeScore").value = "";
+document.getElementById("awayScore").value = "";
+
+document.getElementById("homeScorers").value = "";
+document.getElementById("awayScorers").value = "";
+
+document.getElementById("fixtureSelect").value = "";
+document.getElementById(
+    "homeScorerInputs"
+).innerHTML = "";
+
+document.getElementById(
+    "awayScorerInputs"
+).innerHTML = "";
+document.getElementById("homeScorerInputs").innerHTML = "";
+document.getElementById("awayScorerInputs").innerHTML = "";
+
+document.getElementById("homeScore").value = "";
+document.getElementById("awayScore").value = "";
+
+document.getElementById("fixtureSelect").value = "";
+}
+function rebuildScorers() {
+
+    scorers = [];
+
+    results.forEach(result => {
+
+        const teams =
+        result.match.split(" vs ");
+
+        const homeTeam = teams[0];
+        const awayTeam = teams[1];
+
+        result.homeScorers.forEach(player => {
+
+            let existing =
+            scorers.find(
+                s =>
+                s.player === player &&
+                s.team === homeTeam
+            );
+
+            if(existing){
+                existing.goals++;
+            }else{
+                scorers.push({
+                    player,
+                    team: homeTeam,
+                    goals: 1
+                });
+            }
+
+        });
+
+        result.awayScorers.forEach(player => {
+
+            let existing =
+            scorers.find(
+                s =>
+                s.player === player &&
+                s.team === awayTeam
+            );
+
+            if(existing){
+                existing.goals++;
+            }else{
+                scorers.push({
+                    player,
+                    team: awayTeam,
+                    goals: 1
+                });
+            }
+
+        });
+
+    });
+
+    localStorage.setItem(
+        "scorers",
+        JSON.stringify(scorers)
+    );
+
+    renderScorers();
 }
        function renderResult() {
 
@@ -1218,7 +1441,9 @@ if(!isAdmin){
         document.getElementById("resultTable");
 
     table.innerHTML = "";
-results.forEach((result, index) => {
+results
+.slice(0, resultsVisible)
+.forEach((result, index) => {
 
     table.innerHTML += `
     <tr>
@@ -1255,6 +1480,7 @@ if(!isAdmin){
     );
 
     renderResult();
+   rebuildScorers(); 
     updateLeagueTable();
 }
 function editResult(index) {
@@ -1294,17 +1520,19 @@ return;
 
     if (newAwayScore === null) return;
 
-    results[index] = {
-        match: `${newHomeTeam} vs ${newAwayTeam}`,
-        result: `${newHomeScore} - ${newAwayScore}`
-    };
-
+results[index] = {
+    match: `${newHomeTeam} vs ${newAwayTeam}`,
+    result: `${newHomeScore} - ${newAwayScore}`,
+    homeScorers: result.homeScorers || [],
+    awayScorers: result.awayScorers || []
+};
     localStorage.setItem(
         "results",
         JSON.stringify(results)
     );
 
     renderResult();
+    rebuildScorers();
     updateLeagueTable();
 }
 function updateLeagueTable() {
@@ -1536,6 +1764,24 @@ function togglePassword(id){
     }else{
         field.type = "password";
     }
+}
+function showMoreFixtures(){
+
+    fixturesVisible += 10;
+
+    renderFixtures();
+}
+function showMoreResults(){
+
+    resultsVisible += 10;
+
+    renderResult();
+}
+function showMoreScorers(){
+
+    scorersVisible += 10;
+
+    renderScorers();
 }
 updateMatchStatuses();
 setInterval(updateMatchStatuses, 60000); // every 1 minute
