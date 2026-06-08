@@ -514,12 +514,45 @@ See More Results
     <footer>
         <p>&copy;2026 League Manager.All Rights Reserved</p>
     </footer>
-    <script>
-let currentUser =
-    JSON.parse(localStorage.getItem("currentUser")) || null;
+    <script type="module">
 
-let isAdmin =
-    JSON.parse(localStorage.getItem("isAdmin")) || false;
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyA3ANDdvnt1N7IlZAkDjWmsP-Zkhs2WOUY",
+  authDomain: "league-manager-system-b2df2.firebaseapp.com",
+  projectId: "league-manager-system-b2df2",
+  storageBucket: "league-manager-system-b2df2.firebasestorage.app",
+  messagingSenderId: "1062701406700",
+  appId: "1:1062701406700:web:c2cb6b21a64668cfbc88c9"
+};
+
+const app = initializeApp(firebaseConfig);
+window.db = getFirestore(app);
+
+window.collection = collection;
+window.addDoc = addDoc;
+window.deleteDoc = deleteDoc;
+window.doc = doc;
+window.onSnapshot = onSnapshot;
+
+window.firebaseReady = true;
+console.log("Firebase Connected");
+console.log("collection =", window.collection);
+console.log("addDoc =", window.addDoc);
+</script>
+    <script>
+let currentUser = null;
+let isAdmin = false;
 function adminLogin() {
 
     const username =
@@ -530,15 +563,11 @@ function adminLogin() {
 
     if (
         username === "admin" &&
-        password === "Rajo10"
+        password === "Rajo@10"
     ) {
 
         isAdmin = true;
 
-        localStorage.setItem(
-            "isAdmin",
-            true
-        );
 
         document.getElementById(
             "loginStatus"
@@ -556,7 +585,7 @@ document.getElementById("adminPassword").value = "";
 
     }
 }
-function signupVisitor() {
+async function signupVisitor() {
 
     const username =
         document.getElementById(
@@ -574,11 +603,6 @@ function signupVisitor() {
         return;
     }
 
-    let visitors =
-        JSON.parse(
-            localStorage.getItem("visitors")
-        ) || [];
-
     const exists =
         visitors.find(
             v => v.username === username
@@ -590,14 +614,12 @@ function signupVisitor() {
         return;
     }
 
-    visitors.push({
+   await addDoc(
+    collection(window.db, "visitors"),
+    {
         username,
         password
-    });
-
- localStorage.setItem(
-    "visitors",
-    JSON.stringify(visitors)
+    }
 );
 
 // Copy username to login form
@@ -609,7 +631,7 @@ document.getElementById("signupPassword").value = "";
 
 alert("Account created successfully");
 }
-function visitorLogin() {
+async function visitorLogin(){
 
     const username =
         document.getElementById(
@@ -621,17 +643,24 @@ function visitorLogin() {
             "visitorPassword"
         ).value;
 
-    const visitors =
-        JSON.parse(
-            localStorage.getItem("visitors")
-        ) || [];
+   const snapshot =
+    await getDocs(
+        collection(window.db, "visitors")
+    );
 
-    const user =
-        visitors.find(
-            v =>
-                v.username === username &&
-                v.password === password
-        );
+let user = null;
+
+snapshot.forEach(doc => {
+
+    const data = doc.data();
+
+    if(
+        data.username === username &&
+        data.password === password
+    ){
+        user = data;
+    }
+});
 
     if (!user) {
 
@@ -641,11 +670,6 @@ function visitorLogin() {
 
     currentUser = username;
 isAdmin = false;
-localStorage.setItem("isAdmin", false);
-    localStorage.setItem(
-        "currentUser",
-        JSON.stringify(username)
-    );
 
     document.getElementById(
         "loginStatus"
@@ -663,9 +687,6 @@ function logout() {
 
     isAdmin = false;
     currentUser = null;
-
-    localStorage.removeItem("isAdmin");
-    localStorage.removeItem("currentUser");
 
     document.getElementById(
         "loginStatus"
@@ -757,10 +778,6 @@ function forgotPassword(){
 
     if(!username) return;
 
-    let visitors =
-        JSON.parse(
-            localStorage.getItem("visitors")
-        ) || [];
 
     const user =
         visitors.find(
@@ -779,19 +796,13 @@ function forgotPassword(){
 
     user.password = newPassword;
 
-    localStorage.setItem(
-        "visitors",
-        JSON.stringify(visitors)
-    );
 
     alert("Password changed successfully");
 }
-let scorers =
-JSON.parse(localStorage.getItem("scorers")) || [];
 
 let scorersPage = 1;
 const scorersPerPage = 10;
-function addScorer() {
+async function addScorer() {
 if(!isAdmin){
     alert("Only Admin can add scorers");
     return;
@@ -811,17 +822,15 @@ if(!isAdmin){
         alert("Fill all fields");
         return;
     }
-
-    scorers.push({
+await addDoc(
+    collection(window.db, "scorers"),
+    {
         player,
         team,
         goals
-    });
+    }
+);
 
-    localStorage.setItem(
-        "scorers",
-        JSON.stringify(scorers)
-    );
 
     renderScorers();
 
@@ -834,64 +843,77 @@ function renderScorers() {
     const table =
         document.getElementById("scorersTable");
 
-    table.innerHTML = "";
+    window.onSnapshot(
+        window.collection(window.db, "scorers"),
+        (snapshot) => {
 
-    const sortedScorers =
-        [...scorers].sort(
-            (a,b) => b.goals - a.goals
-        );
+            table.innerHTML = "";
+            scorers = [];
 
-    const start =
-        (scorersPage - 1) * scorersPerPage;
+            snapshot.forEach((docSnap) => {
 
-    const end =
-        start + scorersPerPage;
+                scorers.push({
+                    id: docSnap.id,
+                    ...docSnap.data()
+                });
 
-    const pageScorers =
-        sortedScorers.slice(start,end);
+            });
 
-    pageScorers.forEach((player,index)=>{
+            const sortedScorers =
+                [...scorers].sort(
+                    (a,b) => b.goals - a.goals
+                );
 
-        const originalIndex =
-            scorers.findIndex(
-                s =>
-                s.player === player.player &&
-                s.team === player.team &&
-                s.goals === player.goals
-            );
+            const start =
+                (scorersPage - 1) * scorersPerPage;
 
-        table.innerHTML += `
-        <tr>
-            <td>${start + index + 1}</td>
-            <td>${player.player}</td>
-            <td>${player.team}</td>
-            <td>${player.goals}</td>
-            <td>
-            ${
-                isAdmin
-                ?
-                `
-                <button onclick="editScorer(${originalIndex})">Edit</button>
-                <button onclick="deleteScorer(${originalIndex})">Delete</button>
-                `
-                :
-                "View Only"
-            }
-            </td>
-        </tr>
-        `;
-    });
+            const end =
+                start + scorersPerPage;
 
-    const totalPages =
-        Math.ceil(
-            sortedScorers.length /
-            scorersPerPage
-        );
+            const pageScorers =
+                sortedScorers.slice(start,end);
 
-    document.getElementById(
-        "scorersPageInfo"
-    ).innerText =
-        `Page ${scorersPage} of ${totalPages || 1}`;
+            pageScorers.forEach((player,index)=>{
+
+                const originalIndex =
+                    scorers.findIndex(
+                        s => s.id === player.id
+                    );
+
+                table.innerHTML += `
+                <tr>
+                    <td>${start + index + 1}</td>
+                    <td>${player.player}</td>
+                    <td>${player.team}</td>
+                    <td>${player.goals}</td>
+                    <td>
+                        ${
+                            isAdmin
+                            ?
+                            `
+                            <button onclick="editScorer(${originalIndex})">Edit</button>
+                            <button onclick="deleteScorer(${originalIndex})">Delete</button>
+                            `
+                            :
+                            "View Only"
+                        }
+                    </td>
+                </tr>
+                `;
+            });
+
+            const totalPages =
+                Math.ceil(
+                    sortedScorers.length /
+                    scorersPerPage
+                );
+
+            document.getElementById(
+                "scorersPageInfo"
+            ).innerText =
+                `Page ${scorersPage} of ${totalPages || 1}`;
+        }
+    );
 }
 function nextScorersPage(){
 
@@ -918,7 +940,7 @@ scorersPage = 1;
         renderScorers();
     }
 }
-function deleteScorer(index) {
+async function deleteScorer(index) {
 if(!isAdmin){
     alert("Only Admin can delete scorer");
     return;
@@ -927,12 +949,14 @@ if(!isAdmin){
         return;
     }
 
-    scorers.splice(index, 1);
-
-    localStorage.setItem(
+  await deleteDoc(
+    doc(
+        window.db,
         "scorers",
-        JSON.stringify(scorers)
-    );
+        scorers[index].id
+    )
+);
+
 scorersPage = 1;
     renderScorers();
 }
@@ -973,37 +997,31 @@ if(!isAdmin){
         goals: parseInt(newGoals)
     };
 
-    localStorage.setItem(
-        "scorers",
-        JSON.stringify(scorers)
-    );
 
     renderScorers();
 }
-       let fixtures =
-JSON.parse(localStorage.getItem("fixtures")) || [];
+
 let fixturesVisible=10;
+let teams = [];
+let fixtures = [];
+let results = [];
+let scorers = [];
 
-        //Load teams from localStorage (from Team page)
-
-        function getTeams(){
-            return JSON.parse(localStorage.getItem('teams'))||[];
-        }
-      function generateFixtures() {
+      async function generateFixtures() {
 if(!isAdmin){
     alert("Only Admin can render fixtures");
     return;
 }
-    const teams = getTeams();
+   const teamListFromDb = teams;
 
-    if (teams.length < 2) {
+  if (teamListFromDb.length < 2) {
         alert("Add at least 2 teams first");
         return;
     }
 
     fixtures = [];
 
-    let teamList = [...teams];
+    let teamList = [...teamListFromDb];
 
     // Add BYE if odd number of teams
     if (teamList.length % 2 !== 0) {
@@ -1032,15 +1050,17 @@ if(!isAdmin){
                 home.name !== "BYE" &&
                 away.name !== "BYE"
             ) {
-                fixtures.push({
-                    gameweek: round + 1,
-                    leg: "First Leg",
-                    match:
-                        `${home.name} vs ${away.name}`,
-                    date: "",
-                    venue: home.venue,
-                    status: "upcoming"
-                });
+                await addDoc(
+    collection(window.db, "fixtures"),
+    {
+        gameweek: round + 1,
+        leg: "First Leg",
+        match: `${home.name} vs ${away.name}`,
+        date: "",
+        venue: home.venue,
+        status: "upcoming"
+    }
+);
             }
         }
 
@@ -1065,7 +1085,7 @@ if(!isAdmin){
 
     const homeTeam = matchTeams[1]; // now home in second leg
 
-    const homeTeamData = teams.find(
+  const homeTeamData = teamListFromDb.find(
         team => team.name === homeTeam
     );
 
@@ -1079,64 +1099,80 @@ if(!isAdmin){
     });
 });
 
-    localStorage.setItem(
-        "fixtures",
-        JSON.stringify(fixtures)
-    );
 
     renderFixtures();
     renderUpcomingMatches();
     loadFixtureOptions();
 }
-     function renderFixtures() {
+function renderFixtures() {
 
     const table =
         document.getElementById("fixturesTable");
 
-    table.innerHTML = "";
+    window.onSnapshot(
+        window.collection(window.db, "fixtures"),
+        (snapshot) => {
 
-    let currentWeek = null;
+            table.innerHTML = "";
+            fixtures = [];
 
-  fixtures.slice(0, fixturesVisible)
-.forEach((f, index) => {
+            snapshot.forEach((docSnap) => {
 
-        if (currentWeek !== f.gameweek) {
+                fixtures.push({
+                    id: docSnap.id,
+                    ...docSnap.data()
+                });
 
-            currentWeek = f.gameweek;
+            });
 
-            table.innerHTML += `
-            <tr>
-                <td colspan="6"
-                    style="
-                    background:#1e3a8a;
-                    color:white;
-                    font-weight:bold;
-                    text-align:center;">
-                    GAME WEEK ${f.gameweek}
-                    (${f.leg})
-                </td>
-            </tr>
-            `;
+            let currentWeek = null;
+
+            fixtures
+            .sort((a,b) => a.gameweek - b.gameweek)
+            .slice(0, fixturesVisible)
+            .forEach((f,index) => {
+
+                if(currentWeek !== f.gameweek){
+
+                    currentWeek = f.gameweek;
+
+                    table.innerHTML += `
+                    <tr>
+                        <td colspan="6"
+                        style="
+                        background:#1e3a8a;
+                        color:white;
+                        font-weight:bold;
+                        text-align:center;">
+                        GAME WEEK ${f.gameweek}
+                        (${f.leg})
+                        </td>
+                    </tr>
+                    `;
+                }
+
+                table.innerHTML += `
+                <tr>
+                    <td>GW ${f.gameweek}</td>
+                    <td>${f.leg}</td>
+                    <td>${f.match}</td>
+                    <td>${f.date || "Not Set"}</td>
+                    <td>${f.venue}</td>
+                    <td>
+                        ${
+                            isAdmin
+                            ? `<button onclick="editFixture(${index})">Set Date</button>`
+                            : "View Only"
+                        }
+                    </td>
+                </tr>
+                `;
+            });
+
+            loadFixtureOptions();
+            renderUpcomingMatches();
         }
-
-        table.innerHTML += `
-        <tr>
-            <td>GW ${f.gameweek}</td>
-            <td>${f.leg}</td>
-            <td>${f.match}</td>
-            <td>${f.date || "Not Set"}</td>
-            <td>${f.venue}</td>
-            <td>
-               <td>
-    ${
-        isAdmin
-        ? `<button onclick="editFixture(${index})">Set Date</button>`
-        : "View Only"
-    }
-</td>
-        </tr>
-        `;
-    });
+    );
 }
       function clearFixtures(){
         if(!isAdmin){
@@ -1145,68 +1181,103 @@ if(!isAdmin){
         }
     fixtures = [];
 
-    localStorage.removeItem("fixtures");
+
 
     renderFixtures();
     renderUpcomingMatches();
 }
-        let teams=JSON.parse(localStorage.getItem('teams'))||[];
-    renderTable();
-        function addTeam(){
-            if(!isAdmin){
-                alert("Only Admin can add teams");
-                return;
-            }
-            const name=document.getElementById('teamName').value;
-            const coach=document.getElementById('coach').value;
-            const players=document.getElementById('players').value;
-            const venue =document.getElementById('teamVenue').value;
-            if(!name || !coach || !players){
-                alert('please fill all fields');
-                return;
-            }
-            teams.push({
-                name,
-                coach,
-                players,
-                venue
-            });
-            localStorage.setItem('teams',JSON.stringify(teams));
-            renderTable();
-            document.getElementById('teamName').value='';
-            document.getElementById('coach').value='';
-            document.getElementById('players').value='';
-            document.getElementById('teamVenue').value='';
-        }
-        function renderTable(){
-            const table=document.getElementById('teamTable');
-            table.innerHTML='';
-            teams.forEach((team,index)=>{
+
+
+       async function addTeam() {
+if(!isAdmin){
+    alert("Only Admin can add teams");
+    return;
+}
+
+const name = document.getElementById('teamName').value;
+const coach = document.getElementById('coach').value;
+const players = document.getElementById('players').value;
+const venue = document.getElementById('teamVenue').value;
+
+if(!name || !coach || !players){
+    alert('please fill all fields');
+    return;
+}
+
+await window.addDoc(
+    window.collection(window.db, "teams"),
+    {
+        name,
+        coach,
+        players,
+        venue
+    }
+);
+document.getElementById("teamName").value = "";
+document.getElementById("coach").value = "";
+document.getElementById("players").value = "";
+document.getElementById("teamVenue").value = "";
+
+alert("Team Added Successfully");
+}
+function renderTeams() {
+
+    if (!window.firebaseReady) {
+        console.log("Firebase not ready yet");
+        return;
+    }
+
+    console.log("window.collection =", window.collection);
+    console.log("window.db =", window.db);
+
+    const table = document.getElementById("teamTable");
+    table.innerHTML = "";
+
+    window.onSnapshot(
+        window.collection(window.db, "teams"),
+        (snapshot) => {
+
+            table.innerHTML = "";
+            teams = [];
+
+            snapshot.forEach((docSnap) => {
+
+                const team = docSnap.data();
+
+                teams.push({
+                    id: docSnap.id,
+                    ...team
+                });
+
                 table.innerHTML += `
-<tr>
-    <td>${team.name}</td>
-    <td>${team.coach}</td>
-    <td>${team.players}</td>
-    <td>${team.venue}</td>
-    <td class="actions">
-${isAdmin ? `
-<button onclick="editTeam(${index})">Edit</button>
-<button onclick="deleteTeam(${index})">Delete</button>
-` : ''}
-</td>
-</tr>
-`;
+                <tr>
+                    <td>${team.name}</td>
+                    <td>${team.coach}</td>
+                    <td>${team.players}</td>
+                    <td>${team.venue}</td>
+                    <td>
+                        ${
+                            isAdmin
+                            ? `<button onclick="deleteTeam('${docSnap.id}')">Delete</button>`
+                            : "View Only"
+                        }
+                    </td>
+                </tr>`;
             });
+
         }
-        function deleteTeam(index){
-            if(!isAdmin){
-                alert("Only Admin can delete teams");
-                return;
-            }
-            teams.splice(index,1);
-            localStorage.setItem('teams',JSON.stringify(teams));
-            renderTable();
-        }
+    );
+}
+async function deleteTeam(id){
+if(!isAdmin){
+    alert("Only Admin can delete teams");
+    return;
+}
+
+await deleteDoc(doc(window.db, "teams", id));
+renderTeams();
+}
+     
       function editTeam(index) {
 if(!isAdmin){
     alert("Only Admin can edit teams");
@@ -1235,9 +1306,8 @@ teams[index] = {
     venue: newVenue
 };
 
-    localStorage.setItem("teams", JSON.stringify(teams));
 
-    renderTable();
+  renderTeams();
 }
 function generateScorerInputs(){
 
@@ -1276,9 +1346,9 @@ function generateScorerInputs(){
         `;
     }
 }
-       let results = JSON.parse(localStorage.getItem("results")) || [];
+
        let resultsVisible = 10;
-       function addResult() {
+      async function addResult() {
 if(!isAdmin){
     alert("Only Admin can add results");
     return;
@@ -1325,24 +1395,12 @@ if(awayScorers.length != parseInt(awayScore)){
     return;
 }
 
-results.push({
+await addDoc(collection( window.db, "results"), {
     match: fixture.match,
     result: `${homeScore} - ${awayScore}`,
     homeScorers,
     awayScorers
 });
-
-    fixture.status = "finished";
-
-    localStorage.setItem(
-        "results",
-        JSON.stringify(results)
-    );
-
-    localStorage.setItem(
-        "fixtures",
-        JSON.stringify(fixtures)
-    );
 
     renderResult();
     rebuildScorers();
@@ -1428,41 +1486,37 @@ function rebuildScorers() {
 
     });
 
-    localStorage.setItem(
-        "scorers",
-        JSON.stringify(scorers)
-    );
+
 
     renderScorers();
 }
-       function renderResult() {
+ function renderResult() {
 
-    const table =
-        document.getElementById("resultTable");
+const table = document.getElementById("resultTable");
+
+onSnapshot(collection(window.db, "results"), (snapshot) => {
 
     table.innerHTML = "";
-results
-.slice(0, resultsVisible)
-.forEach((result, index) => {
+    results = [];
 
-    table.innerHTML += `
-    <tr>
-        <td>${result.match}</td>
-        <td>${result.result}</td>
-       <td>
-    ${
-        isAdmin
-        ? `
-        <button onclick="editResult(${index})">Edit</button>
-        <button onclick="deleteResult(${index})">Delete</button>
-        `
-        : "View Only"
-    }
-</td>
-    </tr>
-    `;
+    snapshot.forEach(docSnap => {
+
+        const data = docSnap.data();
+        results.push(data);
+
+        table.innerHTML += `
+        <tr>
+            <td>${data.match}</td>
+            <td>${data.result}</td>
+            <td>${isAdmin ? "Admin View" : "View Only"}</td>
+        </tr>
+        `;
+    });
+
+    rebuildScorers();
+    updateLeagueTable();
 });
-} 
+}
 function deleteResult(index) {
 if(!isAdmin){
     alert("Only Admin can delete results");
@@ -1474,10 +1528,6 @@ if(!isAdmin){
 
     results.splice(index, 1);
 
-    localStorage.setItem(
-        "results",
-        JSON.stringify(results)
-    );
 
     renderResult();
    rebuildScorers(); 
@@ -1526,10 +1576,7 @@ results[index] = {
     homeScorers: result.homeScorers || [],
     awayScorers: result.awayScorers || []
 };
-    localStorage.setItem(
-        "results",
-        JSON.stringify(results)
-    );
+
 
     renderResult();
     rebuildScorers();
@@ -1707,15 +1754,12 @@ const matchTime = new Date(match.date);
             match.status = "finished";
         }
     });
-    localStorage.setItem(
-    "fixtures",
-    JSON.stringify(fixtures)
-);
+    
 
     renderFixtures();
     renderUpcomingMatches();
 }
-function editFixture(index){
+async function editFixture(index){
 if(!isAdmin){
     alert("Only Admin can edit fixtures");
     return;
@@ -1726,12 +1770,18 @@ if(!isAdmin){
 
     if(!newDate) return;
 
-    fixtures[index].date = newDate;
-
-    localStorage.setItem(
+  await updateDoc(
+    doc(
+        window.db,
         "fixtures",
-        JSON.stringify(fixtures)
-    );
+        fixtures[index].id
+    ),
+    {
+        date: newDate
+    }
+);
+
+
 
     renderFixtures();
     renderUpcomingMatches();
@@ -1783,17 +1833,16 @@ function showMoreScorers(){
 
     renderScorers();
 }
-updateMatchStatuses();
-setInterval(updateMatchStatuses, 60000); // every 1 minute
-renderTable();
-renderFixtures();
-renderResult();
-updateLeagueTable();
-renderUpcomingMatches();
-renderScorers();
-loadFixtureOptions();
-checkLoginState();
-applyPermissions();
+window.onload = () => {
+    renderTeams();
+    renderFixtures();
+    renderResult();
+    updateMatchStatuses();
+    setInterval(updateMatchStatuses, 60000);
+
+    checkLoginState();
+    applyPermissions();
+};
     </script>
 </body>
 </html>
