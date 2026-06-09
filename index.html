@@ -391,6 +391,9 @@ Forgot Password?
         </div>
         <div class="card">
             <h2>Fixtures List</h2>
+            <select id="gameweekFilter" onchange="filterByGameweek()">
+    <option value="">All Gameweeks</option>
+</select>
             <table>
                 <thead>
                     <tr>
@@ -568,9 +571,11 @@ console.log("addDoc =", window.addDoc);
 </script>
     <script>
         let fixturesVisible=10;
+        let selectedGameweek = null;
 let teams = [];
 let fixtures = [];
 let results = [];
+let activeGameweekView = null;
 let scorers = [];
 let fixturesPage = 1;
 let resultsPage = 1;
@@ -1229,52 +1234,46 @@ function renderFixtures() {
 
             });
 
-            let currentWeek = null;
+let filteredFixtures = [...fixtures];
 
-           const start = (fixturesPage - 1) * itemsPerPage;
-const end = start + itemsPerPage;
-fixtures
-.sort((a,b) => a.gameweek - b.gameweek)
-.slice(start, end)
-.forEach((f,index) => {
+// filter by gameweek
+if (activeGameweekView !== null) {
+    filteredFixtures = filteredFixtures.filter(
+        f => f.gameweek === activeGameweekView
+    );
+}
 
-                if(currentWeek !== f.gameweek){
+// ✅ STEP 5 MUST BE HERE (MOVE IT HERE)
+const sortedFixtures = filteredFixtures.sort(
+    (a, b) => a.gameweek - b.gameweek
+);
 
-                    currentWeek = f.gameweek;
+// NOW safe to loop
+let currentWeek = null;
 
-                    table.innerHTML += `
-                    <tr>
-                        <td colspan="6"
-                        style="
-                        background:#1e3a8a;
-                        color:white;
-                        font-weight:bold;
-                        text-align:center;">
-                        GAME WEEK ${f.gameweek}
-                        (${f.leg})
-                        </td>
-                    </tr>
-                    `;
-                }
+sortedFixtures.forEach(f => {
+    if (currentWeek !== f.gameweek) {
+        currentWeek = f.gameweek;
 
-                table.innerHTML += `
-                <tr>
-                    <td>GW ${f.gameweek}</td>
-                    <td>${f.leg}</td>
-                    <td>${f.match}</td>
-                    <td>${f.date || "Not Set"}</td>
-                    <td>${f.venue}</td>
-                    <td>
-                        ${
-                            isAdmin
-                            ? `<button onclick="editFixture(${index})">Set Date</button>`
-                            : "View Only"
-                        }
-                    </td>
-                </tr>
-                `;
-            });
+        table.innerHTML += `
+        <tr>
+            <td colspan="6"
+                style="background:#1e3a8a;color:white;font-weight:bold;text-align:center;">
+                GAME WEEK ${f.gameweek} (${f.leg})
+            </td>
+        </tr>`;
+    }
 
+    table.innerHTML += `
+    <tr>
+        <td>GW ${f.gameweek}</td>
+        <td>${f.leg}</td>
+        <td>${f.match}</td>
+        <td>${f.date || "Not Set"}</td>
+        <td>${f.venue}</td>
+        <td>${isAdmin ? `<button onclick="editFixtureById('${f.id}')">Set Date</button>` : "View Only"}</td>
+    </tr>`;
+});
             loadFixtureOptions();
             renderUpcomingMatches();
             const totalPages = Math.ceil(fixtures.length / itemsPerPage);
@@ -2090,29 +2089,23 @@ const matchTime = new Date(match.date);
     renderFixtures();
     renderUpcomingMatches();
 }
-async function editFixture(index){
-if(!isAdmin){
-    alert("Only Admin can edit fixtures");
-    return;
-}
-    const newDate = prompt(
-        "Enter date and time (YYYY-MM-DD HH:MM)"
-    );
+async function editFixtureById(id) {
 
-    if(!newDate) return;
-
-  await updateDoc(
-    doc(
-        window.db,
-        "fixtures",
-        fixtures[index].id
-    ),
-    {
-        date: newDate
+    if (!isAdmin) {
+        alert("Only Admin can edit fixtures");
+        return;
     }
-);
 
+    const newDate = prompt("Enter date and time (YYYY-MM-DD HH:MM)");
 
+    if (!newDate) return;
+
+    await updateDoc(
+        doc(window.db, "fixtures", id),
+        {
+            date: newDate
+        }
+    );
 
     renderFixtures();
     renderUpcomingMatches();
@@ -2219,6 +2212,29 @@ function prevUpcomingPage(){
         upcomingPage--;
         renderUpcomingMatches();
     }
+}
+function filterByGameweek() {
+    const value = document.getElementById("gameweekFilter").value;
+
+    if (value === "") {
+        activeGameweekView = null;
+    } else {
+        activeGameweekView = parseInt(value);
+    }
+
+    renderFixtures();
+}
+function loadGameweekOptions() {
+
+    const select = document.getElementById("gameweekFilter");
+
+    const weeks = [...new Set(fixtures.map(f => f.gameweek))];
+
+    select.innerHTML = `<option value="">All Gameweeks</option>`;
+
+    weeks.sort((a,b) => a - b).forEach(w => {
+        select.innerHTML += `<option value="${w}">Gameweek ${w}</option>`;
+    });
 }
 window.onload = () => {
 
