@@ -262,26 +262,55 @@ Show Password
             </div>
 
             <!-- Visitor Signup -->
-            <div class="card">
-                <h2>Visitor Sign Up</h2>
-                <input type="text" id="signupUsername" placeholder="Username">
-               <input type="password" id="signupPassword" placeholder="Password">
-<label>
-<input type="checkbox" onclick="togglePassword('signupPassword')">
-Show Password
-</label>
-                <button onclick="signupVisitor()">Sign Up</button>
-            </div>
+           <div class="card">
+    <h2>Create Account</h2>
 
+    <input type="text"
+           id="signupUsername"
+           placeholder="Username">
+
+    <input type="email"
+           id="signupEmail"
+           placeholder="Email Address">
+
+    <input type="tel"
+           id="signupPhone"
+           placeholder="Phone Number">
+
+    <input type="password"
+           id="signupPassword"
+           placeholder="Password">
+
+    <input type="password"
+           id="signupConfirmPassword"
+           placeholder="Confirm Password">
+
+    <label>
+        <input type="checkbox"
+               onclick="togglePassword('signupPassword');
+                        togglePassword('signupConfirmPassword')">
+        Show Passwords
+    </label>
+
+    <button onclick="signupVisitor()">
+        Create Account
+    </button>
+</div>
             <!-- Visitor Login -->
             <div class="card">
                 <h2>Visitor Login</h2>
-                <input type="text" id="visitorUsername" placeholder="Username">
+               <input type="text"
+       id="visitorUsername"
+       placeholder="Username or Email">
                <input type="password" id="visitorPassword" placeholder="Password">
 <label>
 <input type="checkbox" onclick="togglePassword('visitorPassword')">
 Show Password
 </label>
+<button onclick="resetPassword()">Forgot Password?</button>
+<button onclick="googleLogin()">
+    Continue with Google
+</button>
                 <button onclick="visitorLogin()">Login</button>
             </div>
 
@@ -538,8 +567,23 @@ import {
   deleteDoc,
   doc,
   updateDoc,
-  onSnapshot
+  onSnapshot,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence,
+  signOut
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 const firebaseConfig = {
   apiKey: "AIzaSyA3ANDdvnt1N7IlZAkDjWmsP-Zkhs2WOUY",
   authDomain: "league-manager-system-b2df2.firebaseapp.com",
@@ -548,9 +592,14 @@ const firebaseConfig = {
   messagingSenderId: "1062701406700",
   appId: "1:1062701406700:web:c2cb6b21a64668cfbc88c9"
 };
-
 const app = initializeApp(firebaseConfig);
+
 window.db = getFirestore(app);
+
+window.auth = getAuth(app);
+
+
+setPersistence(window.auth, browserLocalPersistence);
 
 window.collection = collection;
 window.addDoc = addDoc;
@@ -559,11 +608,75 @@ window.deleteDoc = deleteDoc;
 window.doc = doc;
 window.updateDoc = updateDoc;
 window.onSnapshot = onSnapshot;
+window.createUserWithEmailAndPassword =
+    createUserWithEmailAndPassword;
 
+window.signInWithEmailAndPassword =
+    signInWithEmailAndPassword;
+
+window.GoogleAuthProvider =
+    GoogleAuthProvider;
+
+window.signInWithPopup =
+    signInWithPopup;
+
+window.sendPasswordResetEmail =
+    sendPasswordResetEmail;
+
+window.onAuthStateChanged =
+    onAuthStateChanged;
+
+    window.signOut = signOut;
 window.firebaseReady = true;
 console.log("Firebase Connected");
 console.log("collection =", window.collection);
 console.log("addDoc =", window.addDoc);
+
+async function getUserRole(uid){
+
+    const snapshot =
+        await getDocs(
+            collection(window.db,"users")
+        );
+
+    let role = "visitor";
+
+    snapshot.forEach(docSnap=>{
+
+        const data = docSnap.data();
+
+        if(data.uid === uid){
+            role = data.role || "visitor";
+        }
+
+    });
+
+    return role;
+}
+onAuthStateChanged(auth, async (user) => {
+
+    if (user) {
+
+        currentUser = user;
+
+        const role = await getUserRole(user.uid);
+
+        isAdmin = (role === "admin"); // 🔥 IMPORTANT LINE
+
+        if (!isAdmin) {
+            console.log("Not admin - restricting access");
+        }
+
+        applyPermissions();
+
+    } else {
+
+        currentUser = null;
+        isAdmin = false;
+
+        applyPermissions();
+    }
+});
 </script>
     <script>
         let fixturesVisible=10;
@@ -572,6 +685,7 @@ console.log("addDoc =", window.addDoc);
 let teams = [];
 let fixtures = [];
 let results = [];
+let visitors = [];
 let activeGameweekView = null;
 let scorers = [];
 let fixturesPage = 1;
@@ -585,7 +699,6 @@ const upcomingPerPage = 10;
 const itemsPerPage = 10;
 let currentUser = null;
 let isAdmin = false;
-let visitors = [];
 
 function loadVisitors(){
 
@@ -611,225 +724,258 @@ function loadVisitors(){
 async function adminLogin(){
 
     const username =
-        document.getElementById("adminUsername").value;
+        document.getElementById("adminUsername")
+        .value.trim();
 
     const password =
-        document.getElementById("adminPassword").value;
+        document.getElementById("adminPassword")
+        .value;
 
-    const snapshot =
-        await getDocs(
-            collection(window.db,"admins")
-        );
-
-    let adminFound = false;
-
-    snapshot.forEach(docSnap=>{
-
-        const data = docSnap.data();
-
-        if(
-            data.username === username &&
-            data.password === password
-        ){
-            adminFound = true;
-        }
-
-    });
-
-    if(adminFound){
-
-        isAdmin = true;
-
-        document.getElementById(
-            "loginStatus"
-        ).innerText =
-            "Logged in as Admin";
-
-        document.getElementById(
-            "loginForms"
-        ).style.display =
-            "none";
-
-        document.getElementById(
-            "logoutBtn"
-        ).style.display =
-            "inline-block";
-
-        applyPermissions();
-renderTeams();
-renderFixtures();
-renderResult();
-listenScorers();
-    }else{
-
-        alert("Invalid Admin Login");
-
-    }
-
-}
-async function signupVisitor() {
-
-    const username =
-        document.getElementById(
-            "signupUsername"
-        ).value;
-
-    const password =
-        document.getElementById(
-            "signupPassword"
-        ).value;
-
-    if (!username || !password) {
-
+    if(!username || !password){
         alert("Fill all fields");
         return;
     }
 
-    const exists =
-        visitors.find(
-            v => v.username === username
+    try{
+
+        const email =
+            username.includes("@")
+            ? username
+            : `${username}@leaguemanager.com`;
+
+        await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
         );
 
-    if (exists) {
+    }catch(error){
 
-        alert("Username already exists");
-        return;
+        console.error(error);
+        alert("Invalid admin credentials");
+
     }
+}
+function applyPermissions(){
 
-   await addDoc(
-    collection(window.db, "visitors"),
+    document.querySelectorAll(".admin-only")
+    .forEach(el => {
+        el.style.display = isAdmin ? "block" : "none";
+    });
+
+}
+async function signupVisitor() {
+
+   const username =
+    document.getElementById(
+        "signupUsername"
+    ).value.trim();
+
+const email =
+    document.getElementById(
+        "signupEmail"
+    ).value.trim();
+
+const phone =
+    document.getElementById(
+        "signupPhone"
+    ).value.trim();
+
+const password =
+    document.getElementById(
+        "signupPassword"
+    ).value;
+
+const confirmPassword =
+    document.getElementById(
+        "signupConfirmPassword"
+    ).value;
+
+    if(
+    !username ||
+    !email ||
+    !phone ||
+    !password ||
+    !confirmPassword
+){
+    alert("Fill all fields");
+    return;
+}
+
+if(password !== confirmPassword){
+    alert("Passwords do not match");
+    return;
+}
+
+if(password.length < 8){
+    alert(
+        "Password must be at least 8 characters"
+    );
+    return;
+}
+
+if(!/[A-Z]/.test(password)){
+    alert(
+        "Password must contain a capital letter"
+    );
+    return;
+}
+
+if(!/[0-9]/.test(password)){
+    alert(
+        "Password must contain a number"
+    );
+    return;
+}
+
+if(!/[!@#$%^&*]/.test(password)){
+    alert(
+        "Password must contain a special character"
+    );
+    return;
+}
+
+    try {
+
+      
+
+        const userCredential =
+await window.createUserWithEmailAndPassword(
+    window.auth,
+    email,
+    password
+);
+
+await setDoc(
+    doc(window.db, "users", userCredential.user.uid),
     {
         username,
-        password
+        email,
+        phone,
+        role: "visitor"
     }
 );
 
-// Copy username to login form
-document.getElementById("visitorUsername").value = username;
+       document.getElementById(
+    "visitorUsername"
+).value = username;
 
-// Clear signup form
-document.getElementById("signupUsername").value = "";
-document.getElementById("signupPassword").value = "";
+document.getElementById(
+    "signupUsername"
+).value = "";
+
+document.getElementById(
+    "signupEmail"
+).value = "";
+
+document.getElementById(
+    "signupPhone"
+).value = "";
+
+document.getElementById(
+    "signupPassword"
+).value = "";
+
+document.getElementById(
+    "signupConfirmPassword"
+).value = "";
 
 alert("Account created successfully");
+    } catch (error) {
+
+        console.error(error);
+        alert(error.message);
+
+    }
 }
 async function visitorLogin(){
 
     const username =
         document.getElementById(
             "visitorUsername"
-        ).value;
+        ).value.trim();
 
     const password =
         document.getElementById(
             "visitorPassword"
         ).value;
 
-   const snapshot =
-    await getDocs(
-        collection(window.db, "visitors")
-    );
-
-let user = null;
-
-snapshot.forEach(doc => {
-
-    const data = doc.data();
-
-    if(
-        data.username === username &&
-        data.password === password
-    ){
-        user = data;
-    }
-});
-
-    if (!user) {
-
-        alert("Invalid Login");
+    if(!username || !password){
+        alert("Fill all fields");
         return;
     }
 
-    currentUser = username;
-isAdmin = false;
+    try{
 
-    document.getElementById(
-        "loginStatus"
-    ).innerText =
-        "Logged in as Visitor: " +
-        username;
-document.getElementById("loginForms").style.display = "none";
-document.getElementById("logoutBtn").style.display = "inline-block";
-document.getElementById("visitorUsername").value = "";
-document.getElementById("visitorPassword").value = "";
-    applyPermissions();
-    renderTeams();
-renderFixtures();
-renderResult();
-listenScorers();
-}
+        const email =
+            username.includes("@")
+            ? username
+            : `${username}@leaguemanager.com`;
 
-function logout() {
+        const userCredential =
+            await window.signInWithEmailAndPassword(
+                window.auth,
+                email,
+                password
+            );
 
-    isAdmin = false;
-    currentUser = null;
+        currentUser = username;
+        isAdmin = false;
 
-    document.getElementById(
-        "loginStatus"
-    ).innerText = "Logged Out";
+        document.getElementById(
+            "loginStatus"
+        ).innerText =
+            "Logged in as Visitor: " +
+            username;
 
-    document.getElementById(
-        "loginForms"
-    ).style.display = "block";
-document.getElementById("loginForms").style.display = "block";
-document.getElementById("logoutBtn").style.display = "none";
-// Clear Admin Login fields
-document.getElementById("adminUsername").value = "";
-document.getElementById("adminPassword").value = "";
+        document.getElementById(
+            "loginForms"
+        ).style.display = "none";
 
-// Clear Visitor Login fields
-document.getElementById("visitorUsername").value = "";
-document.getElementById("visitorPassword").value = "";
+        document.getElementById(
+            "logoutBtn"
+        ).style.display = "inline-block";
 
-// Clear Visitor Signup fields
-document.getElementById("signupUsername").value = "";
-document.getElementById("signupPassword").value = "";
-    applyPermissions();
-    listenScorers();
-}
-function checkLoginState(){
+        applyPermissions();
 
-    if(isAdmin){
+        renderTeams();
+        renderFixtures();
+        renderResult();
+        listenScorers();
 
-        document.getElementById("loginStatus").innerText =
-            "Logged in as Admin";
+    }catch(error){
 
-        document.getElementById("loginForms").style.display =
-            "none";
+        console.error(error);
 
-        document.getElementById("logoutBtn").style.display =
-            "inline-block";
+        alert(
+            "Invalid username or password"
+        );
+
     }
 
-    else if(currentUser){
+}
+async function resetPassword(){
 
-        document.getElementById("loginStatus").innerText =
-            "Logged in as Visitor: " + currentUser;
+    const email = prompt("Enter your email");
 
-        document.getElementById("loginForms").style.display =
-            "none";
+    if(!email) return;
 
-        document.getElementById("logoutBtn").style.display =
-            "inline-block";
-    }
+    await sendPasswordResetEmail(window.auth, email);
 
-    else{
+    alert("Password reset email sent");
+}
 
-        document.getElementById("loginForms").style.display =
-            "block";
+async function logout() {
 
-        document.getElementById("logoutBtn").style.display =
-            "none";
+    try {
+
+        await window.signOut(window.auth);
+
+    } catch (error) {
+
+        console.error(error);
+        alert("Logout failed");
+
     }
 }
 function applyPermissions(){
@@ -886,6 +1032,33 @@ await updateDoc(
     }
 );
     alert("Password changed successfully");
+}
+async function googleLogin(){
+
+    const provider = new GoogleAuthProvider();
+
+    try {
+
+        const result = await signInWithPopup(auth, provider);
+
+        const user = result.user;
+
+        currentUser = user;
+
+        const role = await getUserRole(user.uid);
+        isAdmin = role === "admin";
+
+        document.getElementById("loginForms").style.display = "none";
+        document.getElementById("logoutBtn").style.display = "inline-block";
+
+        document.getElementById("loginStatus").innerText =
+            "Logged in as: " + user.email;
+
+        applyPermissions();
+
+    } catch (error) {
+        alert(error.message);
+    }
 }
 
 const scorersPerPage = 10;
@@ -1349,9 +1522,6 @@ function renderTeams() {
         console.log("Firebase not ready yet");
         return;
     }
-
-    console.log("window.collection =", window.collection);
-    console.log("window.db =", window.db);
 
     const table = document.getElementById("teamTable");
     table.innerHTML = "";
@@ -1817,7 +1987,7 @@ results[index] = {
 
 
     renderResult();
-    rebuildScorers();
+  
     updateLeagueTable();
 }
 function updateLeagueTable() {
@@ -2080,24 +2250,6 @@ function togglePassword(id){
         field.type = "password";
     }
 }
-function showMoreFixtures(){
-
-    fixturesVisible += 10;
-
-    renderFixtures();
-}
-function showMoreResults(){
-
-    resultsVisible += 10;
-
-    renderResult();
-}
-function showMoreScorers(){
-
-    scorersVisible += 10;
-
-    listenScorers();
-}
 
 function nextResultsPage(){
     resultsPage++;
@@ -2175,7 +2327,6 @@ window.onload = () => {
     updateMatchStatuses();
     setInterval(updateMatchStatuses,60000);
 
-    checkLoginState();
     applyPermissions();
 };
     </script>
