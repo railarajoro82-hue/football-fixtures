@@ -5,7 +5,17 @@
     <meta name="description" content="Football League Manager system for generating fixtures, tracking results, and league standings.">
     <meta name="google-site-verification" content="lMeAAdnYD4wXTH5-a-QgzK3_d8l0HLf4Z5CIQNjHyFA" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>League Manager | Fixtures & Tournament System</title>
+    <meta name="robots" content="index, follow">
+<meta name="author" content="League Manager System">
+<meta name="keywords" content="football league manager, fixtures generator, league table, football results, soccer management system">
+
+<meta property="og:title" content="Football League Manager System">
+<meta property="og:description" content="Generate fixtures, track results, and manage football league standings in real time.">
+<meta property="og:image" content="https://railarajoro82-hue.github.io/football-fixtures/matata.png.jpg">
+<meta property="og:url" content="https://railarajoro82-hue.github.io/football-fixtures/">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://railarajoro82-hue.github.io/football-fixtures/">
+<title>Football League Manager - Fixtures, Results & League Table System</title>
     <style>
         *{
             margin:0;
@@ -236,13 +246,18 @@
       
     </nav>
    <section id="home" class="hero">
-    <img src="matata.png.jpg" alt="Hero Background" class="hero-image">
+   <img src="matata.png.jpg" loading="lazy" alt="Football League Manager Banner">
 
     <div class="hero-content">
         <h1>Football League Manager System</h1>
         <p>Create fixtures, manage teams and track standings easily.</p>
         <a href="#" class="btn">Get Started</a>
     </div>
+    <div style="display:none;">
+    Football league manager system for creating fixtures, managing teams,
+    tracking results, and generating league tables in real time.
+    Supports gameweek scheduling, scorers tracking, and standings.
+</div>
 </section>
 <section id="login">
     <div class="container">
@@ -299,9 +314,9 @@ Show Password
             <!-- Visitor Login -->
             <div class="card">
                 <h2>Visitor Login</h2>
-               <input type="text"
+              <input type="email"
        id="visitorUsername"
-       placeholder="Username or Email">
+       placeholder="Email Address">
                <input type="password" id="visitorPassword" placeholder="Password">
 <label>
 <input type="checkbox" onclick="togglePassword('visitorPassword')">
@@ -552,10 +567,15 @@ Generate Scorer Fields
 </div>
         </div>
     </div>
+    
 </section>
     <footer>
         <p>&copy;2026 League Manager.All Rights Reserved</p>
     </footer>
+    <noscript>
+    <h1>Football League Manager</h1>
+    <p>This system manages fixtures, results, teams, and league tables.</p>
+</noscript>
     <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
@@ -568,9 +588,9 @@ import {
   doc,
   updateDoc,
   onSnapshot,
-  getDoc
+  getDoc,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -604,6 +624,7 @@ setPersistence(window.auth, browserLocalPersistence);
 window.collection = collection;
 window.addDoc = addDoc;
 window.getDocs = getDocs;
+window.setDoc = setDoc;
 window.deleteDoc = deleteDoc;
 window.doc = doc;
 window.updateDoc = updateDoc;
@@ -634,25 +655,26 @@ console.log("addDoc =", window.addDoc);
 
 async function getUserRole(uid){
 
-    const snapshot =
-        await getDocs(
-            collection(window.db,"users")
-        );
+    const snapshot = await getDocs(
+        collection(window.db, "admins")
+    );
 
     let role = "visitor";
 
-    snapshot.forEach(docSnap=>{
+    snapshot.forEach(docSnap => {
 
         const data = docSnap.data();
 
         if(data.uid === uid){
-            role = data.role || "visitor";
+            role = "admin";
         }
 
     });
 
     return role;
 }
+
+window.getUserRole = getUserRole;
 onAuthStateChanged(auth, async (user) => {
 
     if (user) {
@@ -686,6 +708,9 @@ let teams = [];
 let fixtures = [];
 let results = [];
 let visitors = [];
+let teamsUnsub = null;
+let resultsUnsub = null;
+let scorersUnsub = null;
 let activeGameweekView = null;
 let scorers = [];
 let fixturesPage = 1;
@@ -724,12 +749,10 @@ function loadVisitors(){
 async function adminLogin(){
 
     const username =
-        document.getElementById("adminUsername")
-        .value.trim();
+        document.getElementById("adminUsername").value.trim();
 
     const password =
-        document.getElementById("adminPassword")
-        .value;
+        document.getElementById("adminPassword").value;
 
     if(!username || !password){
         alert("Fill all fields");
@@ -743,19 +766,45 @@ async function adminLogin(){
             ? username
             : `${username}@leaguemanager.com`;
 
-        await signInWithEmailAndPassword(
-            auth,
-            email,
-            password
-        );
+        const userCredential =
+            await signInWithEmailAndPassword(
+                window.auth,
+                email,
+                password
+            );
+
+      const role =
+    await window.getUserRole(
+        userCredential.user.uid
+    );
+
+if(role !== "admin"){
+    alert("This account is not an admin");
+    await signOut(window.auth);
+    return;
+}
+
+       isAdmin = true;
+       alert("Admin status = " + isAdmin);
+currentUser = userCredential.user;
+applyPermissions();
+renderTeams();
+listenScorers();
+renderFixtures();
+renderResult();
+document.getElementById("loginForms").style.display = "none";
+document.getElementById("logoutBtn").style.display = "inline-block";
+
+applyPermissions();
 
     }catch(error){
 
         console.error(error);
-        alert("Invalid admin credentials");
+        alert(error.message);
 
     }
 }
+window.adminLogin = adminLogin;
 function applyPermissions(){
 
     document.querySelectorAll(".admin-only")
@@ -846,8 +895,8 @@ await window.createUserWithEmailAndPassword(
     password
 );
 
-await setDoc(
-    doc(window.db, "users", userCredential.user.uid),
+await window.setDoc(
+    window.doc(window.db, "users", userCredential.user.uid),
     {
         username,
         email,
@@ -856,9 +905,9 @@ await setDoc(
     }
 );
 
-       document.getElementById(
+     document.getElementById(
     "visitorUsername"
-).value = username;
+).value = email;
 
 document.getElementById(
     "signupUsername"
@@ -890,70 +939,42 @@ alert("Account created successfully");
 }
 async function visitorLogin(){
 
-    const username =
-        document.getElementById(
-            "visitorUsername"
-        ).value.trim();
+    const loginInput =
+        document.getElementById("visitorUsername").value.trim();
 
     const password =
-        document.getElementById(
-            "visitorPassword"
-        ).value;
+        document.getElementById("visitorPassword").value;
 
-    if(!username || !password){
+    if(!loginInput || !password){
         alert("Fill all fields");
         return;
     }
 
     try{
 
-        const email =
-            username.includes("@")
-            ? username
-            : `${username}@leaguemanager.com`;
+        await signInWithEmailAndPassword(
+            auth,
+            loginInput,
+            password
+        );
 
-        const userCredential =
-            await window.signInWithEmailAndPassword(
-                window.auth,
-                email,
-                password
-            );
+        document.getElementById("loginStatus").innerText =
+            "Logged in successfully";
 
-        currentUser = username;
-        isAdmin = false;
+        document.getElementById("loginForms").style.display = "none";
 
-        document.getElementById(
-            "loginStatus"
-        ).innerText =
-            "Logged in as Visitor: " +
-            username;
-
-        document.getElementById(
-            "loginForms"
-        ).style.display = "none";
-
-        document.getElementById(
-            "logoutBtn"
-        ).style.display = "inline-block";
-
-        applyPermissions();
-
-        renderTeams();
-        renderFixtures();
-        renderResult();
-        listenScorers();
+        document.getElementById("logoutBtn").style.display =
+            "inline-block";
 
     }catch(error){
 
         console.error(error);
-
-        alert(
-            "Invalid username or password"
-        );
+        alert(error.message);
 
     }
-
 }
+
+
 async function resetPassword(){
 
     const email = prompt("Enter your email");
@@ -969,9 +990,26 @@ async function logout() {
 
     try {
 
-        await window.signOut(window.auth);
+        await signOut(window.auth);
 
-    } catch (error) {
+        currentUser = null;
+        isAdmin = false;
+
+        document.getElementById(
+            "loginForms"
+        ).style.display = "block";
+
+        document.getElementById(
+            "logoutBtn"
+        ).style.display = "none";
+
+        document.getElementById(
+            "loginStatus"
+        ).innerText = "";
+
+        applyPermissions();
+
+    } catch(error) {
 
         console.error(error);
         alert("Logout failed");
@@ -1102,21 +1140,25 @@ function listenScorers() {
 
     const table = document.getElementById("scorersTable");
 
-    window.onSnapshot(
-        window.collection(window.db, "scorers"),
+    if (scorersUnsub) {
+        scorersUnsub();
+    }
+
+    scorersUnsub = onSnapshot(
+        collection(window.db, "scorers"),
         (snapshot) => {
 
             scorers = [];
 
-            snapshot.forEach((docSnap) => {
+            snapshot.forEach(docSnap => {
                 scorers.push({
                     id: docSnap.id,
                     ...docSnap.data()
                 });
             });
 
-            // sort by goals
-            const sorted = [...scorers].sort((a, b) => b.goals - a.goals);
+            const sorted = [...scorers]
+                .sort((a, b) => b.goals - a.goals);
 
             const start = (scorersPage - 1) * scorersPerPage;
             const end = start + scorersPerPage;
@@ -1126,7 +1168,6 @@ function listenScorers() {
             table.innerHTML = "";
 
             page.forEach((player, index) => {
-
                 table.innerHTML += `
                 <tr>
                     <td>${start + index + 1}</td>
@@ -1142,11 +1183,6 @@ function listenScorers() {
                     </td>
                 </tr>`;
             });
-
-            const totalPages = Math.ceil(sorted.length / scorersPerPage);
-
-            document.getElementById("scorersPageInfo").innerText =
-                `Page ${scorersPage} of ${totalPages || 1}`;
         }
     );
 }
@@ -1518,60 +1554,55 @@ alert("Team Added Successfully");
 }
 function renderTeams() {
 
-    if (!window.firebaseReady) {
-        console.log("Firebase not ready yet");
-        return;
+    if (teamsUnsub) {
+        teamsUnsub(); // unsubscribe old listener
     }
 
     const table = document.getElementById("teamTable");
-    table.innerHTML = "";
 
-    window.onSnapshot(
+    teamsUnsub = window.onSnapshot(
         window.collection(window.db, "teams"),
         (snapshot) => {
 
             table.innerHTML = "";
             teams = [];
 
-          snapshot.forEach((docSnap) => {
+            snapshot.forEach((docSnap) => {
+                teams.push({
+                    id: docSnap.id,
+                    ...docSnap.data()
+                });
+            });
 
-    teams.push({
-        id: docSnap.id,
-        ...docSnap.data()
-    });
+            const start = (teamsPage - 1) * teamsPerPage;
+            const end = start + teamsPerPage;
 
-});
+            const pageTeams = teams.slice(start, end);
 
-const start = (teamsPage - 1) * teamsPerPage;
-const end = start + teamsPerPage;
+            pageTeams.forEach((team) => {
+                table.innerHTML += `
+                <tr>
+                    <td>${team.name}</td>
+                    <td>${team.coach}</td>
+                    <td>${team.players}</td>
+                    <td>${team.venue}</td>
+                    <td class="actions">
+                        ${
+                            isAdmin
+                            ? `
+                                <button onclick="editTeam('${team.id}')">Edit</button>
+                                <button onclick="deleteTeam('${team.id}')">Delete</button>
+                              `
+                            : `<span>View Only</span>`
+                        }
+                    </td>
+                </tr>`;
+            });
 
-const pageTeams = teams.slice(start, end);
+            const totalPages = Math.ceil(teams.length / teamsPerPage);
 
-pageTeams.forEach((team) => {
-
-    table.innerHTML += `
-    <tr>
-        <td>${team.name}</td>
-        <td>${team.coach}</td>
-        <td>${team.players}</td>
-        <td>${team.venue}</td>
-        <td class="actions">
-            ${
-                isAdmin
-                ? `
-                    <button onclick="editTeam('${team.id}')">Edit</button>
-                    <button onclick="deleteTeam('${team.id}')">Delete</button>
-                  `
-                : `<span>View Only</span>`
-            }
-        </td>
-    </tr>`;
-});
-
-const totalPages = Math.ceil(teams.length / teamsPerPage);
-
-document.getElementById("teamsPageInfo").innerText =
-`Page ${teamsPage} of ${totalPages || 1}`;
+            document.getElementById("teamsPageInfo").innerText =
+                `Page ${teamsPage} of ${totalPages || 1}`;
         }
     );
 }
@@ -1863,64 +1894,45 @@ function renderResult() {
     const table =
         document.getElementById("resultTable");
 
-    onSnapshot(
-        collection(window.db,"results"),
-        (snapshot)=>{
+   if (resultsUnsub) resultsUnsub();
 
-            table.innerHTML = "";
-            results = [];
+resultsUnsub = onSnapshot(
+    collection(window.db, "results"),
+    (snapshot) => {
 
-            snapshot.forEach(docSnap=>{
+        const table =
+            document.getElementById("resultTable");
 
-                results.push({
-                    id: docSnap.id,
-                    ...docSnap.data()
-                });
+        table.innerHTML = "";
+        results = [];
 
+        snapshot.forEach(docSnap => {
+            results.push({
+                id: docSnap.id,
+                ...docSnap.data()
             });
+        });
 
-            const start =
-                (resultsPage-1)*itemsPerPage;
+        const start = (resultsPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
 
-            const end =
-                start+itemsPerPage;
+        const pageResults = results.slice(start, end);
 
-            const pageResults =
-                results.slice(start,end);
+        pageResults.forEach((result, index) => {
+            table.innerHTML += `
+            <tr>
+                <td>${result.match}</td>
+                <td>${result.result}</td>
+                <td>${isAdmin
+                    ? `<button onclick="deleteResult(${start + index})">Delete</button>`
+                    : "View Only"
+                }</td>
+            </tr>`;
+        });
 
-            pageResults.forEach((result,index)=>{
-
-                table.innerHTML += `
-                <tr>
-                    <td>${result.match}</td>
-                    <td>${result.result}</td>
-                    <td>
-                        ${
-                            isAdmin
-                            ?
-                            `<button onclick="deleteResult(${start+index})">Delete</button>`
-                            :
-                            "View Only"
-                        }
-                    </td>
-                </tr>
-                `;
-
-            });
-            updateLeagueTable();
-
-            const totalPages =
-                Math.ceil(
-                    results.length /
-                    itemsPerPage
-                );
-
-            document.getElementById(
-                "resultsPageInfo"
-            ).innerText =
-                `Page ${resultsPage} of ${totalPages||1}`;
-        }
-    );
+        updateLeagueTable();
+    }
+);
 }
 async function deleteResult(index){
 
@@ -2329,6 +2341,18 @@ window.onload = () => {
 
     applyPermissions();
 };
+window.addEventListener("beforeunload", () => {
+
+    if (teamsUnsub) teamsUnsub();
+    if (resultsUnsub) resultsUnsub();
+    if (scorersUnsub) scorersUnsub();
+    if (fixturesListener) fixturesListener();
+
+});
+window.adminLogin = adminLogin;
+window.visitorLogin = visitorLogin;
+window.signupVisitor = signupVisitor;
+window.logout = logout;
     </script>
 </body>
 </html>
