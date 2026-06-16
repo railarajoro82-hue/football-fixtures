@@ -761,6 +761,7 @@ Generate Scorer Fields
     <select id="manualTeamSelect"></select>
 
     <select id="manualGroupSelect">
+
         <option value="A">Group A</option>
         <option value="B">Group B</option>
         <option value="C">Group C</option>
@@ -769,6 +770,10 @@ Generate Scorer Fields
         <option value="F">Group F</option>
         <option value="G">Group G</option>
         <option value="H">Group H</option>
+        <option value="I">Group I</option>
+        <option value="J">Group J</option>
+        <option value="K">Group K</option>
+        <option value="L">Group L</option>
     </select>
 
     <button onclick="assignTeamToGroup()">
@@ -821,10 +826,15 @@ Generate Scorer Fields
         <h2>Group Stage</h2>
 
        
-          <div class="card">
+         <div class="card" id="groupA">
 
-            <h3>Group A</h3>
-            <table>
+    <button onclick="editGroup('A')">
+        Edit Group
+    </button>
+
+    <h3 id="groupATitle">Group A</h3>
+
+    <table>
                 <thead>
                     <tr>
                         <th>Team</th>
@@ -842,10 +852,14 @@ Generate Scorer Fields
             </table>
 
         </div>
-          <div class="card">
+         <div class="card" id="groupB">
 
-            <h3>Group B</h3>
-            <table>
+<button onclick="editGroup('B')">
+    Edit Group
+</button>
+
+<h3 id="groupBTitle">Group B</h3>
+<table>
                 <thead>
                     <tr>
                         <th>Team</th>
@@ -863,10 +877,14 @@ Generate Scorer Fields
             </table>
 
         </div>
-          <div class="card">
+         <div class="card" id="groupC">
 
-            <h3>Group C</h3>
-            <table>
+<button onclick="editGroup('C')">
+    Edit Group
+</button>
+
+<h3 id="groupCTitle">Group C</h3>
+<table>
                 <thead>
                     <tr>
                         <th>Team</th>
@@ -884,10 +902,14 @@ Generate Scorer Fields
             </table>
 
         </div>
-          <div class="card">
+         <div class="card" id="groupD">
 
-            <h3>Group D</h3>
-            <table>
+<button onclick="editGroup('D')">
+    Edit Group
+</button>
+
+<h3 id="groupDTitle">Group D</h3>
+<table>
                 <thead>
                     <tr>
                         <th>Team</th>
@@ -905,10 +927,14 @@ Generate Scorer Fields
             </table>
 
         </div>
-          <div class="card">
+         <div class="card" id="groupE">
 
-            <h3>Group E</h3>
-            <table>
+<button onclick="editGroup('E')">
+    Edit Group
+</button>
+
+<h3 id="groupETitle">Group E</h3>
+<table>
                 <thead>
                     <tr>
                         <th>Team</th>
@@ -926,10 +952,14 @@ Generate Scorer Fields
             </table>
 
         </div>
-          <div class="card">
+          <div class="card" id="groupF">
 
-            <h3>Group F</h3>
-            <table>
+<button onclick="editGroup('F')">
+    Edit Group
+</button>
+
+<h3 id="groupFTitle">Group F</h3>
+<table>
                 <thead>
                     <tr>
                         <th>Team</th>
@@ -947,10 +977,14 @@ Generate Scorer Fields
             </table>
 
         </div>
-          <div class="card">
+         <div class="card" id="groupG">
 
-            <h3>Group G</h3>
-            <table>
+<button onclick="editGroup('G')">
+    Edit Group
+</button>
+
+<h3 id="groupGTitle">Group G</h3>
+<table>
                 <thead>
                     <tr>
                         <th>Team</th>
@@ -968,10 +1002,14 @@ Generate Scorer Fields
             </table>
 
         </div>
-          <div class="card">
+         <div class="card" id="groupH">
 
-            <h3>Group H</h3>
-            <table>
+<button onclick="editGroup('H')">
+    Edit Group
+</button>
+
+<h3 id="groupHTitle">Group H</h3> 
+<table>
                 <thead>
                     <tr>
                         <th>Team</th>
@@ -989,10 +1027,15 @@ Generate Scorer Fields
             </table>
 
         </div>
-          <div class="card">
+        <div class="card" id="groupI">
 
-            <h3>Group I</h3>
-            <table>
+    <button onclick="editGroup('I')">
+        Edit Group
+    </button>
+
+    <h3 id="groupITitle">Group I</h3>
+
+    <table>
                 <thead>
                     <tr>
                         <th>Team</th>
@@ -1010,10 +1053,15 @@ Generate Scorer Fields
             </table>
 
         </div>
-          <div class="card">
+          <div class="card" id="groupJ">
 
-            <h3>Group J</h3>
-            <table>
+    <button onclick="editGroup('J')">
+        Edit Group
+    </button>
+
+    <h3 id="groupJTitle">Group J</h3>
+
+    <table>
                 <thead>
                     <tr>
                         <th>Team</th>
@@ -1031,10 +1079,15 @@ Generate Scorer Fields
             </table>
 
         </div>
-          <div class="card">
+         <div class="card" id="groupK">
 
-            <h3>Group K</h3>
-            <table>
+    <button onclick="editGroup('K')">
+        Edit Group
+    </button>
+
+    <h3 id="groupKTitle">Group K</h3>
+
+    <table>
                 <thead>
                     <tr>
                         <th>Team</th>
@@ -1052,10 +1105,15 @@ Generate Scorer Fields
             </table>
 
         </div>
-          <div class="card">
+          <div class="card" id="groupL">
 
-            <h3>Group L</h3>
-            <table>
+    <button onclick="editGroup('L')">
+        Edit Group
+    </button>
+
+    <h3 id="groupLTitle">Group L</h3>
+
+    <table>
                 <thead>
                     <tr>
                         <th>Team</th>
@@ -4712,6 +4770,64 @@ async function saveKnockoutResult(){
         " advances"
     );
   renderKnockoutFixtures();  
+}
+function editGroup(group){
+
+    let title =
+    document.getElementById("group"+group+"Title");
+
+
+    let newName =
+    prompt(
+        "Edit group name:",
+        title.innerText
+    );
+
+
+    if(newName){
+
+        title.innerText = newName;
+
+    }
+
+
+    let table =
+    document.getElementById(
+        "group"+group+"Table"
+    );
+
+
+    let rows =
+    table.querySelectorAll("tr");
+
+
+    rows.forEach(row=>{
+
+        let cell=row.querySelector("td");
+
+
+        if(cell){
+
+            let oldName=cell.innerText;
+
+
+            let updated =
+            prompt(
+              "Edit team name:",
+              oldName
+            );
+
+
+            if(updated){
+
+                cell.innerText=updated;
+
+            }
+
+        }
+
+    });
+
 }
 window.onload = () => {
 
