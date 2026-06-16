@@ -259,6 +259,53 @@
 .tournament-nav button:hover{
     background:#3749b0;
 }
+.bracket{
+    display:flex;
+    gap:30px;
+    overflow-x:auto;
+    padding:20px;
+}
+
+.round{
+    min-width:250px;
+}
+
+.round h3{
+    text-align:center;
+    background:#1e3a8a;
+    color:white;
+    padding:10px;
+    border-radius:6px;
+}
+
+.match-card{
+    background:white;
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:10px;
+    margin:15px 0;
+    box-shadow:0 2px 5px rgba(0,0,0,.1);
+}
+
+.team-line{
+    display:flex;
+    justify-content:space-between;
+    padding:5px 0;
+}
+
+.winner{
+    color:green;
+    font-weight:bold;
+}
+
+.champion-card{
+    background:gold;
+    padding:20px;
+    text-align:center;
+    border-radius:10px;
+    font-size:24px;
+    font-weight:bold;
+}
     </style>
 </head>
 <body>
@@ -758,15 +805,15 @@ Generate Scorer Fields
 
     <div class="tournament-nav">
 
-        <button onclick="showStage('groups')">Groups</button>
-        <button onclick="showStage('round32')">Round of 32</button>
-        <button onclick="showStage('round16')">Round of 16</button>
-        <button onclick="showStage('quarterFinals')">Quarter Finals</button>
-        <button onclick="showStage('semiFinals')">Semi Finals</button>
-        <button onclick="showStage('thirdPlace')">3rd Place</button>
-        <button onclick="showStage('final')">Final</button>
+    <button onclick="showStage('groups')">
+        Groups
+    </button>
 
-    </div>
+    <button onclick="showStage('knockoutBracket')">
+        Knockout Bracket
+    </button>
+
+</div>
 <section id="groups" class="tournament-section">
 
     <div class="container">
@@ -1031,15 +1078,45 @@ Generate Scorer Fields
 
 </section>
 </section>
-<section id="groups"
+
+<section id="knockoutBracket"
          class="tournament-section">
 
-    <h2>Groups</h2>
+    <h2>World Cup Knockout Bracket</h2>
+
+    <div class="bracket">
+
+        <div class="round">
+            <h3>Round of 32</h3>
+            <div id="round32Container"></div>
+        </div>
+
+        <div class="round">
+            <h3>Round of 16</h3>
+            <div id="round16Container"></div>
+        </div>
+
+        <div class="round">
+            <h3>Quarter Finals</h3>
+            <div id="quarterFinalsContainer"></div>
+        </div>
+
+        <div class="round">
+            <h3>Semi Finals</h3>
+            <div id="semiFinalsContainer"></div>
+        </div>
+
+        <div class="round">
+            <h3>Final</h3>
+            <div id="finalContainer"></div>
+        </div>
+
+    </div>
 
 </section>
 <section id="round32"
          class="tournament-section">
-<div id="round32Container"></div>
+
     <h2>Round of 32</h2>
 
     <div class="card admin-only">
@@ -1075,34 +1152,32 @@ Generate Scorer Fields
 
 </div>
     <div id="qualifiedTeams"></div>
-
-    <div id="round32Container"></div>
-
 </section>
-<section id="round16"
-         class="tournament-section">
+<div class="card admin-only">
 
-    <h2>Round of 16</h2>
+    <h3>Knockout Result Entry</h3>
 
-    <div id="round16Container"></div>
+    <select id="knockoutMatchSelect">
+        <option value="">
+            Select Match
+        </option>
+    </select>
 
-</section>
-<section id="quarterFinals"
-         class="tournament-section">
+    <input type="number"
+           id="knockoutHomeScore"
+           placeholder="Home Score">
 
-    <h2>Quarter Finals</h2>
+    <input type="number"
+           id="knockoutAwayScore"
+           placeholder="Away Score">
 
-    <div id="quarterFinalsContainer"></div>
+    <button onclick="saveKnockoutResult()">
+        Save Result
+    </button>
 
-</section>
-<section id="semiFinals"
-         class="tournament-section">
+</div>
 
-    <h2>Semi Finals</h2>
 
-    <div id="semiFinalsContainer"></div>
-
-</section>
 <section id="thirdPlace"
          class="tournament-section">
 
@@ -1111,14 +1186,8 @@ Generate Scorer Fields
     <div id="thirdPlaceContainer"></div>
 
 </section>
-<section id="final"
-         class="tournament-section">
 
-    <h2>Final</h2>
-
-    <div id="finalContainer"></div>
-
-</section>
+<div id="championPanel"></div>
     <footer>
         <p>&copy;2026 League Manager.All Rights Reserved</p>
     </footer>
@@ -3668,82 +3737,111 @@ async function assignTeamToGroup(){
         loadTournamentGroups();
     }
 }
+function shuffleArray(array){
+
+    for(
+        let i=array.length-1;
+        i>0;
+        i--
+    ){
+
+        const j =
+            Math.floor(
+                Math.random()*(i+1)
+            );
+
+        [array[i],array[j]] =
+        [array[j],array[i]];
+    }
+
+    return array;
+}
 async function generateRoundOf32(){
 
-    const groupsSnap = await getDocs(
-        collection(window.db,"tournament_groups")
-    );
+    const groupsSnapshot =
+        await getDocs(
+            collection(
+                window.db,
+                "tournament_groups"
+            )
+        );
 
-    let qualified = [];
-    let thirdPlaced = [];
+    let qualifiedTeams = [];
 
-    groupsSnap.forEach(docSnap => {
+    groupsSnapshot.forEach(docSnap=>{
 
-        const groupData = docSnap.data();
+        const group =
+            docSnap.data();
 
-        let teams = [...groupData.teams];
+        const teams =
+            group.teams || [];
 
-        teams.sort(
-            (a,b)=>
+        const sorted =
+            [...teams]
+            .sort((a,b)=>
+
                 b.points - a.points ||
                 b.gd - a.gd ||
                 b.gf - a.gf
-        );
+            );
 
-        // Top 2 qualify automatically
+        if(sorted[0]){
+            qualifiedTeams.push({
+                ...sorted[0],
+                position:1
+            });
+        }
 
-        qualified.push({
-            ...teams[0],
-            group: groupData.group
-        });
-
-        qualified.push({
-            ...teams[1],
-            group: groupData.group
-        });
-
-        // Save third placed
-
-        thirdPlaced.push({
-            ...teams[2],
-            group: groupData.group
-        });
+        if(sorted[1]){
+            qualifiedTeams.push({
+                ...sorted[1],
+                position:2
+            });
+        }
 
     });
 
-    // Best 8 third placed teams
+    const thirdPlaced = [];
 
-    thirdPlaced.sort(
-        (a,b)=>
-            b.points - a.points ||
-            b.gd - a.gd ||
-            b.gf - a.gf
+    groupsSnapshot.forEach(docSnap=>{
+
+        const group =
+            docSnap.data();
+
+        const teams =
+            group.teams || [];
+
+        const sorted =
+            [...teams]
+            .sort((a,b)=>
+
+                b.points - a.points ||
+                b.gd - a.gd ||
+                b.gf - a.gf
+            );
+
+        if(sorted[2]){
+            thirdPlaced.push(sorted[2]);
+        }
+
+    });
+
+    thirdPlaced.sort((a,b)=>
+
+        b.points - a.points ||
+        b.gd - a.gd ||
+        b.gf - a.gf
     );
 
-    const bestThirds =
-        thirdPlaced.slice(0,8);
+    qualifiedTeams.push(
+        ...thirdPlaced.slice(0,8)
+    );
 
-    qualified.push(...bestThirds);
-
-    if(qualified.length !== 32){
-
-        alert(
-            "Expected 32 qualified teams but got "
-            + qualified.length
-        );
-
+    if(qualifiedTeams.length !== 32){
         return;
     }
 
-    renderQualifiedTeams(qualified);
-
-    const shuffled =
-        [...qualified]
-        .sort(() => Math.random() - 0.5);
-
-    // Clear old Round 32
-
-    const oldFixtures =
+    const existing =
         await getDocs(
             collection(
                 window.db,
@@ -3751,26 +3849,13 @@ async function generateRoundOf32(){
             )
         );
 
-    for(const docSnap of oldFixtures.docs){
-
-        const data = docSnap.data();
-
-        if(data.stage === "Round of 32"){
-
-            await deleteDoc(
-                doc(
-                    window.db,
-                    "tournament_fixtures",
-                    docSnap.id
-                )
-            );
-
-        }
+    if(!existing.empty){
+        return;
     }
 
-    // Generate matches
+    shuffleArray(qualifiedTeams);
 
-    for(let i=0;i<16;i++){
+    for(let i=0;i<32;i+=2){
 
         await addDoc(
             collection(
@@ -3781,23 +3866,19 @@ async function generateRoundOf32(){
                 stage:"Round of 32",
 
                 home:
-                    shuffled[i*2].name,
+                    qualifiedTeams[i].name,
 
                 away:
-                    shuffled[(i*2)+1].name,
+                    qualifiedTeams[i+1].name,
 
                 result:"",
-
                 winner:""
             }
         );
-
     }
 
-    renderRound32();
-
     alert(
-        "Round Of 32 Generated"
+        "Round of 32 Generated"
     );
 }
 function renderQualifiedTeams(teams){
@@ -4304,8 +4385,120 @@ async function generateNextStage(
     }
 
 }
+async function generateThirdPlace(){
+
+    const snapshot =
+        await getDocs(
+            collection(
+                window.db,
+                "tournament_fixtures"
+            )
+        );
+
+    let semiMatches = [];
+
+    snapshot.forEach(docSnap => {
+
+        const data =
+            docSnap.data();
+
+        if(
+            data.stage ===
+            "Semi Finals"
+            &&
+            data.winner
+        ){
+            semiMatches.push(data);
+        }
+
+    });
+
+    if(semiMatches.length !== 2){
+        return;
+    }
+
+    const losers = [];
+
+    semiMatches.forEach(match => {
+
+        if(match.winner === match.home){
+            losers.push(match.away);
+        }else{
+            losers.push(match.home);
+        }
+
+    });
+
+    const existing =
+        snapshot.docs.some(
+            d =>
+            d.data().stage ===
+            "Third Place"
+        );
+
+    if(existing){
+        return;
+    }
+
+    await addDoc(
+        collection(
+            window.db,
+            "tournament_fixtures"
+        ),
+        {
+            stage:"Third Place",
+            home:losers[0],
+            away:losers[1],
+            result:"",
+            winner:""
+        }
+    );
+}
+async function generateChampion(){
+
+    const snapshot =
+        await getDocs(
+            collection(
+                window.db,
+                "tournament_fixtures"
+            )
+        );
+
+    snapshot.forEach(docSnap=>{
+
+        const match =
+            docSnap.data();
+
+        if(
+            match.stage==="Final"
+            &&
+            match.winner
+        ){
+
+            document.getElementById(
+                "championPanel"
+            ).innerHTML = `
+
+            <div class="champion-card">
+
+                🏆 WORLD CHAMPION
+
+                <br><br>
+
+                ${match.winner}
+
+            </div>
+
+            `;
+        }
+
+    });
+
+}
 async function checkKnockoutProgress(){
 
+   await generateRoundOf32();
+   await generateRoundOf16();
     await generateNextStage(
         "Round of 16",
         "Quarter Finals",
@@ -4323,6 +4516,202 @@ async function checkKnockoutProgress(){
         "Final",
         2
     );
+
+    await generateThirdPlace();
+
+    await generateChampion();
+}
+async function renderKnockoutFixtures(){
+
+    const snapshot =
+        await getDocs(
+            collection(
+                window.db,
+                "tournament_fixtures"
+            )
+        );
+
+    const containers = {
+
+        "Round of 32":
+            document.getElementById("round32Container"),
+
+        "Round of 16":
+            document.getElementById("round16Container"),
+
+        "Quarter Finals":
+            document.getElementById("quarterFinalsContainer"),
+
+        "Semi Finals":
+            document.getElementById("semiFinalsContainer"),
+
+        "Final":
+            document.getElementById("finalContainer")
+
+    };
+
+    Object.values(containers)
+    .forEach(container=>{
+
+        if(container){
+            container.innerHTML="";
+        }
+
+    });
+
+    snapshot.forEach(docSnap=>{
+
+        const match =
+            docSnap.data();
+
+        const container =
+            containers[match.stage];
+
+        if(!container){
+            return;
+        }
+
+        container.innerHTML += `
+
+        <div class="match-card">
+
+            <div class="team-line
+                ${match.winner===match.home ? 'winner':''}">
+                <span>${match.home}</span>
+            </div>
+
+            <div class="team-line
+                ${match.winner===match.away ? 'winner':''}">
+                <span>${match.away}</span>
+            </div>
+
+            <hr>
+
+            <center>
+                ${match.result || "Not Played"}
+            </center>
+
+        </div>
+
+        `;
+    });
+
+}
+async function loadKnockoutMatches(){
+
+    const select =
+        document.getElementById(
+            "knockoutMatchSelect"
+        );
+
+    if(!select) return;
+
+    select.innerHTML =
+        `<option value="">
+            Select Match
+        </option>`;
+
+    const snapshot =
+        await getDocs(
+            collection(
+                window.db,
+                "tournament_fixtures"
+            )
+        );
+
+    snapshot.forEach(docSnap => {
+
+        const match =
+            docSnap.data();
+
+        if(match.winner){
+            return;
+        }
+
+        select.innerHTML += `
+        <option value="${docSnap.id}">
+            ${match.stage}
+            -
+            ${match.home}
+            vs
+            ${match.away}
+        </option>`;
+    });
+}
+async function saveKnockoutResult(){
+
+    const matchId =
+        document.getElementById(
+            "knockoutMatchSelect"
+        ).value;
+
+    const homeScore =
+        Number(
+            document.getElementById(
+                "knockoutHomeScore"
+            ).value
+        );
+
+    const awayScore =
+        Number(
+            document.getElementById(
+                "knockoutAwayScore"
+            ).value
+        );
+
+    if(!matchId){
+
+        alert("Select Match");
+
+        return;
+    }
+
+    if(homeScore === awayScore){
+
+        alert(
+            "Knockout matches need a winner"
+        );
+
+        return;
+    }
+
+    const matchRef =
+        doc(
+            window.db,
+            "tournament_fixtures",
+            matchId
+        );
+
+    const snap =
+        await getDoc(matchRef);
+
+    const match =
+        snap.data();
+
+    const winner =
+        homeScore > awayScore
+        ? match.home
+        : match.away;
+
+    await updateDoc(
+        matchRef,
+        {
+            result:
+                `${homeScore} - ${awayScore}`,
+
+            winner
+        }
+    );
+
+    await checkKnockoutProgress();
+
+    loadKnockoutMatches();
+
+    alert(
+        winner +
+        " advances"
+    );
+  renderKnockoutFixtures();  
 }
 window.onload = () => {
 
@@ -4341,6 +4730,9 @@ renderRound16();
 updateTournamentDashboard();
     applyPermissions();
     changeCompetition();
+    loadKnockoutMatches();
+    generateChampion();
+    renderKnockoutFixtures();
     renderKnockoutStage(
     "Quarter Finals",
     "quarterFinalsContainer"
