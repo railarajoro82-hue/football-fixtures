@@ -229,42 +229,7 @@
 .admin-only{
     display:none;
 }
-.tournament-section{
-    display:none;
-}
-.tournament-grid{
-    display:grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap:15px;
-    margin-top:20px;
-}
 
-.tournament-nav{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    justify-content:center;
-    margin:20px 0;
-}
-
-.tournament-nav button{
-    background:#1e3a8a;
-    color:white;
-    padding:10px 15px;
-    border:none;
-    border-radius:5px;
-    cursor:pointer;
-}
-
-.tournament-nav button:hover{
-    background:#3749b0;
-}
-.bracket{
-    display:flex;
-    gap:30px;
-    overflow-x:auto;
-    padding:20px;
-}
 
 .round{
     min-width:250px;
@@ -298,14 +263,7 @@
     font-weight:bold;
 }
 
-.champion-card{
-    background:gold;
-    padding:20px;
-    text-align:center;
-    border-radius:10px;
-    font-size:24px;
-    font-weight:bold;
-}
+
     </style>
 </head>
 <body>
@@ -319,6 +277,7 @@
             <li><a href="#table">Table</a></li>
             <li><a href="#scorers">Top Scorers</a></li>
             <li><a href="#tournament">Tournament</a></li>
+    
     
         </ul>
       
@@ -337,24 +296,7 @@
     Supports gameweek scheduling, scorers tracking, and standings.
 </div>
 </section>
-<div class="card admin-only">
 
-    <h3>Competition Type</h3>
-
-    <select id="competitionType"
-            onchange="changeCompetition()">
-
-        <option value="league">
-            League
-        </option>
-
-        <option value="tournament">
-            Tournament
-        </option>
-
-    </select>
-
-</div>
 <section id="login">
     <div class="container">
 
@@ -455,10 +397,7 @@ Forgot Password?
                 <h3>League Table</h3>
                 <p>Track standings and team performance</p>
             </div>
-            <div class="card">
-                <h3>Tournament Management</h3>
-                <p>Track tournament standings of all teams</p>
-            </div>
+           
         </div>
     </section>
     <section class="matches league-section">
@@ -667,585 +606,179 @@ Generate Scorer Fields
     </div>
     
 </section>
+<section id="tournament">
 
-<section id="tournamentDashboard" class="tournament-section">
-
-    <header>
-        <h2>🏆 Tournament Dashboard</h2>
-    </header>
-
-    <div class="container">
-
-        <!-- Overview Cards -->
-        <div class="tournament-grid">
-
-            <div class="card">
-                <h3>Total Teams</h3>
-                <p id="tournamentTeamsCount">0</p>
-            </div>
-
-            <div class="card">
-                <h3>Matches Played</h3>
-                <p id="tournamentMatchesPlayed">0</p>
-            </div>
-
-            <div class="card">
-                <h3>Live Matches</h3>
-                <p id="tournamentLiveMatches">0</p>
-            </div>
-
-            <div class="card">
-                <h3>Stage</h3>
-                <p id="tournamentStage">Group Stage</p>
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-<div class="card admin-only">
-    <h3>World Cup Auto Generator</h3>
-    <button onclick="generateWorldCupTeams()">
-        Generate 48 Tournament Teams
-    </button>
+<header>
+    <h2>Tournament Management</h2>
+</header>
+<div id="championDisplay"
+     style="
+     background:gold;
+     padding:15px;
+     margin:10px 0;
+     border-radius:10px;
+     font-size:20px;
+     font-weight:bold;
+">
+No Champion Yet
 </div>
-<div class="card admin-only">
-    <h3>World Cup Draw</h3>
-    <button onclick="generateWorldCupDraw()">
-        Generate Groups A–L
-    </button>
-</div>
-
-<section id="tournamentTeams" class="tournament-section">
-
-    <header>
-        <h2>🏆 Tournament Teams Management</h2>
-    </header>
-
-    <div class="container">
-
-        <!-- Admin Add Team -->
-        <div class="card admin-only">
-
-            <h3>Add Tournament Team</h3>
-
-            <input type="text" id="tTeamName" placeholder="Team Name">
-            <input type="text" id="tTeamCoach" placeholder="Coach Name">
-            <input type="number" id="tTeamStrength" placeholder="Strength (1-100)">
-
-            <button onclick="addTournamentTeam()">
-                Add Team
-            </button>
-
-        </div>
-
-        <!-- Control Buttons -->
-        <div class="card admin-only">
-
-            <h3>Tournament Controls</h3>
-
-            <button onclick="loadTournamentTeams()">
-                Refresh Teams
-            </button>
-
-            <button onclick="generateTournamentGroups()">
-                Generate Groups
-            </button>
-
-        </div>
-        <div class="card admin-only">
-
-    <h3>Manual Group Assignment</h3>
-
-    <select id="manualTeamSelect"></select>
-
-    <select id="manualGroupSelect">
-
-        <option value="A">Group A</option>
-        <option value="B">Group B</option>
-        <option value="C">Group C</option>
-        <option value="D">Group D</option>
-        <option value="E">Group E</option>
-        <option value="F">Group F</option>
-        <option value="G">Group G</option>
-        <option value="H">Group H</option>
-        <option value="I">Group I</option>
-        <option value="J">Group J</option>
-        <option value="K">Group K</option>
-        <option value="L">Group L</option>
-    </select>
-
-    <button onclick="assignTeamToGroup()">
-        Assign Team
-    </button>
-
-</div>
-
-        <!-- Tournament Teams Table -->
-        <div class="card">
-
-            <h3>Registered Tournament Teams</h3>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>Coach</th>
-                        <th>Strength</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody id="tournamentTeamsTable"></tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-</section>
-<section class="tournament-section">
-
-    <div class="tournament-nav">
-
-    <button onclick="showStage('groups')">
-        Groups
-    </button>
-
-    <button onclick="showStage('knockoutBracket')">
-        Knockout Bracket
-    </button>
-
-</div>
-<section id="groups" class="tournament-section">
-
-    <div class="container">
-
-        <h2>Group Stage</h2>
-
-       
-         <div class="card" id="groupA">
-
-    <button onclick="editGroup('A')">
-        Edit Group
-    </button>
-
-    <h3 id="groupATitle">Group A</h3>
-
-    <table>
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>MP</th>
-                        <th>W</th>
-                        <th>D</th>
-                        <th>L</th>
-                        <th>GF</th>
-                        <th>GA</th>
-                        <th>GD</th>
-                        <th>Pts</th>
-                    </tr>
-                </thead>
-                <tbody id="groupATable"></tbody>
-            </table>
-
-        </div>
-         <div class="card" id="groupB">
-
-<button onclick="editGroup('B')">
-    Edit Group
-</button>
-
-<h3 id="groupBTitle">Group B</h3>
-<table>
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>MP</th>
-                        <th>W</th>
-                        <th>D</th>
-                        <th>L</th>
-                        <th>GF</th>
-                        <th>GA</th>
-                        <th>GD</th>
-                        <th>Pts</th>
-                    </tr>
-                </thead>
-                <tbody id="groupBTable"></tbody>
-            </table>
-
-        </div>
-         <div class="card" id="groupC">
-
-<button onclick="editGroup('C')">
-    Edit Group
-</button>
-
-<h3 id="groupCTitle">Group C</h3>
-<table>
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>MP</th>
-                        <th>W</th>
-                        <th>D</th>
-                        <th>L</th>
-                        <th>GF</th>
-                        <th>GA</th>
-                        <th>GD</th>
-                        <th>Pts</th>
-                    </tr>
-                </thead>
-                <tbody id="groupCTable"></tbody>
-            </table>
-
-        </div>
-         <div class="card" id="groupD">
-
-<button onclick="editGroup('D')">
-    Edit Group
-</button>
-
-<h3 id="groupDTitle">Group D</h3>
-<table>
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>MP</th>
-                        <th>W</th>
-                        <th>D</th>
-                        <th>L</th>
-                        <th>GF</th>
-                        <th>GA</th>
-                        <th>GD</th>
-                        <th>Pts</th>
-                    </tr>
-                </thead>
-                <tbody id="groupDTable"></tbody>
-            </table>
-
-        </div>
-         <div class="card" id="groupE">
-
-<button onclick="editGroup('E')">
-    Edit Group
-</button>
-
-<h3 id="groupETitle">Group E</h3>
-<table>
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>MP</th>
-                        <th>W</th>
-                        <th>D</th>
-                        <th>L</th>
-                        <th>GF</th>
-                        <th>GA</th>
-                        <th>GD</th>
-                        <th>Pts</th>
-                    </tr>
-                </thead>
-                <tbody id="groupETable"></tbody>
-            </table>
-
-        </div>
-          <div class="card" id="groupF">
-
-<button onclick="editGroup('F')">
-    Edit Group
-</button>
-
-<h3 id="groupFTitle">Group F</h3>
-<table>
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>MP</th>
-                        <th>W</th>
-                        <th>D</th>
-                        <th>L</th>
-                        <th>GF</th>
-                        <th>GA</th>
-                        <th>GD</th>
-                        <th>Pts</th>
-                    </tr>
-                </thead>
-                <tbody id="groupFTable"></tbody>
-            </table>
-
-        </div>
-         <div class="card" id="groupG">
-
-<button onclick="editGroup('G')">
-    Edit Group
-</button>
-
-<h3 id="groupGTitle">Group G</h3>
-<table>
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>MP</th>
-                        <th>W</th>
-                        <th>D</th>
-                        <th>L</th>
-                        <th>GF</th>
-                        <th>GA</th>
-                        <th>GD</th>
-                        <th>Pts</th>
-                    </tr>
-                </thead>
-                <tbody id="groupGTable"></tbody>
-            </table>
-
-        </div>
-         <div class="card" id="groupH">
-
-<button onclick="editGroup('H')">
-    Edit Group
-</button>
-
-<h3 id="groupHTitle">Group H</h3> 
-<table>
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>MP</th>
-                        <th>W</th>
-                        <th>D</th>
-                        <th>L</th>
-                        <th>GF</th>
-                        <th>GA</th>
-                        <th>GD</th>
-                        <th>Pts</th>
-                    </tr>
-                </thead>
-                <tbody id="groupHTable"></tbody>
-            </table>
-
-        </div>
-        <div class="card" id="groupI">
-
-    <button onclick="editGroup('I')">
-        Edit Group
-    </button>
-
-    <h3 id="groupITitle">Group I</h3>
-
-    <table>
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>MP</th>
-                        <th>W</th>
-                        <th>D</th>
-                        <th>L</th>
-                        <th>GF</th>
-                        <th>GA</th>
-                        <th>GD</th>
-                        <th>Pts</th>
-                    </tr>
-                </thead>
-                <tbody id="groupITable"></tbody>
-            </table>
-
-        </div>
-          <div class="card" id="groupJ">
-
-    <button onclick="editGroup('J')">
-        Edit Group
-    </button>
-
-    <h3 id="groupJTitle">Group J</h3>
-
-    <table>
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>MP</th>
-                        <th>W</th>
-                        <th>D</th>
-                        <th>L</th>
-                        <th>GF</th>
-                        <th>GA</th>
-                        <th>GD</th>
-                        <th>Pts</th>
-                    </tr>
-                </thead>
-                <tbody id="groupJTable"></tbody>
-            </table>
-
-        </div>
-         <div class="card" id="groupK">
-
-    <button onclick="editGroup('K')">
-        Edit Group
-    </button>
-
-    <h3 id="groupKTitle">Group K</h3>
-
-    <table>
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>MP</th>
-                        <th>W</th>
-                        <th>D</th>
-                        <th>L</th>
-                        <th>GF</th>
-                        <th>GA</th>
-                        <th>GD</th>
-                        <th>Pts</th>
-                    </tr>
-                </thead>
-                <tbody id="groupKTable"></tbody>
-            </table>
-
-        </div>
-          <div class="card" id="groupL">
-
-    <button onclick="editGroup('L')">
-        Edit Group
-    </button>
-
-    <h3 id="groupLTitle">Group L</h3>
-
-    <table>
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>MP</th>
-                        <th>W</th>
-                        <th>D</th>
-                        <th>L</th>
-                        <th>GF</th>
-                        <th>GA</th>
-                        <th>GD</th>
-                        <th>Pts</th>
-                    </tr>
-                </thead>
-                <tbody id="groupLTable"></tbody>
-            </table>
-
-        </div>
-
-    </div>
-
-</section>
-</section>
-
-<section id="knockoutBracket"
-         class="tournament-section">
-
-    <h2>World Cup Knockout Bracket</h2>
-
-    <div class="bracket">
-
-        <div class="round">
-            <h3>Round of 32</h3>
-            <div id="round32Container"></div>
-        </div>
-
-        <div class="round">
-            <h3>Round of 16</h3>
-            <div id="round16Container"></div>
-        </div>
-
-        <div class="round">
-            <h3>Quarter Finals</h3>
-            <div id="quarterFinalsContainer"></div>
-        </div>
-
-        <div class="round">
-            <h3>Semi Finals</h3>
-            <div id="semiFinalsContainer"></div>
-        </div>
-
-        <div class="round">
-            <h3>Final</h3>
-            <div id="finalContainer"></div>
-        </div>
-
-    </div>
-
-</section>
-<section id="round32"
-         class="tournament-section">
-
-    <h2>Round of 32</h2>
+<div class="container">
 
     <div class="card admin-only">
 
-        <button onclick="generateRoundOf32()">
-            Generate Round Of 32
+        <h3>Tournament Teams</h3>
+
+        <input
+            type="text"
+            id="tournamentTeamName"
+            placeholder="Team Name">
+
+        <input
+            type="text"
+            id="tournamentCoach"
+            placeholder="Coach">
+        <input
+            type="number"
+            id="tournamentTeamStrength"
+            placeholder="Team Strength">
+
+        <button onclick="addTournamentTeam()">
+            Add Tournament Team
         </button>
 
     </div>
-    <div class="card admin-only">
 
-    <h3>Enter Round Of 32 Result</h3>
+    <div class="card">
 
-    <select id="round32MatchSelect">
-        <option value="">
-            Select Match
-        </option>
-    </select>
+        <h3>Registered Tournament Teams</h3>
 
-    <input
-        type="number"
-        id="round32HomeScore"
-        placeholder="Home Score">
+        <table>
 
-    <input
-        type="number"
-        id="round32AwayScore"
-        placeholder="Away Score">
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>Coach</th>
+                    <th>Strength</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-    <button onclick="saveRound32Result()">
-        Save Result
-    </button>
+            <tbody id="tournamentTeamsTable">
+            </tbody>
 
-</div>
-    <div id="qualifiedTeams"></div>
-</section>
-<div class="card admin-only">
+        </table>
 
-    <h3>Knockout Result Entry</h3>
-
-    <select id="knockoutMatchSelect">
-        <option value="">
-            Select Match
-        </option>
-    </select>
-
-    <input type="number"
-           id="knockoutHomeScore"
-           placeholder="Home Score">
-
-    <input type="number"
-           id="knockoutAwayScore"
-           placeholder="Away Score">
-
-    <button onclick="saveKnockoutResult()">
-        Save Result
-    </button>
+    </div>
 
 </div>
 
-
-<section id="thirdPlace"
-         class="tournament-section">
-
-    <h2>Third Place</h2>
-
-    <div id="thirdPlaceContainer"></div>
-
 </section>
+<div class="card">
 
-<div id="championPanel"></div>
+    <h3>Tournament Groups</h3>
+
+    <input
+        type="number"
+        id="numberOfGroups"
+        placeholder="Number of Groups">
+
+    <input
+        type="number"
+        id="qualifiersPerGroup"
+        placeholder="Qualifiers Per Group">
+
+    <button onclick="generateGroups()">
+        Generate Tournament Groups
+    </button>
+    <button onclick="generateTournamentFixtures()">
+Generate Tournament Fixtures
+</button>
+
+
+   <div id="groupsContainer"></div>
+
+</div>
+<h3>Tournament Fixtures</h3>
+<button onclick="clearTournamentFixtures()">
+Clear Tournament Fixtures
+</button>
+<table>
+    <thead>
+        <tr>
+            <th>Group</th>
+            <th>Match</th>
+            <th>Stage</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody id="tournamentFixturesTable"></tbody>
+</table>
+<h3>Add Tournament Result</h3>
+
+<select id="tournamentFixtureSelect">
+    <option value="">Select Match</option>
+</select>
+
+<input
+    type="number"
+    id="tournamentHomeScore"
+    placeholder="Home Score">
+
+<input
+    type="number"
+    id="tournamentAwayScore"
+    placeholder="Away Score">
+<textarea id="tournamentScorers"
+placeholder="Enter scorers e.g. Mbappe 2, Haaland 1">
+</textarea>
+<button onclick="addTournamentResult()">
+    Save Tournament Result
+</button>
+<h3>Group Standings</h3>
+
+<div id="tournamentTablesContainer"></div>
+</div>
+<button onclick="createRound32()">
+Generate Round of 32
+</button>
+<button onclick="createRound16()">
+Generate Round of 16
+</button>
+<button onclick="createQuarterFinal()">
+Generate Quarter Final
+</button>
+<button onclick="createSemiFinal()">
+Generate Semi Final
+</button>
+<button onclick="createThirdPlaceMatch()">
+Generate Third Place Match
+</button>
+<button onclick="createFinalMatch()">
+Generate Final
+</button>
+<h3>🏆 Top Scorers</h3>
+
+<table border="1">
+
+<thead>
+
+<tr>
+<th>#</th>
+<th>Player</th>
+<th>Team</th>
+<th>Goals</th>
+<th>Matches</th>
+</tr>
+
+</thead>
+
+
+<tbody id="scorersTable">
+
+</tbody>
+
+</table>
     <footer>
         <p>&copy;2026 League Manager.All Rights Reserved</p>
     </footer>
@@ -1356,42 +889,69 @@ onAuthStateChanged(auth, async (user) => {
 
     if (user) {
 
-        currentUser = user;
+        window.currentUser = user;
 
-        const role = await getUserRole(user.uid);
+        const role =
+            await getUserRole(user.uid);
 
-        isAdmin = (role === "admin"); // 🔥 IMPORTANT LINE
+        window.isAdmin =
+            (role === "admin");
 
-        if (!isAdmin) {
-            console.log("Not admin - restricting access");
-        }
-
-        applyPermissions();
 
     } else {
 
-        currentUser = null;
-        isAdmin = false;
+        window.currentUser = null;
+        window.isAdmin = false;
 
-        applyPermissions();
     }
+
 });
 </script>
     <script>
-       const worldCupTeams = [
-  "Argentina","Brazil","France","Germany","England","Spain","Portugal","Netherlands",
-  "Italy","Belgium","Croatia","Uruguay","USA","Mexico","Canada","Morocco",
-  "Senegal","Japan","South Korea","Australia","Ecuador","Colombia","Chile","Peru",
-  "Switzerland","Denmark","Poland","Austria","Serbia","Nigeria","Ghana","Cameroon",
-  "Saudi Arabia","Qatar","Iran","Egypt","Tunisia","Algeria","Ivory Coast","South Africa",
-  "Costa Rica","Panama","Paraguay","Venezuela","Ukraine","Turkey","Wales","Scotland"
-]; 
+       
         let fixturesVisible=10;
         let selectedGameweek = null;
         let fixturesListener = null;
 let teams = [];
 let fixtures = [];
 let results = [];
+let tournamentTeams = [];
+let tournamentGroups = [];
+let GROUP_NAMES = [];
+
+function initializeGroups(){
+
+    const groupInput =
+        document.getElementById("numberOfGroups");
+
+    if(!groupInput){
+        console.log("Group input not found yet");
+        return;
+    }
+
+    const groupCount =
+        parseInt(groupInput.value);
+
+    if(
+        !groupCount ||
+        groupCount < 2
+    ){
+        alert("Enter valid groups");
+        return;
+    }
+
+
+    GROUP_NAMES =
+        getGroupNames(groupCount);
+
+
+    console.log(
+        "Groups initialized:",
+        GROUP_NAMES
+    );
+}
+let tournamentMatches = [];
+let tournamentResults = [];
 let visitors = [];
 let teamsUnsub = null;
 let resultsUnsub = null;
@@ -1405,13 +965,9 @@ let teamsPage = 1;
 const teamsPerPage = 10;
 let upcomingPage = 1;
 const upcomingPerPage = 10;
-let competitionType = "league";
 const itemsPerPage = 10;
 let currentUser = null;
 let isAdmin = false;
-let tournamentGroups = {};
-let groupNames = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" ]
-;
 
 function loadVisitors(){
 
@@ -1493,14 +1049,7 @@ applyPermissions();
     }
 }
 window.adminLogin = adminLogin;
-function applyPermissions(){
 
-    document.querySelectorAll(".admin-only")
-    .forEach(el => {
-        el.style.display = isAdmin ? "block" : "none";
-    });
-
-}
 async function signupVisitor() {
 
    const username =
@@ -2241,6 +1790,58 @@ document.getElementById("teamVenue").value = "";
 
 alert("Team Added Successfully");
 }
+async function addTournamentTeam(){
+
+    if(!isAdmin){
+        alert("Only Admin");
+        return;
+    }
+
+    const name =
+        document.getElementById(
+            "tournamentTeamName"
+        ).value;
+
+    const coach =
+        document.getElementById(
+            "tournamentCoach"
+        ).value;
+
+        const strength=
+        document.getElementById(
+            "tournamentTeamStrength"
+        ).value;
+
+    if(!name || !coach || !strength){
+        alert("Fill all fields");
+        return;
+    }
+
+    await addDoc(
+        collection(
+            window.db,
+            "tournament_teams"
+        ),
+        {
+            name,
+            coach,
+            strength
+        }
+    );
+
+    document.getElementById(
+        "tournamentTeamName"
+    ).value = "";
+
+    document.getElementById(
+        "tournamentCoach"
+    ).value = "";
+
+    document.getElementById(
+        "tournamentTeamStrength"
+    ).value;
+
+}
 function renderTeams() {
 
     if (teamsUnsub) {
@@ -2292,6 +1893,2204 @@ function renderTeams() {
 
             document.getElementById("teamsPageInfo").innerText =
                 `Page ${teamsPage} of ${totalPages || 1}`;
+        }
+    );
+}
+function renderTournamentTeams(){
+
+    onSnapshot(
+
+        collection(
+            window.db,
+            "tournament_teams"
+        ),
+
+        (snapshot)=>{
+
+            tournamentTeams = [];
+
+            const table =
+                document.getElementById(
+                    "tournamentTeamsTable"
+                );
+
+            table.innerHTML = "";
+
+            snapshot.forEach(docSnap=>{
+
+                const team = {
+                    id:docSnap.id,
+                    ...docSnap.data()
+                };
+
+                tournamentTeams.push(team);
+
+                table.innerHTML += `
+                <tr>
+
+                    <td>${team.name}</td>
+                    <td>${team.coach}</td>
+                    <td>${team.strength}</td>
+
+                    <td>
+
+                        ${
+isAdmin
+?
+`
+<button onclick="editTournamentTeam('${team.id}')">
+Edit
+</button>
+
+<button onclick="deleteTournamentTeam('${team.id}')">
+Delete
+</button>
+`
+:
+"View Only"
+}
+                    </td>
+
+                </tr>
+                `;
+
+            });
+
+        }
+
+    );
+
+}
+function renderTournamentGroups(){
+
+    onSnapshot(
+
+        collection(
+            window.db,
+            "tournament_groups"
+        ),
+
+        snapshot => {
+
+            const container =
+                document.getElementById(
+                    "groupsContainer"
+                );
+
+            container.innerHTML = "";
+
+
+            let groups = [];
+
+
+            snapshot.forEach(docSnap => {
+
+                groups.push({
+                    id: docSnap.id,
+                    ...docSnap.data()
+                });
+
+            });
+
+
+            // SORT GROUPS A,B,C,D...
+            // remove duplicate groups
+const uniqueGroups = {};
+
+groups.forEach(g => {
+    uniqueGroups[g.group] = g;
+});
+
+
+groups = Object.values(uniqueGroups);
+
+
+// sort A,B,C,D
+groups.sort((a,b)=>
+    a.group.localeCompare(b.group)
+);
+
+            groups.forEach(group => {
+
+
+                container.innerHTML += `
+
+                <div class="card">
+
+                    <h4>
+                        Group ${group.group}
+                    </h4>
+
+                   <ul>
+
+${
+    group.teams.map(
+        team =>
+        `<li>${team}</li>`
+    ).join("")
+}
+
+</ul>
+
+
+<button onclick="editTournamentGroup('${group.id}')">
+    Edit Group
+</button>
+                </div>
+
+                `;
+
+            });
+
+
+        }
+
+    );
+
+}
+async function editTournamentGroup(groupId){
+
+
+const groupDoc =
+await getDoc(
+    doc(
+        window.db,
+        "tournament_groups",
+        groupId
+    )
+);
+
+
+const oldGroup =
+groupDoc.data();
+
+
+
+let teams =
+prompt(
+"Edit teams separated by commas",
+oldGroup.teams.join(",")
+);
+
+
+
+if(!teams) return;
+
+
+
+const newTeams =
+teams
+.split(",")
+.map(t=>t.trim());
+
+
+
+// UPDATE GROUP
+
+await updateDoc(
+
+    doc(
+        window.db,
+        "tournament_groups",
+        groupId
+    ),
+
+    {
+
+        teams:newTeams
+
+    }
+
+);
+
+
+
+// UPDATE FIXTURES
+
+const fixturesSnap =
+await getDocs(
+    collection(
+        window.db,
+        "tournament_fixtures"
+    )
+);
+
+for(const fixtureDoc of fixturesSnap.docs){
+
+const fixture =
+fixtureDoc.data();
+let updated = false;
+
+let newMatch =
+fixture.match;
+let newHome =
+fixture.home;
+let newAway =
+fixture.away;
+
+newTeams.forEach((team,index)=>{
+    if(
+        fixture.match &&
+        fixture.match.includes(
+            oldGroup.teams[index]
+        )
+    ){
+
+        newMatch =
+        newMatch.replace(
+            oldGroup.teams[index],
+            team
+        );
+
+        updated = true;
+
+    }
+
+    if(
+        fixture.home === oldGroup.teams[index]
+    ){
+
+        newHome = team;
+        updated = true;
+
+    }
+
+    if(
+        fixture.away === oldGroup.teams[index]
+    ){
+
+        newAway = team;
+        updated = true;
+
+    }
+
+});
+
+if(updated){
+
+await updateDoc(
+
+    doc(
+        window.db,
+        "tournament_fixtures",
+        fixtureDoc.id
+    ),
+
+    {
+
+        match:newMatch,
+
+        home:newHome,
+
+        away:newAway
+    }
+
+);
+}
+}
+alert(
+"Group and fixtures updated"
+);
+}
+function renderTournamentFixtures(){
+
+    onSnapshot(
+
+        collection(
+            window.db,
+            "tournament_fixtures"
+        ),
+
+        snapshot => {
+
+            const table =
+                document.getElementById(
+                    "tournamentFixturesTable"
+                );
+
+
+            table.innerHTML = "";
+
+
+            let fixtures = [];
+
+
+            snapshot.forEach(docSnap => {
+
+                fixtures.push({
+
+                    id: docSnap.id,
+
+                    ...docSnap.data()
+
+                });
+
+            });
+
+
+
+            fixtures.sort((a,b)=>{
+
+                if(a.group === b.group){
+                    return 0;
+                }
+
+                return a.group.localeCompare(
+                    b.group
+                );
+
+            });
+
+
+
+            const championBox =
+            document.getElementById(
+                "championDisplay"
+            );
+
+
+            if(championBox){
+
+                championBox.innerHTML =
+                "No Champion Yet";
+
+            }
+
+
+
+            fixtures.forEach(fixture => {
+
+
+
+                // CHAMPION DISPLAY
+
+                if(
+                    fixture.stage === "Final" &&
+                    fixture.played
+                ){
+
+
+                    const champion =
+                    getChampion(fixture);
+
+
+
+                    const runnerUp =
+                    getRunnerUp(fixture);
+
+
+
+                    if(championBox && champion){
+
+
+                        championBox.innerHTML = `
+
+                        🏆 Champion: ${champion}<br>
+
+                        🥈 Runner-Up: ${runnerUp}
+
+                        `;
+
+
+                    }
+
+                }
+
+                // FIXTURE TABLE
+
+                table.innerHTML += `
+
+                <tr>
+
+                    <td>
+                        ${fixture.group || "-"}
+                    </td>
+
+
+                    <td>
+                        ${fixture.match}
+                    </td>
+
+
+                    <td>
+                        ${fixture.stage}
+                    </td>
+
+
+                    <td>
+
+                    ${
+                        fixture.played
+
+                        ? "Finished"
+
+                        : "Pending"
+
+                    }
+
+                    </td>
+
+                </tr>
+
+                `;
+
+            });
+
+        }
+
+    );
+
+}
+
+function renderScorers(){
+
+
+onSnapshot(
+
+collection(
+window.db,
+"tournament_results"
+),
+
+snapshot=>{
+
+
+let players = {};
+
+
+
+snapshot.forEach(docSnap=>{
+
+
+const match =
+docSnap.data();
+
+
+
+if(!match.scorers) return;
+
+
+
+match.scorers.forEach(player=>{
+
+
+if(!players[player.name]){
+
+
+players[player.name]={
+
+name:player.name,
+
+team:"",
+
+goals:0,
+
+matches:0
+
+};
+
+
+}
+
+
+
+players[player.name].goals +=
+player.goals;
+
+
+
+players[player.name].matches++;
+
+
+
+// assign team
+
+if(match.home){
+
+players[player.name].team =
+match.home;
+
+}
+
+
+});
+
+
+
+});
+
+
+
+let ranking =
+Object.values(players);
+
+
+
+ranking.sort((a,b)=>{
+
+return b.goals - a.goals;
+
+});
+
+
+
+const table =
+document.getElementById(
+"scorersTable"
+);
+
+
+
+if(!table) return;
+
+
+
+table.innerHTML="";
+
+
+let position=1;
+
+
+
+ranking.forEach(player=>{
+
+
+table.innerHTML += `
+
+<tr>
+
+<td>${position}</td>
+
+<td>${player.name}</td>
+
+<td>${player.team}</td>
+
+<td>${player.goals}</td>
+
+<td>${player.matches}</td>
+
+</tr>
+
+`;
+
+position++;
+
+
+});
+
+
+});
+
+
+}
+function loadTournamentFixtureOptions(){
+
+    const select =
+        document.getElementById(
+            "tournamentFixtureSelect"
+        );
+
+    if(!select) return;
+
+    select.innerHTML =
+        `<option value="">
+            Select Match
+        </option>`;
+
+    onSnapshot(
+
+        collection(
+            window.db,
+            "tournament_fixtures"
+        ),
+
+        snapshot => {
+
+            select.innerHTML =
+                `<option value="">
+                    Select Match
+                </option>`;
+
+            snapshot.forEach(docSnap => {
+
+                const fixture =
+                    {
+                        id:docSnap.id,
+                        ...docSnap.data()
+                    };
+
+                if(!fixture.played){
+
+                    select.innerHTML += `
+                    <option value="${fixture.id}">
+                        Group ${fixture.group}
+                        -
+                        ${fixture.match}
+                    </option>
+                    `;
+                }
+
+            });
+
+        }
+
+    );
+
+}
+async function addTournamentResult(){
+
+    if(!isAdmin){
+        alert("Only Admin");
+        return;
+    }
+
+    const fixtureId =
+        document.getElementById(
+            "tournamentFixtureSelect"
+        ).value;
+
+    const homeScore =
+        parseInt(
+            document.getElementById(
+                "tournamentHomeScore"
+            ).value
+        );
+
+    const awayScore =
+        parseInt(
+            document.getElementById(
+                "tournamentAwayScore"
+            ).value
+        );
+
+        const scorersText =
+document.getElementById(
+"tournamentScorers"
+).value;
+    if(
+        !fixtureId ||
+        isNaN(homeScore) ||
+        isNaN(awayScore)
+    ){
+        alert("Complete all fields");
+        return;
+    }
+
+    const fixtureDoc =
+        await getDoc(
+            doc(
+                window.db,
+                "tournament_fixtures",
+                fixtureId
+            )
+        );
+
+    const fixture =
+        fixtureDoc.data();
+let scorers = [];
+
+
+if(scorersText){
+
+    scorers =
+    scorersText
+    .split(",")
+    .map(player=>{
+
+
+        let parts =
+        player.trim()
+        .split(" ");
+
+
+        let goals =
+        parseInt(
+            parts[parts.length - 1]
+        );
+
+        let name;
+        if(isNaN(goals)){
+
+            goals = 1;
+
+            name =
+            parts.join(" ");
+
+        }
+        else{
+
+            name =
+            parts
+            .slice(0,-1)
+            .join(" ");
+
+        }
+
+
+
+        return {
+
+            name:name,
+
+            goals:goals
+
+        };
+
+
+    });
+
+}
+const totalScorerGoals =
+scorers.reduce(
+    (total,player)=>
+    total + player.goals,
+    0
+);
+
+
+const totalMatchGoals =
+homeScore + awayScore;
+
+
+
+if(totalScorerGoals !== totalMatchGoals){
+
+    alert(
+        `Scorer goals (${totalScorerGoals}) do not match score goals (${totalMatchGoals})`
+    );
+
+    return;
+
+}
+
+      let winner = null;
+
+if(homeScore > awayScore){
+
+    winner = fixture.home;
+
+}
+else if(awayScore > homeScore){
+
+    winner = fixture.away;
+
+}
+else{
+
+    if(
+        fixture.stage !== "Group Stage"
+    ){
+
+        winner = prompt(
+            "Match Drawn. Enter Winner:"
+        );
+
+    }
+
+}
+
+if(homeScore > awayScore){
+
+    winner = fixture.home;
+
+}
+else if(awayScore > homeScore){
+
+    winner = fixture.away;
+
+}
+    await addDoc(
+
+        collection(
+            window.db,
+            "tournament_results"
+        ),
+
+        {
+            fixtureId,
+
+            group:
+                fixture.group,
+
+            match:
+                fixture.match,
+
+            home:
+                fixture.home,
+
+            away:
+                fixture.away,
+
+           homeScore,
+
+awayScore,
+
+scorers,
+
+stage:
+    fixture.stage
+        }
+
+    );
+await updateDoc(
+
+    doc(
+        window.db,
+        "tournament_fixtures",
+        fixtureId
+    ),
+
+    {
+        played:true,
+
+        homeScore:homeScore,
+
+        awayScore:awayScore,
+
+        winner:winner
+    }
+
+);
+
+    document.getElementById(
+        "tournamentHomeScore"
+    ).value = "";
+
+    document.getElementById(
+        "tournamentAwayScore"
+    ).value = "";
+    document.getElementById(
+    "tournamentScorers"
+).value = "";
+
+    alert(
+        "Tournament result saved"
+    );
+await checkGroupStageComplete();
+}
+function renderTournamentTables(){
+
+    onSnapshot(
+
+        collection(
+            window.db,
+            "tournament_results"
+        ),
+
+        async(snapshot)=>{
+
+            const groupsSnapshot =
+                await getDocs(
+                    collection(
+                        window.db,
+                        "tournament_groups"
+                    )
+                );
+
+            const container =
+                document.getElementById(
+                    "tournamentTablesContainer"
+                );
+
+            container.innerHTML = "";
+
+            const groupTables = {};
+
+            groupsSnapshot.forEach(groupDoc=>{
+
+                const group =
+                    groupDoc.data();
+
+                groupTables[group.group] = {};
+
+                group.teams.forEach(team=>{
+
+                    groupTables[group.group][team] = {
+
+                        team,
+
+                        played:0,
+                        won:0,
+                        drawn:0,
+                        lost:0,
+
+                        gf:0,
+                        ga:0,
+                        gd:0,
+
+                        points:0
+                    };
+
+                });
+
+            });
+
+            snapshot.forEach(docSnap=>{
+
+                const result =
+                    docSnap.data();
+
+                const group =
+                    result.group;
+
+                const home =
+                    result.home;
+
+                const away =
+                    result.away;
+
+                const homeScore =
+                    Number(result.homeScore);
+
+                const awayScore =
+                    Number(result.awayScore);
+
+                if(
+                    !groupTables[group]
+                ) return;
+
+                const homeRow =
+                    groupTables[group][home];
+
+                const awayRow =
+                    groupTables[group][away];
+
+                if(
+                    !homeRow ||
+                    !awayRow
+                ) return;
+
+                homeRow.played++;
+                awayRow.played++;
+
+                homeRow.gf += homeScore;
+                homeRow.ga += awayScore;
+
+                awayRow.gf += awayScore;
+                awayRow.ga += homeScore;
+
+                if(homeScore > awayScore){
+
+                    homeRow.won++;
+                    awayRow.lost++;
+
+                    homeRow.points += 3;
+
+                }
+                else if(
+                    awayScore > homeScore
+                ){
+
+                    awayRow.won++;
+                    homeRow.lost++;
+
+                    awayRow.points += 3;
+
+                }
+                else{
+
+                    homeRow.drawn++;
+                    awayRow.drawn++;
+
+                    homeRow.points++;
+                    awayRow.points++;
+
+                }
+
+            });
+
+            Object.keys(groupTables)
+            .sort()
+            .forEach(groupName=>{
+
+                const teams =
+                    Object.values(
+                        groupTables[groupName]
+                    );
+
+                teams.forEach(team=>{
+
+                    team.gd =
+                        team.gf -
+                        team.ga;
+
+                });
+
+                teams.sort((a,b)=>
+
+                    b.points - a.points ||
+
+                    b.gd - a.gd ||
+
+                    b.gf - a.gf
+                );
+
+                container.innerHTML += `
+
+                <div class="card">
+
+                    <h4>
+                        Group ${groupName}
+                    </h4>
+
+                    <table>
+
+                        <tr>
+
+                            <th>Pos</th>
+                            <th>Team</th>
+                            <th>P</th>
+                            <th>W</th>
+                            <th>D</th>
+                            <th>L</th>
+                            <th>GF</th>
+                            <th>GA</th>
+                            <th>GD</th>
+                            <th>Pts</th>
+
+                        </tr>
+
+                        ${teams.map((team,index)=>`
+
+                        <tr>
+
+                            <td>${index+1}</td>
+
+                            <td>${team.team}</td>
+
+                            <td>${team.played}</td>
+
+                            <td>${team.won}</td>
+
+                            <td>${team.drawn}</td>
+
+                            <td>${team.lost}</td>
+
+                            <td>${team.gf}</td>
+
+                            <td>${team.ga}</td>
+
+                            <td>${team.gd}</td>
+
+                            <td>${team.points}</td>
+
+                        </tr>
+
+                        `).join("")}
+
+                    </table>
+
+                </div>
+
+                `;
+
+            });
+
+        }
+
+    );
+
+}
+async function checkGroupStageComplete(){
+
+    const snapshot =
+        await getDocs(
+            collection(
+                window.db,
+                "tournament_fixtures"
+            )
+        );
+
+    let totalMatches = 0;
+    let playedMatches = 0;
+
+    snapshot.forEach(docSnap=>{
+
+        const fixture =
+            docSnap.data();
+
+        if(
+            fixture.stage ===
+            "Group Stage"
+        ){
+
+            totalMatches++;
+
+            if(
+                fixture.played === true
+            ){
+                playedMatches++;
+            }
+
+        }
+
+    });
+
+    console.log(
+        `Played ${playedMatches}/${totalMatches}`
+    );
+
+    if(
+        totalMatches > 0 &&
+        playedMatches === totalMatches
+    ){
+
+       await generateQualifiedTeams();
+        return true;
+
+    }
+
+    return false;
+
+}
+function calculateGroupStandings(matches){
+
+    let groups = {};
+
+    matches.forEach(match=>{
+
+        if(!groups[match.group]){
+            groups[match.group] = {};
+        }
+
+        if(!groups[match.group][match.teamA]){
+            groups[match.group][match.teamA]={
+                team:match.teamA,
+                played:0,
+                points:0,
+                gd:0,
+                gf:0
+            };
+        }
+
+        if(!groups[match.group][match.teamB]){
+            groups[match.group][match.teamB]={
+                team:match.teamB,
+                played:0,
+                points:0,
+                gd:0,
+                gf:0
+            };
+        }
+
+
+        let A = groups[match.group][match.teamA];
+        let B = groups[match.group][match.teamB];
+
+
+        A.played++;
+        B.played++;
+
+
+        A.gf += Number(match.scoreA);
+        B.gf += Number(match.scoreB);
+
+
+        A.gd += Number(match.scoreA)-Number(match.scoreB);
+        B.gd += Number(match.scoreB)-Number(match.scoreA);
+
+
+
+        if(match.scoreA > match.scoreB){
+
+            A.points +=3;
+
+        }
+        else if(match.scoreA < match.scoreB){
+
+            B.points +=3;
+
+        }
+        else{
+
+            A.points++;
+            B.points++;
+
+        }
+
+    });
+
+
+    return groups;
+
+}
+function getQualifiedTeams(matches){
+
+    let groups = calculateGroupStandings(matches);
+
+
+    let qualifiers=[];
+
+    let thirdPlaced=[];
+
+
+    Object.keys(groups).forEach(group=>{
+
+
+        let teams = Object.values(groups[group]);
+
+
+        teams.sort((a,b)=>{
+
+            if(b.points!==a.points)
+                return b.points-a.points;
+
+            if(b.gd!==a.gd)
+                return b.gd-a.gd;
+
+            return b.gf-a.gf;
+
+        });
+
+
+
+        // TOP 2
+
+        qualifiers.push(teams[0]);
+        qualifiers.push(teams[1]);
+
+
+
+        // THIRD
+
+        thirdPlaced.push({
+            ...teams[2],
+            group:group
+        });
+
+
+    });
+
+
+
+    // Best 8 third placed teams
+    thirdPlaced.sort((a,b)=>{
+
+        if(b.points!==a.points)
+            return b.points-a.points;
+
+
+        if(b.gd!==a.gd)
+            return b.gd-a.gd;
+
+
+        return b.gf-a.gf;
+
+    });
+
+
+
+    qualifiers.push(...thirdPlaced.slice(0,8));
+
+
+
+    return qualifiers;
+
+}
+function generateRoundOf32(matches){
+
+
+let teams = getQualifiedTeams(matches);
+
+
+
+if(teams.length !== 32){
+
+alert("Not enough qualified teams yet");
+
+return;
+
+}
+
+
+
+let fixtures=[];
+
+
+
+for(let i=0;i<32;i+=2){
+
+
+fixtures.push({
+
+stage:"Round of 32",
+
+home:teams[i].team,
+
+away:teams[i+1].team,
+
+homeScore:null,
+
+awayScore:null
+
+});
+
+}
+
+console.log("ROUND OF 32",fixtures);
+
+return fixtures;
+
+}
+function getRound32Winners(matches){
+
+    let winners = [];
+
+
+    matches.forEach(match=>{
+
+
+        if(
+            match.stage === "Round of 32" &&
+            match.homeScore !== null &&
+            match.awayScore !== null
+        ){
+
+
+            let winner;
+
+
+            if(Number(match.homeScore) > Number(match.awayScore)){
+
+                winner = match.home;
+
+            }
+            else if(Number(match.awayScore) > Number(match.homeScore)){
+
+                winner = match.away;
+
+            }
+            else{
+
+                // draw handling
+                winner = match.winner;
+
+            }
+
+            if(winner){
+
+                winners.push(winner);
+
+            }
+
+        }
+
+
+    });
+
+    return winners;
+
+}
+function generateRoundOf16(round32Matches){
+let winners = getRound32Winners(round32Matches);
+
+if(winners.length !== 16){
+
+alert("Round of 32 is not complete yet");
+
+return;
+
+}
+
+let fixtures=[];
+
+for(let i=0;i<16;i+=2){
+
+
+fixtures.push({
+
+stage:"Round of 16",
+
+home:winners[i],
+
+away:winners[i+1],
+
+homeScore:null,
+
+awayScore:null
+});
+
+}
+
+return fixtures;
+
+
+}
+function getRound16Winners(matches){
+
+    let winners=[];
+
+
+    matches.forEach(match=>{
+
+
+        if(
+            match.stage==="Round of 16" &&
+            match.homeScore !== null &&
+            match.awayScore !== null
+        ){
+
+
+            let winner;
+
+
+            if(Number(match.homeScore) > Number(match.awayScore)){
+
+                winner = match.home;
+
+            }
+            else if(Number(match.awayScore) > Number(match.homeScore)){
+
+                winner = match.away;
+
+            }
+            else{
+
+                winner = match.winner;
+
+            }
+
+            if(winner){
+
+                winners.push(winner);
+
+            }
+
+        }
+
+    });
+
+    return winners;
+
+}
+function generateQuarterFinal(round16Matches){
+
+
+let winners = getRound16Winners(round16Matches);
+
+
+
+if(winners.length !== 8){
+
+alert("Round of 16 is not complete yet");
+
+return;
+
+}
+
+
+
+let fixtures=[];
+
+
+
+for(let i=0;i<8;i+=2){
+
+
+fixtures.push({
+
+stage:"Quarter Final",
+
+home:winners[i],
+
+away:winners[i+1],
+
+homeScore:null,
+
+awayScore:null
+
+});
+}
+return fixtures;
+}
+function getQuarterFinalWinners(matches){
+
+    let winners=[];
+
+
+    matches.forEach(match=>{
+
+
+        if(
+            match.stage==="Quarter Final" &&
+            match.homeScore !== null &&
+            match.awayScore !== null
+        ){
+
+
+            let winner;
+
+
+            if(Number(match.homeScore) > Number(match.awayScore)){
+
+                winner = match.home;
+
+            }
+            else if(Number(match.awayScore) > Number(match.homeScore)){
+
+                winner = match.away;
+
+            }
+            else{
+
+                winner = match.winner;
+
+            }
+
+
+            if(winner){
+
+                winners.push(winner);
+
+            }
+
+        }
+
+
+    });
+
+
+
+    return winners;
+
+}
+function generateSemiFinal(quarterFinalMatches){
+
+
+let winners =
+getQuarterFinalWinners(quarterFinalMatches);
+
+
+
+if(winners.length !== 4){
+
+alert("Quarter Final is not complete yet");
+
+return;
+
+}
+
+
+
+let fixtures=[];
+
+
+
+for(let i=0;i<4;i+=2){
+
+
+fixtures.push({
+
+stage:"Semi Final",
+
+home:winners[i],
+
+away:winners[i+1],
+
+homeScore:null,
+
+awayScore:null
+
+
+});
+
+
+}
+
+
+
+return fixtures;
+
+
+}
+function getSemiFinalLosers(matches){
+
+    let losers = [];
+
+    matches.forEach(match => {
+
+        if(
+            match.stage === "Semi Final" &&
+            match.homeScore !== null &&
+            match.awayScore !== null
+        ){
+
+            let loser;
+
+            if(Number(match.homeScore) > Number(match.awayScore)){
+
+                loser = match.away;
+
+            }
+            else if(Number(match.awayScore) > Number(match.homeScore)){
+
+                loser = match.home;
+
+            }
+            else{
+
+                // If draw, use stored winner
+                loser =
+                    match.winner === match.home
+                    ? match.away
+                    : match.home;
+            }
+
+            if(loser){
+                losers.push(loser);
+            }
+
+        }
+
+    });
+
+    return losers;
+}
+function getSemiFinalWinners(matches){
+
+    let winners = [];
+
+    matches.forEach(match => {
+
+        if(
+            match.stage === "Semi Final" &&
+            match.homeScore !== null &&
+            match.awayScore !== null
+        ){
+
+            let winner;
+
+            if(Number(match.homeScore) > Number(match.awayScore)){
+
+                winner = match.home;
+
+            }
+            else if(Number(match.awayScore) > Number(match.homeScore)){
+
+                winner = match.away;
+
+            }
+            else{
+
+                winner = match.winner;
+
+            }
+
+            if(winner){
+                winners.push(winner);
+            }
+
+        }
+
+    });
+
+    return winners;
+}
+function generateFinalMatch(semiFinalMatches){
+
+    let winners =
+    getSemiFinalWinners(semiFinalMatches);
+
+    if(winners.length !== 2){
+
+        alert("Semi Finals are not complete yet");
+
+        return;
+    }
+
+    return {
+
+        stage:"Final",
+
+        home:winners[0],
+
+        away:winners[1],
+
+        homeScore:null,
+
+        awayScore:null
+
+    };
+
+}
+function generateThirdPlaceMatch(semiFinalMatches){
+
+    let losers =
+    getSemiFinalLosers(semiFinalMatches);
+
+    if(losers.length !== 2){
+
+        alert("Semi Finals are not complete yet");
+
+        return;
+    }
+
+    return {
+
+        stage:"Third Place",
+
+        home:losers[0],
+
+        away:losers[1],
+
+        homeScore:null,
+
+        awayScore:null
+
+    };
+
+}
+async function createRound32(){
+
+
+let snapshot = await getDocs(
+collection(
+window.db,
+"tournament_fixtures"
+)
+);
+
+let matches=[];
+
+
+snapshot.forEach(doc=>{
+
+let data=doc.data();
+
+if(data.stage==="Group Stage"){
+
+matches.push(data);
+
+}
+
+});
+
+let round32 = generateRoundOf32(matches);
+for(let game of round32){
+
+await addDoc(
+collection(window.db,"tournament_fixtures"),
+game
+);
+
+}
+alert("Round of 32 Generated Successfully");
+
+}
+async function createRound16(){
+
+
+let snapshot = await getDocs(
+collection(
+window.db,
+"tournament_fixtures"
+)
+);
+
+let matches=[];
+snapshot.forEach(doc=>{
+
+let data=doc.data();
+if(data.stage==="Round of 32"){
+
+matches.push(data);
+
+}
+
+});
+let round16 = generateRoundOf16(matches);
+if(!round16) return;
+for(let game of round16){
+await addDoc(
+collection(window.db,"tournament_fixtures"),
+game
+);
+}
+alert("Round of 16 Generated");
+}
+async function createQuarterFinal(){
+
+
+let snapshot = await getDocs(
+collection(
+window.db,
+"tournament_fixtures"
+)
+);
+
+
+
+let matches=[];
+
+
+
+snapshot.forEach(doc=>{
+
+let data=doc.data();
+
+
+if(data.stage==="Round of 16"){
+
+matches.push(data);
+
+}
+
+});
+
+let quarterFinals =
+generateQuarterFinal(matches);
+
+if(!quarterFinals) return;
+
+for(let game of quarterFinals){
+
+await addDoc(
+collection(window.db,"tournament_fixtures"),
+game
+);
+
+}
+
+alert("Quarter Finals Generated Successfully");
+
+}
+async function createSemiFinal(){
+
+
+let snapshot = await getDocs(
+collection(
+window.db,
+"tournament_fixtures"
+)
+);
+
+
+
+let matches=[];
+
+
+
+snapshot.forEach(doc=>{
+
+let data=doc.data();
+
+
+if(data.stage==="Quarter Final"){
+
+matches.push(data);
+
+}
+
+
+});
+
+
+
+let semiFinals =
+generateSemiFinal(matches);
+
+
+
+if(!semiFinals) return;
+
+
+
+for(let game of semiFinals){
+
+
+await addDoc(
+collection(window.db,"tournament_fixtures"),
+game
+);
+
+
+}
+
+
+
+alert("Semi Finals Generated Successfully");
+
+
+}
+async function createThirdPlaceMatch(){
+
+if(existingThirdPlace.length > 0){
+
+    alert("Third Place Match already exists");
+
+    return;
+
+}
+    let snapshot = await getDocs(
+        collection(
+            window.db,
+            "tournament_fixtures"
+        )
+    );
+    const existingThirdPlace = [];
+
+snapshot.forEach(doc=>{
+
+    let data = doc.data();
+
+    if(data.stage === "Third Place"){
+
+        existingThirdPlace.push(data);
+
+    }
+
+});
+
+    let matches = [];
+
+    snapshot.forEach(doc=>{
+
+        let data = doc.data();
+
+        if(data.stage === "Semi Final"){
+
+            matches.push(data);
+
+        }
+
+    });
+
+    let thirdPlace =
+    generateThirdPlaceMatch(matches);
+
+    if(!thirdPlace) return;
+
+    await addDoc(
+        collection(
+            window.db,
+            "tournament_fixtures"
+        ),
+        thirdPlace
+    );
+
+    alert("Third Place Match Generated");
+
+}
+async function createFinalMatch(){
+
+    let snapshot = await getDocs(
+        collection(
+            window.db,
+            "tournament_fixtures"
+        )
+    );
+
+    let semiFinals = [];
+    let finalExists = false;
+
+    snapshot.forEach(doc => {
+
+        let data = doc.data();
+
+        if(data.stage === "Semi Final"){
+            semiFinals.push(data);
+        }
+
+        if(data.stage === "Final"){
+            finalExists = true;
+        }
+
+    });
+
+    if(finalExists){
+
+        alert("Final already exists");
+
+        return;
+    }
+
+    let finalMatch =
+    generateFinalMatch(semiFinals);
+
+    if(!finalMatch) return;
+
+    await addDoc(
+        collection(
+            window.db,
+            "tournament_fixtures"
+        ),
+        finalMatch
+    );
+
+    alert("Final Generated Successfully");
+
+}
+function getChampion(finalMatch){
+
+    if(
+        finalMatch.homeScore === null ||
+        finalMatch.awayScore === null
+    ){
+        return null;
+    }
+
+    if(
+        Number(finalMatch.homeScore) >
+        Number(finalMatch.awayScore)
+    ){
+        return finalMatch.home;
+    }
+
+    if(
+        Number(finalMatch.awayScore) >
+        Number(finalMatch.homeScore)
+    ){
+        return finalMatch.away;
+    }
+
+    return finalMatch.winner;
+}
+function getRunnerUp(finalMatch){
+
+    let champion =
+    getChampion(finalMatch);
+
+    if(!champion) return null;
+
+    return champion === finalMatch.home
+        ? finalMatch.away
+        : finalMatch.home;
+}
+async function generateTournamentFixtures(){
+
+    if(!isAdmin){
+        alert("Only Admin");
+        return;
+    }
+
+    const groupsSnapshot =
+        await getDocs(
+            collection(
+                window.db,
+                "tournament_groups"
+            )
+        );
+
+    const existingFixtures =
+        await getDocs(
+            collection(
+                window.db,
+                "tournament_fixtures"
+            )
+        );
+
+    if(!existingFixtures.empty){
+
+        alert(
+            "Tournament fixtures already exist"
+        );
+
+        return;
+    }
+
+    for(const groupDoc of groupsSnapshot.docs){
+
+        const group =
+            groupDoc.data();
+
+        const teams =
+            group.teams;
+
+        for(
+            let i = 0;
+            i < teams.length;
+            i++
+        ){
+
+            for(
+                let j = i + 1;
+                j < teams.length;
+                j++
+            ){
+
+                await addDoc(
+
+                    collection(
+                        window.db,
+                        "tournament_fixtures"
+                    ),
+
+                    {
+                        group:
+                            group.group,
+
+                        home:
+                            teams[i],
+
+                        away:
+                            teams[j],
+
+                        match:
+                            `${teams[i]} vs ${teams[j]}`,
+
+                        stage:
+                            "Group Stage",
+
+                        played:
+                            false
+                    }
+
+                );
+
+            }
+
+        }
+
+    }
+
+    alert(
+        "Tournament fixtures generated"
+    );
+
+}
+async function deleteTournamentTeam(id){
+
+    if(!isAdmin){
+        return;
+    }
+
+    await deleteDoc(
+        doc(
+            window.db,
+            "tournament_teams",
+            id
+        )
+    );
+
+}
+async function editTournamentTeam(id){
+
+    const team =
+        teams.find(t => t.id === id);
+
+    if(!team) return;
+
+    const newName =
+        prompt("Team Name",team.name);
+
+    if(newName === null) return;
+
+    const newCoach =
+        prompt("Coach",team.coach);
+
+    if(newCoach === null) return;
+
+    const newStrength =
+        prompt("Team Strength",team.strength);
+
+    if(newStrength === null) return;
+
+    await updateDoc(
+doc(window.db,"tournament_teams",id),
+        {
+            name:newName,
+            coach:newCoach,
+            strength:newStrength
         }
     );
 }
@@ -2403,7 +4202,7 @@ if (
 }
 
 const fixture = fixtures?.find(f => f.id === fixtureId);
-const isTournamentMatch = fixture.matchType === "tournament";
+
 if(!fixture){
     alert("Please select a fixture");
     return;
@@ -2445,18 +4244,7 @@ const awayScorers =
         awayScorers
     }
 );
-if(isTournamentMatch){
-
-    await updateTournamentGroupStandings(
-        fixture.match,
-        homeScore,
-        awayScore
-    );
-
-}
-else{
-    updateLeagueTable();
-}
+updateLeagueTable();
 
 // ✅ ADD THIS RIGHT HERE (IMPORTANT FIX)
 await updateDoc(
@@ -2588,8 +4376,7 @@ for (const player in awayGoalCount) {
     ).innerHTML = "";
 
     alert("Result Saved Successfully");
-    await updateTournamentGroupTables();
-    updateTournamentGroupStandings(fixture.match, homeScore, awayScore);
+
 }
 
 function renderResult() {
@@ -2627,7 +4414,7 @@ resultsUnsub = onSnapshot(
                 <td>${result.match}</td>
                 <td>${result.result}</td>
                 <td>${isAdmin
-                    ? `<button onclick="deleteResult(${start + index})">Delete</button>`
+                    ? `<button onclick="deleteResult('${result.id}')">Delete</button>`
                     : "View Only"
                 }</td>
             </tr>`;
@@ -2637,7 +4424,7 @@ resultsUnsub = onSnapshot(
     }
 );
 }
-async function deleteResult(index){
+async function deleteResult(id){
 
     if(!isAdmin){
         alert("Only Admin");
@@ -2649,11 +4436,11 @@ async function deleteResult(index){
     }
 
     await deleteDoc(
-        doc(
-            window.db,
-            "results",
-            results[index].id
-        )
+       doc(
+window.db,
+"results",
+id
+)
     );
 }
 function editResult(index) {
@@ -2738,9 +4525,16 @@ function updateLeagueTable() {
         const awayGoals = parseInt(score[1]);
 
 
+if(!tableData[homeTeam] || !tableData[awayTeam]){
+    return;
+}
+
+if(!tableData[homeTeam] || !tableData[awayTeam]){
+    return;
+}
+
 tableData[homeTeam].played++;
 tableData[awayTeam].played++;
-
         tableData[homeTeam].gf += homeGoals;
         tableData[homeTeam].ga += awayGoals;
 
@@ -2814,166 +4608,6 @@ function renderLeagueTable(data) {
         </tr>
         `;
     });
-}
-function updateTournamentGroupStandings(match, homeScore, awayScore){
-
-    const [homeTeam, awayTeam] = match.split(" vs ");
-
-    // find group containers (you must already have tournament_groups collection)
-    getDocs(collection(window.db, "tournament_groups"))
-    .then(snapshot => {
-
-        snapshot.forEach(async docSnap => {
-
-            let group = docSnap.data();
-
-            let teams = group.teams;
-
-            let home = teams.find(t => t.name === homeTeam);
-            let away = teams.find(t => t.name === awayTeam);
-
-            if(!home || !away) return; // not in this group
-
-            // update played
-            home.played++;
-            away.played++;
-
-            // goals
-            home.gf += homeScore;
-            home.ga += awayScore;
-
-            away.gf += awayScore;
-            away.ga += homeScore;
-
-            // result logic
-            if(homeScore > awayScore){
-                home.won++;
-                away.lost++;
-                home.points += 3;
-            }
-            else if(homeScore < awayScore){
-                away.won++;
-                home.lost++;
-                away.points += 3;
-            }
-            else{
-                home.drawn++;
-                away.drawn++;
-                home.points += 1;
-                away.points += 1;
-            }
-
-            // goal difference
-            home.gd = home.gf - home.ga;
-            away.gd = away.gf - away.ga;
-
-            await updateDoc(
-                doc(window.db, "tournament_groups", docSnap.id),
-                { teams }
-            );
-
-        });
-
-    });
-
-}
-async function updateTournamentGroupTables() {
-
-    const groupsSnap = await getDocs(
-        collection(window.db, "tournament_groups")
-    );
-
-    const resultsSnap = await getDocs(
-        collection(window.db, "results")
-    );
-
-    let results = [];
-
-    resultsSnap.forEach(doc => {
-        results.push(doc.data());
-    });
-
-    for (const groupDoc of groupsSnap.docs) {
-
-        let groupData = groupDoc.data();
-
-        let teams = groupData.teams || [];
-
-        // RESET STATS
-        teams.forEach(t => {
-            t.played = 0;
-            t.won = 0;
-            t.drawn = 0;
-            t.lost = 0;
-            t.gf = 0;
-            t.ga = 0;
-            t.gd = 0;
-            t.points = 0;
-        });
-
-        // APPLY ALL RESULTS
-        results.forEach(result => {
-
-            const [home, away] = result.match.split(" vs ");
-            const [hg, ag] = result.result.split(" - ");
-
-            const homeTeam = teams.find(t => t.name === home);
-            const awayTeam = teams.find(t => t.name === away);
-
-            if (!homeTeam || !awayTeam) return;
-
-            const homeGoals = parseInt(hg);
-            const awayGoals = parseInt(ag);
-
-            homeTeam.played++;
-            awayTeam.played++;
-
-            homeTeam.gf += homeGoals;
-            homeTeam.ga += awayGoals;
-
-            awayTeam.gf += awayGoals;
-            awayTeam.ga += homeGoals;
-
-            if (homeGoals > awayGoals) {
-                homeTeam.won++;
-                awayTeam.lost++;
-                homeTeam.points += 3;
-            } 
-            else if (awayGoals > homeGoals) {
-                awayTeam.won++;
-                homeTeam.lost++;
-                awayTeam.points += 3;
-            } 
-            else {
-                homeTeam.drawn++;
-                awayTeam.drawn++;
-                homeTeam.points += 1;
-                awayTeam.points += 1;
-            }
-        });
-
-        // CALCULATE GD
-        teams.forEach(t => {
-            t.gd = t.gf - t.ga;
-        });
-
-        // SORT LIKE FIFA RULES
-        teams.sort((a, b) =>
-            b.points - a.points ||
-            b.gd - a.gd ||
-            b.gf - a.gf
-        );
-
-        // SAVE BACK TO FIRESTORE
-        await updateDoc(
-            doc(window.db, "tournament_groups", groupDoc.id),
-            {
-                teams
-            }
-        );
-    }
-
-    renderTournamentGroups();
 }
 function renderUpcomingMatches(){
 
@@ -3190,716 +4824,182 @@ function formatName(name){
         .map(w => w.charAt(0).toUpperCase() + w.slice(1))
         .join(" ");
 }
-function changeCompetition(){
+function getGroupNames(count){
 
-    const type =
-        document.getElementById(
-            "competitionType"
-        ).value;
+    const names = [];
 
-    document
-        .querySelectorAll(".league-section")
-        .forEach(section => {
+    for(let i = 0; i < count; i++){
 
-            section.style.display =
-                type === "league"
-                ? "block"
-                : "none";
-        });
+        names.push(
+            String.fromCharCode(65 + i)
+        );
 
-    document
-        .querySelectorAll(".tournament-section")
-        .forEach(section => {
+    }
 
-            section.style.display =
-                type === "tournament"
-                ? "block"
-                : "none";
-        });
-
+    return names;
 }
-function renderTournamentGroups() {
 
-    const container = document.getElementById("groups");
-
-    container.innerHTML = "<h2>Groups</h2>";
-
-    getDocs(collection(window.db, "tournament_groups"))
-        .then(snapshot => {
-
-            snapshot.forEach(docSnap => {
-
-                const group = docSnap.data();
-
-                container.innerHTML += `
-                <div class="card">
-                    <h3>Group ${group.group}</h3>
-
-                    <table>
-                        <tr>
-                            <th>Team</th>
-                            <th>P</th>
-                            <th>W</th>
-                            <th>D</th>
-                            <th>L</th>
-                            <th>GF</th>
-                            <th>GA</th>
-                            <th>GD</th>
-                            <th>Pts</th>
-                        </tr>
-
-                        ${group.teams.map(t => `
-                        <tr>
-                            <td>${t.name}</td>
-                            <td>${t.played}</td>
-                            <td>${t.won}</td>
-                            <td>${t.drawn}</td>
-                            <td>${t.lost}</td>
-                            <td>${t.gf}</td>
-                            <td>${t.ga}</td>
-                            <td>${t.gd}</td>
-                            <td>${t.points}</td>
-                        </tr>
-                        `).join("")}
-
-                    </table>
-                </div>
-                `;
-            });
-        });
-}
-async function addTournamentTeam(){
-
-    const name = prompt("Team Name");
-    const coach = prompt("Coach Name");
-    const strength = prompt("Team Strength (1-100)");
-
-    if(!name) return;
-
-    await addDoc(
-        collection(window.db, "tournament_teams"),
-        {
-            name,
-            coach,
-            strength: Number(strength || 50)
-        }
-    );
-
-    alert("Tournament team added");
-}
-let tournamentTeams = [];
-
-async function loadTournamentTeams(){
-
-    const snapshot = await getDocs(
-        collection(window.db, "tournament_teams")
-    );
-
-    tournamentTeams = [];
-
-    snapshot.forEach(docSnap => {
-        tournamentTeams.push({
-            id: docSnap.id,
-            ...docSnap.data()
-        });
-    });
-
-    renderTournamentTeams();
-}
-function renderTournamentTeams(){
-
-    const table = document.getElementById("tournamentTeamsTable");
-
-    if(!table) return;
-
-    table.innerHTML = "";
-
-    tournamentTeams.forEach(team => {
-
-        table.innerHTML += `
-            <tr>
-                <td>${team.name}</td>
-                <td>${team.coach}</td>
-                <td>${team.strength}</td>
-                <td>
-                    ${isAdmin ? `
-                        <button onclick="deleteTournamentTeam('${team.id}')">
-                            Delete
-                        </button>
-                    ` : "View Only"}
-                </td>
-            </tr>
-        `;
-    });
-
-}
-async function deleteTournamentTeam(id){
+async function generateGroups(){
 
     if(!isAdmin){
-        alert("Only admin");
+        alert("Only Admin");
         return;
     }
+
+    const groupCount =
+        parseInt(
+            document.getElementById(
+                "numberOfGroups"
+            ).value
+        );
+
+    const qualifiersPerGroup =
+        parseInt(
+            document.getElementById(
+                "qualifiersPerGroup"
+            ).value
+        );
+
+    if(!groupCount || groupCount < 2){
+        alert("Enter valid number of groups");
+        return;
+    }
+
+    if(!qualifiersPerGroup || qualifiersPerGroup < 1){
+        alert("Enter qualifiers per group");
+        return;
+    }
+
+    const GROUP_NAMES =
+        getGroupNames(groupCount);
+
+    if(tournamentTeams.length < groupCount){
+        alert("Not enough teams");
+        return;
+    }
+
+    const groupsContainer =
+        document.getElementById(
+            "groupsContainer"
+        );
+        const oldGroups =
+    await getDocs(
+        collection(
+            window.db,
+            "tournament_groups"
+        )
+    );
+
+for(const groupDoc of oldGroups.docs){
 
     await deleteDoc(
-        doc(window.db, "tournament_teams", id)
+        doc(
+            window.db,
+            "tournament_groups",
+            groupDoc.id
+        )
     );
 
-    loadTournamentTeams();
 }
-function showStage(stageId){
+await new Promise(
+    resolve => setTimeout(resolve,1000)
+);
 
-    const stages = [
-        "groups",
-        "round32",
-        "round16",
-        "quarterFinals",
-        "semiFinals",
-        "thirdPlace",
-        "final"
-    ];
-
-    // hide all
-    stages.forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.style.display = "none";
-    });
-
-    // show selected
-    const selected = document.getElementById(stageId);
-    if(selected){
-        selected.style.display = "block";
-    }
-}
-function updateTournamentDashboard(){
-
-    document.getElementById("tournamentTeamsCount").innerText =
-        teams.length;
-
-    document.getElementById("tournamentMatchesPlayed").innerText =
-        results.length;
-
-    const live = fixtures.filter(f => f.status === "live").length;
-
-    document.getElementById("tournamentLiveMatches").innerText =
-        live;
-
-    document.getElementById("tournamentStage").innerText =
-        "World Cup Style Knockouts";
-}
-async function addTournamentTeam(){
-
-    if(!isAdmin){
-        alert("Only admin can add tournament teams");
-        return;
-    }
-
-    const name =
-        document.getElementById("tTeamName").value.trim();
-
-    const coach =
-        document.getElementById("tTeamCoach").value.trim();
-
-    const strength =
-        parseInt(document.getElementById("tTeamStrength").value);
-
-    if(!name || !coach || isNaN(strength)){
-        alert("Fill all fields");
-        return;
-    }
-
-    await addDoc(
-        collection(window.db, "tournament_teams"),
-        {
-            name,
-            coach,
-            strength
-        }
-    );
-
-    document.getElementById("tTeamName").value = "";
-    document.getElementById("tTeamCoach").value = "";
-    document.getElementById("tTeamStrength").value = "";
-
-    alert("Tournament team added");
-
-    loadTournamentTeams();
-}
-async function generateTournamentGroups(){
-
-    await loadTournamentTeams();
-
-    if(tournamentTeams.length < 8){
-        alert("Need at least 8 tournament teams");
-        return;
-    }
-
-    // shuffle teams (FIFA draw style)
-    let pool = [...tournamentTeams]
+    groupsContainer.innerHTML = "";
+    let shuffled =
+        [...tournamentTeams]
         .sort(() => Math.random() - 0.5);
 
-    let groupSize = Math.floor(pool.length / groupNames.length);
+    const groups = {};
 
-    let index = 0;
+GROUP_NAMES.forEach(name => {
+    groups[name] = [];
+});
 
-    // clear old groups first (IMPORTANT)
-    const oldGroups = await getDocs(
-        collection(window.db, "tournament_groups")
-    );
+shuffled.forEach((team,index) => {
 
-    oldGroups.forEach(async docSnap => {
-        await deleteDoc(doc(window.db, "tournament_groups", docSnap.id));
-    });
+    const groupName =
+        GROUP_NAMES[
+            index % groupCount
+        ];
 
-    // CREATE NEW GROUPS
-    for(let group of groupNames){
+    groups[groupName].push(team);
 
-        let teams = [];
+});
+for(const groupName of GROUP_NAMES){
 
-        for(let i = 0; i < groupSize; i++){
+    const groupTeams =
+        groups[groupName];
 
-            if(!pool[index]) continue;
+    await addDoc(
+        collection(
+            window.db,
+            "tournament_groups"
+        ),
+        {
+            group: groupName,
 
-            teams.push({
-                name: pool[index].name,
-                coach: pool[index].coach,
-                strength: pool[index].strength,
+            teams:
+                groupTeams.map(
+                    t => t.name
+                ),
 
-                played: 0,
-                won: 0,
-                drawn: 0,
-                lost: 0,
-                gf: 0,
-                ga: 0,
-                points: 0
-            });
-
-            index++;
+            qualifiersPerGroup
         }
+    );
+/*
+    groupsContainer.innerHTML += `
 
-        await addDoc(
-            collection(window.db, "tournament_groups"),
-            {
-                group,
-                teams
+    <div class="card">
+
+        <h4>
+            Group ${groupName}
+        </h4>
+
+        <ul>
+
+            ${
+                groupTeams.map(
+                    t => `<li>${t.name}</li>`
+                ).join("")
             }
-        );
-    }
 
-    alert("🏆 World Cup Groups Generated!");
-    await loadTournamentGroups();
+        </ul>
+
+    </div>
+
+    `;*/
 }
-function renderGroups(){
+}
+async function loadTournamentTeams(){
 
-    groupNames.forEach(group => {
+    tournamentTeams=[];
 
-        const table = document.getElementById(`group${group}Table`);
-        if(!table) return;
-
-        let teams = tournamentGroups[group] || [];
-
-        // FIFA ranking style
-        teams.sort((a,b) =>
-            b.points - a.points ||
-            (b.gf - b.ga) - (a.gf - a.ga)
+    const snap =
+        await getDocs(
+            collection(
+                window.db,
+                "tournament_teams"
+            )
         );
 
-        table.innerHTML = "";
+    snap.forEach(d=>{
 
-        teams.forEach(team => {
-
-            table.innerHTML += `
-                <tr>
-                    <td>${team.name}</td>
-                    <td>${team.played}</td>
-                    <td>${team.won}</td>
-                    <td>${team.drawn}</td>
-                    <td>${team.lost}</td>
-                    <td>${team.gf}</td>
-                    <td>${team.ga}</td>
-                    <td>${team.points}</td>
-                </tr>
-            `;
+        tournamentTeams.push({
+            id:d.id,
+            ...d.data()
         });
 
     });
+
 }
-async function generateWorldCupDraw(){
-
-    const snapshot = await getDocs(
-        collection(window.db, "tournament_teams")
-    );
-
-    let teams = [];
-
-    snapshot.forEach(docSnap => {
-        teams.push(docSnap.data());
-    });
-
-    if(teams.length !== 48){
-        alert("You must have exactly 48 teams");
-        return;
-    }
-
-    // STEP 1: SORT BY STRENGTH
-    teams.sort((a,b) => b.strength - a.strength);
-
-    // STEP 2: CREATE POTS
-    const pot1 = teams.slice(0,12);
-    const pot2 = teams.slice(12,24);
-    const pot3 = teams.slice(24,36);
-    const pot4 = teams.slice(36,48);
-
-    let groups = {
-        A: [], B: [], C: [], D: [],
-        E: [], F: [], G: [], H: []
-    };
-
-    const groupKeys = Object.keys(groups);
-
-    // STEP 3: DISTRIBUTE FROM EACH POT
-    distribute(pot1);
-    distribute(pot2);
-    distribute(pot3);
-    distribute(pot4);
-
-    async function distribute(pot){
-
-        pot = shuffle(pot);
-
-        for(let i = 0; i < pot.length; i++){
-
-            const groupKey = groupKeys[i % 8];
-
-            groups[groupKey].push({
-                ...pot[i],
-                played: 0,
-                won: 0,
-                drawn: 0,
-                lost: 0,
-                gf: 0,
-                ga: 0,
-                points: 0,
-                gd: 0
-            });
-        }
-    }
-
-    // STEP 4: SAVE TO FIRESTORE
-    const groupDocs = await getDocs(
-        collection(window.db, "tournament_groups")
-    );
-
-    groupDocs.forEach(async docSnap => {
-
-        const groupName = docSnap.data().group;
-
-        await updateDoc(
-            doc(window.db, "tournament_groups", docSnap.id),
-            {
-                teams: groups[groupName]
-            }
-        );
-
-    });
-
-    alert("World Cup groups generated successfully!");
-}
-function shuffle(array){
-
-    for(let i = array.length - 1; i > 0; i--){
-
-        const j = Math.floor(Math.random() * (i + 1));
-
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-
-    return array;
-}
-async function generateWorldCupTeams(){
+async function clearTournamentFixtures(){
 
     if(!isAdmin){
-        alert("Only admin can generate teams");
         return;
     }
 
-    const existing = await getDocs(
-        collection(window.db, "tournament_teams")
-    );
-
-    if(!existing.empty){
-        alert("Tournament teams already exist. Delete them first if you want to regenerate.");
-        return;
-    }
-
-    for(let name of worldCupTeams){
-
-        await addDoc(
-            collection(window.db, "tournament_teams"),
-            {
-                name: name,
-                coach: "",
-                strength: Math.floor(Math.random() * 30) + 70, // 70–99
-                group: "",
-                played: 0,
-                won: 0,
-                drawn: 0,
-                lost: 0,
-                gf: 0,
-                ga: 0,
-                points: 0
-            }
-        );
-    }
-
-    alert("48 World Cup teams generated successfully!");
-}
-
-async function getQualifiedTeams(){
-
-    const snapshot = await getDocs(
-        collection(window.db, "tournament_groups")
-    );
-
-    let qualified = [];
-
-    snapshot.forEach(docSnap => {
-
-        let group = docSnap.data().teams;
-
-        let sorted = [...group].sort((a,b) =>
-            b.points - a.points ||
-            (b.gf - b.ga) - (a.gf - a.ga)
-        );
-
-        // TOP 2 QUALIFY
-        qualified.push(sorted[0]);
-        qualified.push(sorted[1]);
-
-    });
-
-    return qualified;
-}
-
-
-async function loadTournamentGroups(){
-
-    const snapshot = await getDocs(
-        collection(window.db, "tournament_groups")
-    );
-
-    tournamentGroups = {};
-
-    snapshot.forEach(docSnap => {
-
-        const data = docSnap.data();
-        tournamentGroups[data.group] = data.teams;
-
-    });
-
-    renderGroups();
-}
-async function saveTournamentState(stage, qualifiedTeams){
-
-    await setDoc(
-        doc(window.db, "tournament_state", "main"),
-        {
-            currentStage: stage,
-            qualifiedTeams: qualifiedTeams,
-            updatedAt: new Date().toISOString()
-        }
-    );
-}
-function loadManualTeamOptions(){
-
-    const select = document.getElementById("manualTeamSelect");
-
-    if(!select) return;
-
-    select.innerHTML = "";
-
-    tournamentTeams.forEach(team => {
-
-        select.innerHTML += `
-            <option value="${team.name}">
-                ${team.name}
-            </option>
-        `;
-    });
-
-}
-async function assignTeamToGroup(){
-
-    const teamName =
-        document.getElementById("manualTeamSelect").value;
-
-    const group =
-        document.getElementById("manualGroupSelect").value;
-
-    if(!teamName || !group){
-        alert("Select team and group");
-        return;
-    }
-
-    // get all groups
-    const snapshot = await getDocs(
-        collection(window.db, "tournament_groups")
-    );
-
-    let updated = false;
-
-    for(let docSnap of snapshot.docs){
-
-        let data = docSnap.data();
-
-        // remove team from any existing group first
-        data.teams = data.teams.filter(
-            t => t.name !== teamName
-        );
-
-        // add to selected group
-        if(data.group === group){
-
-            const team = tournamentTeams.find(
-                t => t.name === teamName
-            );
-
-            if(team){
-
-                data.teams.push({
-                    name: team.name,
-                    coach: team.coach,
-                    strength: team.strength,
-                    played: 0,
-                    won: 0,
-                    drawn: 0,
-                    lost: 0,
-                    gf: 0,
-                    ga: 0,
-                    points: 0
-                });
-
-                updated = true;
-            }
-        }
-
-        await updateDoc(
-            doc(window.db, "tournament_groups", docSnap.id),
-            {
-                teams: data.teams
-            }
-        );
-    }
-
-    if(updated){
-        alert("Team assigned manually");
-        loadTournamentGroups();
-    }
-}
-function shuffleArray(array){
-
-    for(
-        let i=array.length-1;
-        i>0;
-        i--
-    ){
-
-        const j =
-            Math.floor(
-                Math.random()*(i+1)
-            );
-
-        [array[i],array[j]] =
-        [array[j],array[i]];
-    }
-
-    return array;
-}
-async function generateRoundOf32(){
-
-    const groupsSnapshot =
-        await getDocs(
-            collection(
-                window.db,
-                "tournament_groups"
-            )
-        );
-
-    let qualifiedTeams = [];
-
-    groupsSnapshot.forEach(docSnap=>{
-
-        const group =
-            docSnap.data();
-
-        const teams =
-            group.teams || [];
-
-        const sorted =
-            [...teams]
-            .sort((a,b)=>
-
-                b.points - a.points ||
-                b.gd - a.gd ||
-                b.gf - a.gf
-            );
-
-        if(sorted[0]){
-            qualifiedTeams.push({
-                ...sorted[0],
-                position:1
-            });
-        }
-
-        if(sorted[1]){
-            qualifiedTeams.push({
-                ...sorted[1],
-                position:2
-            });
-        }
-
-    });
-
-    const thirdPlaced = [];
-
-    groupsSnapshot.forEach(docSnap=>{
-
-        const group =
-            docSnap.data();
-
-        const teams =
-            group.teams || [];
-
-        const sorted =
-            [...teams]
-            .sort((a,b)=>
-
-                b.points - a.points ||
-                b.gd - a.gd ||
-                b.gf - a.gf
-            );
-
-        if(sorted[2]){
-            thirdPlaced.push(sorted[2]);
-        }
-
-    });
-
-    thirdPlaced.sort((a,b)=>
-
-        b.points - a.points ||
-        b.gd - a.gd ||
-        b.gf - a.gf
-    );
-
-    qualifiedTeams.push(
-        ...thirdPlaced.slice(0,8)
-    );
-
-    if(qualifiedTeams.length !== 32){
-        return;
-    }
-
-    const existing =
+    const snapshot =
         await getDocs(
             collection(
                 window.db,
@@ -3907,968 +5007,43 @@ async function generateRoundOf32(){
             )
         );
 
-    if(!existing.empty){
-        return;
-    }
+    for(const fixture of snapshot.docs){
 
-    shuffleArray(qualifiedTeams);
-
-    for(let i=0;i<32;i+=2){
-
-        await addDoc(
-            collection(
+        await deleteDoc(
+            doc(
                 window.db,
-                "tournament_fixtures"
-            ),
-            {
-                stage:"Round of 32",
-
-                home:
-                    qualifiedTeams[i].name,
-
-                away:
-                    qualifiedTeams[i+1].name,
-
-                result:"",
-                winner:""
-            }
+                "tournament_fixtures",
+                fixture.id
+            )
         );
+
     }
 
     alert(
-        "Round of 32 Generated"
+        "Tournament fixtures cleared"
     );
-}
-function renderQualifiedTeams(teams){
-
-    let html = `
-        <div class="card">
-            <h3>
-                Qualified Teams
-            </h3>
-    `;
-
-    teams.forEach(team => {
-
-        html += `
-            <p>
-                ${team.name}
-                (${team.group})
-            </p>
-        `;
-
-    });
-
-    html += "</div>";
-
-    document.getElementById(
-        "qualifiedTeams"
-    ).innerHTML = html;
-}
-function renderRound32(){
-
-    onSnapshot(
-
-        collection(
-            window.db,
-            "tournament_fixtures"
-        ),
-
-        (snapshot)=>{
-
-            let html = "";
-
-            snapshot.forEach(docSnap=>{
-
-                const match =
-                    docSnap.data();
-
-                if(
-                    match.stage !==
-                    "Round of 32"
-                ){
-                    return;
-                }
-
-                html += `
-                <div class="card">
-
-                    <h4>
-                        ${match.home}
-                        vs
-                        ${match.away}
-                    </h4>
-
-                    <p>
-                        ${
-                            match.result ||
-                            "Not Played"
-                        }
-                    </p>
-
-                </div>
-                `;
-
-            });
-
-            document.getElementById(
-                "round32Container"
-            ).innerHTML = html;
-
-        }
-    );
-}
-async function loadRound32Matches(){
-
-    const select =
-        document.getElementById(
-            "round32MatchSelect"
-        );
-
-    if(!select) return;
-
-    select.innerHTML =
-        `<option value="">
-            Select Match
-        </option>`;
-
-    const snapshot =
-        await getDocs(
-            collection(
-                window.db,
-                "tournament_fixtures"
-            )
-        );
-
-    snapshot.forEach(docSnap=>{
-
-        const match =
-            docSnap.data();
-
-        if(
-            match.stage !==
-            "Round of 32"
-        ){
-            return;
-        }
-
-        if(match.winner){
-            return;
-        }
-
-        select.innerHTML += `
-        <option value="${docSnap.id}">
-            ${match.home}
-            vs
-            ${match.away}
-        </option>
-        `;
-    });
-}
-function renderRound16(){
-
-    onSnapshot(
-
-        collection(
-            window.db,
-            "tournament_fixtures"
-        ),
-
-        (snapshot)=>{
-
-            let html = "";
-
-            snapshot.forEach(docSnap=>{
-
-                const match =
-                    docSnap.data();
-
-                if(
-                    match.stage !==
-                    "Round of 16"
-                ){
-                    return;
-                }
-
-                html += `
-                <div class="card">
-
-                    <h4>
-                        ${match.home}
-                        vs
-                        ${match.away}
-                    </h4>
-
-                    <p>
-                        ${
-                            match.result ||
-                            "Not Played"
-                        }
-                    </p>
-
-                </div>
-                `;
-            });
-
-            document.getElementById(
-                "round16Container"
-            ).innerHTML = html;
-        }
-    );
-}
-function renderKnockoutStage(
-    stage,
-    containerId
-){
-
-    onSnapshot(
-
-        collection(
-            window.db,
-            "tournament_fixtures"
-        ),
-
-        (snapshot)=>{
-
-            let html = "";
-
-            snapshot.forEach(docSnap=>{
-
-                const match =
-                    docSnap.data();
-
-                if(
-                    match.stage !== stage
-                ){
-                    return;
-                }
-
-                html += `
-                <div class="card">
-
-                    <h4>
-                        ${match.home}
-                        vs
-                        ${match.away}
-                    </h4>
-
-                    <p>
-                        ${
-                            match.result ||
-                            "Not Played"
-                        }
-                    </p>
-
-                </div>
-                `;
-            });
-
-            document.getElementById(
-                containerId
-            ).innerHTML = html;
-
-        }
-    );
-}
-async function saveRound32Result(){
-
-    const matchId =
-        document.getElementById(
-            "round32MatchSelect"
-        ).value;
-
-    const homeScore =
-        Number(
-            document.getElementById(
-                "round32HomeScore"
-            ).value
-        );
-
-    const awayScore =
-        Number(
-            document.getElementById(
-                "round32AwayScore"
-            ).value
-        );
-
-    if(!matchId){
-
-        alert(
-            "Select Match"
-        );
-
-        return;
-    }
-
-    if(homeScore === awayScore){
-
-        alert(
-            "Knockout matches cannot end in a draw"
-        );
-
-        return;
-    }
-
-    const docRef =
-        doc(
-            window.db,
-            "tournament_fixtures",
-            matchId
-        );
-
-    const snap =
-        await getDoc(docRef);
-
-    const match =
-        snap.data();
-
-    const winner =
-        homeScore > awayScore
-        ? match.home
-        : match.away;
-
-    await updateDoc(
-        docRef,
-        {
-            result:
-                `${homeScore} - ${awayScore}`,
-
-            winner
-        }
-    );
-
-    document.getElementById(
-        "round32HomeScore"
-    ).value = "";
-
-    document.getElementById(
-        "round32AwayScore"
-    ).value = "";
-
-    loadRound32Matches();
-
-    renderRound32();
-
-    await generateRoundOf16();
-    await checkKnockoutProgress();
-
-    alert(
-        winner +
-        " qualified"
-    );
-}
-async function generateRoundOf16(){
-
-    const snapshot =
-        await getDocs(
-            collection(
-                window.db,
-                "tournament_fixtures"
-            )
-        );
-
-    let winners = [];
-
-    snapshot.forEach(docSnap=>{
-
-        const data =
-            docSnap.data();
-
-        if(
-            data.stage ===
-            "Round of 32"
-            &&
-            data.winner
-        ){
-            winners.push(
-                data.winner
-            );
-        }
-
-    });
-
-    if(
-        winners.length !== 16
-    ){
-        return;
-    }
-
-    const existing =
-        await getDocs(
-            collection(
-                window.db,
-                "tournament_fixtures"
-            )
-        );
-
-    let alreadyExists =
-        false;
-
-    existing.forEach(docSnap=>{
-
-        if(
-            docSnap.data().stage ===
-            "Round of 16"
-        ){
-            alreadyExists = true;
-        }
-
-    });
-
-    if(alreadyExists){
-        return;
-    }
-
-    for(
-        let i=0;
-        i<8;
-        i++
-    ){
-
-        await addDoc(
-            collection(
-                window.db,
-                "tournament_fixtures"
-            ),
-            {
-                stage:"Round of 16",
-
-                home:
-                    winners[i*2],
-
-                away:
-                    winners[(i*2)+1],
-
-                result:"",
-
-                winner:""
-            }
-        );
-    }
-
-    alert(
-        "Round Of 16 Generated"
-    );
-}
-async function generateNextStage(
-    currentStage,
-    nextStage,
-    expectedWinners
-){
-
-    const snapshot =
-        await getDocs(
-            collection(
-                window.db,
-                "tournament_fixtures"
-            )
-        );
-
-    let winners = [];
-
-    snapshot.forEach(docSnap=>{
-
-        const data =
-            docSnap.data();
-
-        if(
-            data.stage === currentStage
-            &&
-            data.winner
-        ){
-            winners.push(
-                data.winner
-            );
-        }
-
-    });
-
-    if(
-        winners.length !== expectedWinners
-    ){
-        return;
-    }
-
-    const existing =
-        await getDocs(
-            collection(
-                window.db,
-                "tournament_fixtures"
-            )
-        );
-
-    let alreadyExists =
-        false;
-
-    existing.forEach(docSnap=>{
-
-        if(
-            docSnap.data().stage
-            === nextStage
-        ){
-            alreadyExists = true;
-        }
-
-    });
-
-    if(alreadyExists){
-        return;
-    }
-
-    for(
-        let i=0;
-        i<winners.length/2;
-        i++
-    ){
-
-        await addDoc(
-            collection(
-                window.db,
-                "tournament_fixtures"
-            ),
-            {
-                stage: nextStage,
-
-                home:
-                    winners[i*2],
-
-                away:
-                    winners[(i*2)+1],
-
-                result:"",
-
-                winner:""
-            }
-        );
-    }
-
-}
-async function generateThirdPlace(){
-
-    const snapshot =
-        await getDocs(
-            collection(
-                window.db,
-                "tournament_fixtures"
-            )
-        );
-
-    let semiMatches = [];
-
-    snapshot.forEach(docSnap => {
-
-        const data =
-            docSnap.data();
-
-        if(
-            data.stage ===
-            "Semi Finals"
-            &&
-            data.winner
-        ){
-            semiMatches.push(data);
-        }
-
-    });
-
-    if(semiMatches.length !== 2){
-        return;
-    }
-
-    const losers = [];
-
-    semiMatches.forEach(match => {
-
-        if(match.winner === match.home){
-            losers.push(match.away);
-        }else{
-            losers.push(match.home);
-        }
-
-    });
-
-    const existing =
-        snapshot.docs.some(
-            d =>
-            d.data().stage ===
-            "Third Place"
-        );
-
-    if(existing){
-        return;
-    }
-
-    await addDoc(
-        collection(
-            window.db,
-            "tournament_fixtures"
-        ),
-        {
-            stage:"Third Place",
-            home:losers[0],
-            away:losers[1],
-            result:"",
-            winner:""
-        }
-    );
-}
-async function generateChampion(){
-
-    const snapshot =
-        await getDocs(
-            collection(
-                window.db,
-                "tournament_fixtures"
-            )
-        );
-
-    snapshot.forEach(docSnap=>{
-
-        const match =
-            docSnap.data();
-
-        if(
-            match.stage==="Final"
-            &&
-            match.winner
-        ){
-
-            document.getElementById(
-                "championPanel"
-            ).innerHTML = `
-
-            <div class="champion-card">
-
-                🏆 WORLD CHAMPION
-
-                <br><br>
-
-                ${match.winner}
-
-            </div>
-
-            `;
-        }
-
-    });
-
-}
-async function checkKnockoutProgress(){
-
-   await generateRoundOf32();
-   await generateRoundOf16();
-    await generateNextStage(
-        "Round of 16",
-        "Quarter Finals",
-        8
-    );
-
-    await generateNextStage(
-        "Quarter Finals",
-        "Semi Finals",
-        4
-    );
-
-    await generateNextStage(
-        "Semi Finals",
-        "Final",
-        2
-    );
-
-    await generateThirdPlace();
-
-    await generateChampion();
-}
-async function renderKnockoutFixtures(){
-
-    const snapshot =
-        await getDocs(
-            collection(
-                window.db,
-                "tournament_fixtures"
-            )
-        );
-
-    const containers = {
-
-        "Round of 32":
-            document.getElementById("round32Container"),
-
-        "Round of 16":
-            document.getElementById("round16Container"),
-
-        "Quarter Finals":
-            document.getElementById("quarterFinalsContainer"),
-
-        "Semi Finals":
-            document.getElementById("semiFinalsContainer"),
-
-        "Final":
-            document.getElementById("finalContainer")
-
-    };
-
-    Object.values(containers)
-    .forEach(container=>{
-
-        if(container){
-            container.innerHTML="";
-        }
-
-    });
-
-    snapshot.forEach(docSnap=>{
-
-        const match =
-            docSnap.data();
-
-        const container =
-            containers[match.stage];
-
-        if(!container){
-            return;
-        }
-
-        container.innerHTML += `
-
-        <div class="match-card">
-
-            <div class="team-line
-                ${match.winner===match.home ? 'winner':''}">
-                <span>${match.home}</span>
-            </div>
-
-            <div class="team-line
-                ${match.winner===match.away ? 'winner':''}">
-                <span>${match.away}</span>
-            </div>
-
-            <hr>
-
-            <center>
-                ${match.result || "Not Played"}
-            </center>
-
-        </div>
-
-        `;
-    });
-
-}
-async function loadKnockoutMatches(){
-
-    const select =
-        document.getElementById(
-            "knockoutMatchSelect"
-        );
-
-    if(!select) return;
-
-    select.innerHTML =
-        `<option value="">
-            Select Match
-        </option>`;
-
-    const snapshot =
-        await getDocs(
-            collection(
-                window.db,
-                "tournament_fixtures"
-            )
-        );
-
-    snapshot.forEach(docSnap => {
-
-        const match =
-            docSnap.data();
-
-        if(match.winner){
-            return;
-        }
-
-        select.innerHTML += `
-        <option value="${docSnap.id}">
-            ${match.stage}
-            -
-            ${match.home}
-            vs
-            ${match.away}
-        </option>`;
-    });
-}
-async function saveKnockoutResult(){
-
-    const matchId =
-        document.getElementById(
-            "knockoutMatchSelect"
-        ).value;
-
-    const homeScore =
-        Number(
-            document.getElementById(
-                "knockoutHomeScore"
-            ).value
-        );
-
-    const awayScore =
-        Number(
-            document.getElementById(
-                "knockoutAwayScore"
-            ).value
-        );
-
-    if(!matchId){
-
-        alert("Select Match");
-
-        return;
-    }
-
-    if(homeScore === awayScore){
-
-        alert(
-            "Knockout matches need a winner"
-        );
-
-        return;
-    }
-
-    const matchRef =
-        doc(
-            window.db,
-            "tournament_fixtures",
-            matchId
-        );
-
-    const snap =
-        await getDoc(matchRef);
-
-    const match =
-        snap.data();
-
-    const winner =
-        homeScore > awayScore
-        ? match.home
-        : match.away;
-
-    await updateDoc(
-        matchRef,
-        {
-            result:
-                `${homeScore} - ${awayScore}`,
-
-            winner
-        }
-    );
-
-    await checkKnockoutProgress();
-
-    loadKnockoutMatches();
-
-    alert(
-        winner +
-        " advances"
-    );
-  renderKnockoutFixtures();  
-}
-function editGroup(group){
-
-    let title =
-    document.getElementById("group"+group+"Title");
-
-
-    let newName =
-    prompt(
-        "Edit group name:",
-        title.innerText
-    );
-
-
-    if(newName){
-
-        title.innerText = newName;
-
-    }
-
-
-    let table =
-    document.getElementById(
-        "group"+group+"Table"
-    );
-
-
-    let rows =
-    table.querySelectorAll("tr");
-
-
-    rows.forEach(row=>{
-
-        let cell=row.querySelector("td");
-
-
-        if(cell){
-
-            let oldName=cell.innerText;
-
-
-            let updated =
-            prompt(
-              "Edit team name:",
-              oldName
-            );
-
-
-            if(updated){
-
-                cell.innerText=updated;
-
-            }
-
-        }
-
-    });
 
 }
 window.onload = () => {
 
     loadVisitors();
-
+loadTournamentTeams();
     renderTeams();
+    renderTournamentTeams();
+    renderTournamentGroups();
+    renderTournamentFixtures();
+    renderScorers();
+    loadTournamentFixtureOptions();
+    renderTournamentTables();
     renderFixtures();
     renderResult();
    listenScorers();
-renderRound32();
-loadRound32Matches();
-renderRound16();
+   updateLeagueTable();
     updateMatchStatuses();
     setInterval(updateMatchStatuses,60000);
-    loadTournamentTeams();
-updateTournamentDashboard();
     applyPermissions();
-    changeCompetition();
-    loadKnockoutMatches();
-    generateChampion();
-    renderKnockoutFixtures();
-    renderKnockoutStage(
-    "Quarter Finals",
-    "quarterFinalsContainer"
-);
+   
 
-renderKnockoutStage(
-    "Semi Finals",
-    "semiFinalsContainer"
-);
-
-renderKnockoutStage(
-    "Third Place",
-    "thirdPlaceContainer"
-);
-
-renderKnockoutStage(
-    "Final",
-    "finalContainer"
-);
-    
 };
 window.addEventListener("beforeunload", () => {
 
@@ -4878,11 +5053,22 @@ window.addEventListener("beforeunload", () => {
     if (fixturesListener) fixturesListener();
 
 });
-window.generateWorldCupTeams = generateWorldCupTeams;
 window.adminLogin = adminLogin;
 window.visitorLogin = visitorLogin;
 window.signupVisitor = signupVisitor;
 window.logout = logout;
+window.togglePassword = togglePassword;
+window.generateGroups = generateGroups;
+window.generateFixtures = generateFixtures;
+window.addResult = addResult;
+window.addTeam = addTeam;
+window.addTournamentTeam = addTournamentTeam;
+window.generateTournamentFixtures =
+    generateTournamentFixtures;
+    window.clearTournamentFixtures =
+    clearTournamentFixtures;
+    window.addTournamentResult =
+    addTournamentResult;
     </script>
 </body>
 </html>
