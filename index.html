@@ -262,11 +262,162 @@
     color:green;
     font-weight:bold;
 }
+#knockoutBracket{
 
+display:flex;
+gap:20px;
+overflow-x:auto;
+padding:20px;
+
+}
+
+
+.bracket-column{
+
+min-width:220px;
+
+}
+
+
+.bracket-column h3{
+
+text-align:center;
+
+}
+
+
+.bracket-match{
+
+background:#f5f5f5;
+
+border-radius:10px;
+
+padding:12px;
+
+margin:20px 0;
+
+box-shadow:0 2px 5px #aaa;
+
+}
+
+
+.bracket-team{
+
+display:flex;
+justify-content:space-between;
+
+padding:5px;
+
+}
+
+
+.champion-box{
+
+font-size:25px;
+text-align:center;
+margin:20px;
+
+}
+.bracket{
+display:flex;
+gap:20px;
+overflow-x:auto;
+}
+
+.round{
+min-width:220px;
+}
+
+.match-box{
+
+background:#fff;
+border:1px solid #ccc;
+border-radius:10px;
+padding:10px;
+margin:10px;
+
+box-shadow:0 2px 5px #aaa;
+
+}
+
+.match-box h4{
+text-align:center;
+}
+
+.team{
+
+display:flex;
+justify-content:space-between;
+
+padding:5px;
+
+}
+
+.champion{
+
+font-size:22px;
+text-align:center;
+font-weight:bold;
+
+}
+.sidebar{
+
+position:fixed;
+
+left:0;
+
+top:0;
+
+width:220px;
+
+height:100%;
+
+background:#222;
+
+padding:20px;
+
+overflow-y:auto;
+
+z-index:1000;
+
+}
+
+.sidebar h3{
+
+color:white;
+
+text-align:center;
+
+}
+
+.sidebar button{
+
+width:100%;
+
+padding:12px;
+
+margin-bottom:10px;
+
+border:none;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+.main-content{
+
+margin-left:240px;
+
+padding:20px;
+
+}
 
     </style>
 </head>
 <body>
+
      <nav>
         <h2>League Manager</h2>
         <ul>
@@ -282,6 +433,15 @@
         </ul>
       
     </nav>
+    <div id="dashboardSection">
+
+<h2>📊 Dashboard</h2>
+
+<p>
+Welcome to Football Manager
+</p>
+
+</div>
    <section id="home" class="hero">
    <img src="matata.png.jpg" loading="lazy" alt="Football League Manager Banner">
 
@@ -296,7 +456,24 @@
     Supports gameweek scheduling, scorers tracking, and standings.
 </div>
 </section>
+<div class="sidebar">
 
+<h3>⚽ Football Manager</h3>
+
+<button onclick="showSection('dashboardSection')">
+📊 Dashboard
+</button>
+
+<button onclick="showSection('leagueSection')">
+🏆 League
+</button>
+
+<button onclick="showSection('tournamentSection')">
+🌍 Tournament
+</button>
+
+</div>
+<div class="main-content">
 <section id="login">
     <div class="container">
 
@@ -381,6 +558,7 @@ Forgot Password?
 
     </div>
 </section>
+<div id="leagueSection">
      <section class="features">
         <h2>Our Features</h2>
         <div class="feature-container">
@@ -606,6 +784,8 @@ Generate Scorer Fields
     </div>
     
 </section>
+</div>
+<div id="tournamentSection" style="display:none;">
 <section id="tournament">
 
 <header>
@@ -621,6 +801,86 @@ Generate Scorer Fields
      font-weight:bold;
 ">
 No Champion Yet
+</div>
+<div class="card">
+
+<h2>📊 Tournament Dashboard</h2>
+
+
+<table>
+
+<tr>
+<th>Total Teams</th>
+<td id="dashTeams">0</td>
+</tr>
+
+
+<tr>
+<th>Total Matches</th>
+<td id="dashMatches">0</td>
+</tr>
+
+
+<tr>
+<th>Played Matches</th>
+<td id="dashPlayed">0</td>
+</tr>
+
+
+<tr>
+<th>Remaining</th>
+<td id="dashRemaining">0</td>
+</tr>
+
+
+<tr>
+<th>Total Goals</th>
+<td id="dashGoals">0</td>
+</tr>
+
+
+<tr>
+<th>Live Matches</th>
+<td id="dashLive">0</td>
+</tr>
+
+
+<tr>
+<th>🏆 Champion</th>
+<td id="dashChampion">
+Not Yet
+</td>
+</tr>
+
+</table>
+</div>
+<h2>🔴 LIVE MATCH CENTER</h2>
+
+<div id="liveMatchCenter">
+
+Loading live matches...
+
+</div>
+<div class="card">
+
+<h3>🏆 Tournament Awards</h3>
+
+
+<table>
+
+<tr>
+<th>Award</th>
+<th>Player</th>
+<th>Team</th>
+<th>Stats</th>
+</tr>
+
+<tbody id="awardsTable">
+
+</tbody>
+
+</table>
+
 </div>
 <div class="container">
 
@@ -671,8 +931,14 @@ No Champion Yet
     </div>
 
 </div>
+<h2>🔴 Live Matches</h2>
 
-</section>
+
+<div id="liveMatches">
+
+No Live Matches
+
+</div>
 <div class="card">
 
     <h3>Tournament Groups</h3>
@@ -714,6 +980,13 @@ Clear Tournament Fixtures
 
     <tbody id="tournamentFixturesTable"></tbody>
 </table>
+<h2>🏆 Tournament Knockout Bracket</h2>
+
+<div id="knockoutBracket">
+
+Loading bracket...
+
+</div>
 <h3>Add Tournament Result</h3>
 
 <select id="tournamentFixtureSelect">
@@ -732,13 +1005,89 @@ Clear Tournament Fixtures
 <textarea id="tournamentScorers"
 placeholder="Enter scorers e.g. Mbappe 2, Haaland 1">
 </textarea>
+<div id="ownGoalContainer"></div>
+
+<button type="button"
+onclick="addOwnGoalField()">
++ Own Goal
+</button>
+<input id="assistPlayer" placeholder="Assist Player">
+
+<input id="assistTeam" placeholder="Assist Team">
+
+<input id="keeperName" placeholder="Goalkeeper">
+
+<select id="cleanSheet">
+
+<option value="false">No Clean Sheet</option>
+
+<option value="true">Clean Sheet</option>
+
+</select>
+<h4>🟨 Yellow Cards</h4>
+
+<textarea 
+id="yellowCards"
+placeholder="Example: John - Team A, Mike - Team B">
+</textarea>
+
+<h4>🟥 Red Cards</h4>
+
+<textarea 
+id="redCards"
+placeholder="Example: Peter - Team A">
+</textarea>
+<div>
+<h4>Live Match</h4>
+
+<select id="matchStatus">
+
+<option value="UPCOMING">
+Not Started
+</option>
+
+<option value="LIVE">
+LIVE
+</option>
+
+<option value="FINISHED">
+Finished
+</option>
+
+</select>
+
+
+<input 
+id="matchMinute"
+placeholder="Minute e.g 65">
+
+
+<textarea
+id="matchEvents"
+placeholder="Events:
+65' Goal John
+70' Yellow Mike">
+</textarea>
+
+
+</div>
 <button onclick="addTournamentResult()">
     Save Tournament Result
 </button>
+<div class="card">
+
+<h3>🏆 Qualified Teams</h3>
+
+<div id="qualifiedTeamsContainer">
+
+Loading...
+
+</div>
+
+</div>
 <h3>Group Standings</h3>
 
 <div id="tournamentTablesContainer"></div>
-</div>
 <button onclick="createRound32()">
 Generate Round of 32
 </button>
@@ -772,13 +1121,102 @@ Generate Final
 </tr>
 
 </thead>
-
-
-<tbody id="scorersTable">
+<tbody id="ScorersTable">
 
 </tbody>
 
 </table>
+
+<h2>👤 Player Statistics</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Player</th>
+<th>Team</th>
+<th>Matches</th>
+<th>Goals</th>
+<th>Assists</th>
+<th>Clean Sheets</th>
+<th>Yellow</th>
+<th>Red</th>
+
+</tr>
+
+</thead>
+
+<tbody id="playerStatsBody">
+
+</tbody>
+
+</table>
+<h2>🏅 Fair Play Table</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Position</th>
+<th>Team</th>
+<th>Yellow</th>
+<th>Red</th>
+<th>Points</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="fairPlayBody">
+
+</tbody>
+
+</table>
+<div class="stats-container">
+
+<h2>🏆 Top Assists</h2>
+
+<table id="assistTable">
+<thead>
+<tr>
+<th>Rank</th>
+<th>Player</th>
+<th>Team</th>
+<th>Assists</th>
+</tr>
+</thead>
+
+<tbody id="assistBody">
+</tbody>
+
+</table>
+
+<h2>🧤 Clean Sheets</h2>
+
+<table id="cleanSheetTable">
+
+<thead>
+<tr>
+<th>Rank</th>
+<th>Goalkeeper</th>
+<th>Team</th>
+<th>Clean Sheets</th>
+</tr>
+</thead>
+
+<tbody id="cleanSheetBody">
+</tbody>
+
+</table>
+
+</div>
+</section>
+</div>
     <footer>
         <p>&copy;2026 League Manager.All Rights Reserved</p>
     </footer>
@@ -811,7 +1249,9 @@ import {
   onAuthStateChanged,
   setPersistence,
   browserLocalPersistence,
-  signOut
+  signOut,
+  query,
+where
 }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 const firebaseConfig = {
@@ -834,7 +1274,6 @@ setPersistence(window.auth, browserLocalPersistence);
 window.collection = collection;
 window.addDoc = addDoc;
 window.getDocs = getDocs;
-window.getDoc = getDoc;
 window.setDoc = setDoc;
 window.deleteDoc = deleteDoc;
 window.doc = doc;
@@ -2309,8 +2748,24 @@ function renderTournamentFixtures(){
 
 
                     <td>
-                        ${fixture.match}
-                    </td>
+
+${fixture.match}
+
+${
+fixture.ownGoals && fixture.ownGoals.length > 0
+?
+`<br><small>
+Own Goals:
+${fixture.ownGoals.map(
+g =>
+`${g.player} (${g.team})`
+).join(", ")}
+</small>`
+:
+""
+}
+
+</td>
 
 
                     <td>
@@ -2342,6 +2797,104 @@ function renderTournamentFixtures(){
     );
 
 }
+function renderKnockoutBracket(){
+
+onSnapshot(
+
+collection(
+window.db,
+"tournament_fixtures"
+),
+
+snapshot=>{
+
+let rounds={
+
+"Round of 32":[],
+"Round of 16":[],
+"Quarter Final":[],
+"Semi Final":[],
+"Third Place":[],
+"Final":[]
+
+};
+
+snapshot.forEach(doc=>{
+
+let match = doc.data();
+
+if(rounds[match.stage]){
+
+rounds[match.stage].push(match);
+
+}
+
+});
+
+const container =
+document.getElementById(
+"knockoutBracket"
+);
+
+if(!container) return;
+
+container.innerHTML="";
+
+Object.keys(rounds).forEach(round=>{
+
+let html=`
+
+<div class="bracket-column">
+
+<h3>${round}</h3>
+
+`;
+
+rounds[round].forEach(match=>{
+
+
+html+=`
+
+
+<div class="bracket-match">
+
+
+<div class="bracket-team">
+
+<span>${match.home}</span>
+
+<b>
+${match.homeScore ?? "-"}
+</b>
+
+</div>
+
+<div class="bracket-team">
+
+<span>${match.away}</span>
+
+<b>
+${match.awayScore ?? "-"}
+</b>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+html+=`</div>`;
+container.innerHTML += html;
+
+});
+
+}
+
+);
+
+}
 
 function renderScorers(){
 
@@ -2370,11 +2923,19 @@ docSnap.data();
 
 if(!match.scorers) return;
 
-
+// Ignore own goals from top scorer rankings
+if(match.ownGoals){
+    console.log(
+        "Own goals excluded from Golden Boot",
+        match.ownGoals
+    );
+}
 
 match.scorers.forEach(player=>{
 
-
+if(player.ownGoal){
+    return;
+}
 if(!players[player.name]){
 
 
@@ -2482,6 +3043,599 @@ position++;
 
 });
 
+
+}
+function renderLiveMatches(){
+
+
+onSnapshot(
+
+collection(
+window.db,
+"tournament_results"
+),
+
+
+snapshot=>{
+
+
+const box =
+document.getElementById(
+"liveMatches"
+);
+
+box.innerHTML="";
+snapshot.forEach(doc=>{
+
+const match =
+doc.data();
+
+if(
+match.status === "LIVE"
+){
+
+box.innerHTML += `
+
+
+<div class="card">
+
+<h3>
+🔴 LIVE
+</h3>
+
+<h2>
+
+${match.home}
+
+${match.homeScore}
+
+-
+
+${match.awayScore}
+
+${match.away}
+
+</h2>
+
+<h3>
+
+${match.minute || 0}'
+
+</h3>
+
+<ul>
+
+${
+(match.events || [])
+.map(e=>`<li>${e}</li>`)
+.join("")
+}
+
+</ul>
+
+</div>
+
+`;
+
+}
+
+});
+
+}
+
+);
+
+
+}
+function updateLiveMinutes(){
+
+
+onSnapshot(
+
+collection(
+window.db,
+"tournament_results"
+),
+
+snapshot=>{
+
+
+snapshot.forEach(async docSnap=>{
+
+
+let match =
+docSnap.data();
+
+
+if(match.status==="LIVE"){
+
+
+let minute =
+Number(match.minute || 0);
+
+
+
+if(minute < 90){
+
+
+await updateDoc(
+
+doc(
+window.db,
+"tournament_results",
+docSnap.id
+),
+
+{
+
+minute: minute + 1
+
+}
+
+);
+
+}
+
+}
+
+});
+
+}
+);
+
+}
+function loadPlayerStats(){
+
+
+onSnapshot(
+
+collection(
+window.db,
+"tournament_results"
+),
+
+
+snapshot=>{
+
+
+let players={};
+
+
+
+snapshot.forEach(doc=>{
+
+
+const match = doc.data();
+
+
+
+/* COUNT MATCHES */
+
+let teams=[
+match.home,
+match.away
+];
+
+teams.forEach(team=>{
+
+
+let key=team;
+
+
+
+if(!players[key]){
+
+
+players[key]={
+
+player:team,
+team:team,
+matches:0,
+goals:0,
+assists:0,
+clean:0,
+yellow:0,
+red:0
+};
+
+}
+
+players[key].matches++;
+
+});
+
+
+/* GOALS */
+
+if(match.scorers){
+
+
+match.scorers.forEach(s=>{
+
+
+let name=s.name;
+
+
+
+if(!players[name]){
+
+
+players[name]={
+player:name,
+team:"",
+matches:0,
+goals:0,
+assists:0,
+clean:0,
+yellow:0,
+red:0
+};
+
+
+}
+
+
+
+players[name].goals +=
+Number(s.goals);
+
+
+
+});
+
+
+}
+
+
+/* ASSISTS */
+
+
+if(match.assists){
+
+
+match.assists.forEach(a=>{
+
+
+if(!players[a.player]){
+
+
+players[a.player]={
+
+player:a.player,
+team:a.team,
+matches:0,
+goals:0,
+assists:0,
+clean:0,
+yellow:0,
+red:0
+
+};
+
+
+}
+
+players[a.player].assists +=
+Number(a.assists);
+
+});
+
+}
+
+/* YELLOW CARDS */
+
+
+if(match.yellowCards){
+
+match.yellowCards.forEach(card=>{
+
+
+if(!players[card]){
+
+
+players[card]={
+
+player:card,
+team:"",
+matches:0,
+goals:0,
+assists:0,
+clean:0,
+yellow:0,
+red:0
+
+};
+
+}
+
+
+players[card].yellow++;
+
+
+});
+
+}
+
+/* RED CARDS */
+
+
+if(match.redCards){
+
+match.redCards.forEach(card=>{
+
+
+if(!players[card]){
+
+
+players[card]={
+
+player:card,
+team:"",
+matches:0,
+goals:0,
+assists:0,
+clean:0,
+yellow:0,
+red:0
+
+};
+
+}
+
+players[card].red++;
+
+});
+
+}
+/* CLEAN SHEETS */
+
+
+if(match.goalkeepers){
+
+match.goalkeepers.forEach(g=>{
+
+if(g.cleanSheet){
+
+
+if(!players[g.player]){
+
+
+players[g.player]={
+
+player:g.player,
+team:g.team,
+matches:0,
+goals:0,
+assists:0,
+clean:0,
+yellow:0,
+red:0
+
+};
+
+}
+
+players[g.player].clean++;
+
+}
+
+});
+
+}
+
+});
+
+let list =
+Object.values(players);
+list.sort(
+(a,b)=>b.goals-a.goals
+);
+
+let table =
+document.getElementById(
+"playerStatsBody"
+);
+
+table.innerHTML="";
+
+list.forEach(p=>{
+
+
+table.innerHTML += `
+
+<tr>
+
+<td>${p.player}</td>
+
+<td>${p.team}</td>
+
+<td>${p.matches}</td>
+
+<td>${p.goals}</td>
+
+<td>${p.assists}</td>
+
+<td>${p.clean}</td>
+
+<td>${p.yellow || 0}</td>
+
+<td>${p.red || 0}</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+);
+
+}
+function loadFairPlay(){
+
+
+onSnapshot(
+
+collection(
+window.db,
+"tournament_results"
+),
+
+
+snapshot=>{
+
+
+let teams={};
+
+
+
+snapshot.forEach(doc=>{
+
+
+let match =
+doc.data();
+
+
+
+
+let cards=[
+
+...(match.yellowCards || []),
+
+...(match.redCards || [])
+
+];
+
+
+
+
+[match.home,match.away]
+.forEach(team=>{
+
+
+if(!teams[team]){
+
+
+teams[team]={
+
+team,
+
+yellow:0,
+
+red:0,
+
+points:0
+
+};
+
+
+}
+
+
+
+});
+
+
+
+
+
+(match.yellowCards || [])
+.forEach(card=>{
+
+
+let team =
+card.split("-")[1];
+
+
+if(teams[team]){
+
+teams[team].yellow++;
+
+teams[team].points +=1;
+
+}
+
+});
+
+
+
+
+
+(match.redCards || [])
+.forEach(card=>{
+
+
+let team =
+card.split("-")[1];
+
+
+if(teams[team]){
+
+teams[team].red++;
+
+teams[team].points +=3;
+
+}
+
+
+});
+
+
+
+});
+
+
+
+
+let ranking =
+Object.values(teams);
+
+
+
+ranking.sort(
+(a,b)=>a.points-b.points
+);
+
+
+
+let table =
+document.getElementById(
+"fairPlayBody"
+);
+
+
+
+table.innerHTML="";
+
+
+
+ranking.forEach((t,i)=>{
+
+
+table.innerHTML +=`
+
+<tr>
+
+<td>${i+1}</td>
+
+<td>${t.team}</td>
+
+<td>${t.yellow}</td>
+
+<td>${t.red}</td>
+
+<td>${t.points}</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+);
 
 }
 function loadTournamentFixtureOptions(){
@@ -2593,58 +3747,66 @@ let scorers = [];
 
 if(scorersText){
 
-    scorers =
-    scorersText
-    .split(",")
-    .map(player=>{
+   scorers =
+scorersText
+.split(",")
+.map(player=>{
 
+    player = player.trim();
 
-        let parts =
-        player.trim()
-        .split(" ");
+    let ownGoal = false;
 
+    if(
+        player.toUpperCase().startsWith("OG ")
+    ){
 
-        let goals =
+        ownGoal = true;
+
+        player = player.substring(3).trim();
+    }
+
+    let parts =
+        player.split(" ");
+
+    let goals =
         parseInt(
             parts[parts.length - 1]
         );
 
-        let name;
-        if(isNaN(goals)){
+    let name;
 
-            goals = 1;
+    if(isNaN(goals)){
 
-            name =
+        goals = 1;
+
+        name =
             parts.join(" ");
+    }
+    else{
 
-        }
-        else{
-
-            name =
+        name =
             parts
             .slice(0,-1)
             .join(" ");
+    }
 
-        }
+    return {
 
+        name,
 
+        goals,
 
-        return {
+        ownGoal
 
-            name:name,
+    };
 
-            goals:goals
-
-        };
-
-
-    });
+});
 
 }
 const totalScorerGoals =
 scorers.reduce(
     (total,player)=>
-    total + player.goals,
+    total + Number(player.goals),
     0
 );
 
@@ -2700,39 +3862,119 @@ else if(awayScore > homeScore){
     winner = fixture.away;
 
 }
-    await addDoc(
+  await addDoc(
 
-        collection(
-            window.db,
-            "tournament_results"
-        ),
+    collection(
+        window.db,
+        "tournament_results"
+    ),
 
-        {
-            fixtureId,
+    {
+        fixtureId,
 
-            group:
-                fixture.group,
+        group: fixture.group,
 
-            match:
-                fixture.match,
+        match: fixture.match,
 
-            home:
-                fixture.home,
+        home: fixture.home,
 
-            away:
-                fixture.away,
+        away: fixture.away,
 
-           homeScore,
+        homeScore,
 
-awayScore,
+        awayScore,
 
-scorers,
+        scorers,
 
-stage:
-    fixture.stage
-        }
 
-    );
+        // ADD ASSISTS HERE
+        assists:[
+
+            {
+                player:
+                document.getElementById(
+                    "assistPlayer"
+                ).value,
+
+                team:
+                document.getElementById(
+                    "assistTeam"
+                ).value,
+
+                assists:1
+            }
+
+        ],
+
+
+        // ADD CLEAN SHEET HERE
+        goalkeepers:[
+
+            {
+                player:
+                document.getElementById(
+                    "keeperName"
+                ).value,
+
+
+                team:
+                document.getElementById(
+                    "assistTeam"
+                ).value,
+
+
+                cleanSheet:
+                document.getElementById(
+                    "cleanSheet"
+                ).value === "true"
+            }
+
+        ],
+
+yellowCards:
+document.getElementById(
+"yellowCards"
+).value
+.split(",")
+.map(card=>card.trim())
+.filter(card=>card),
+
+
+redCards:
+document.getElementById(
+"redCards"
+).value
+.split(",")
+.map(card=>card.trim())
+.filter(card=>card),
+        ownGoals,
+
+       status:
+
+document.getElementById(
+"matchStatus"
+).value.toUpperCase(),
+
+
+minute:
+
+document.getElementById(
+"matchMinute"
+).value,
+
+
+events:
+
+document.getElementById(
+"matchEvents"
+).value
+.split("\n")
+.filter(e=>e.trim()),
+
+        stage: fixture.stage
+    }
+
+);
 await updateDoc(
 
     doc(
@@ -2753,6 +3995,86 @@ await updateDoc(
 
 );
 
+// LIVE MATCH STATUS UPDATE
+
+
+await updateDoc(
+
+    doc(
+        window.db,
+        "tournament_fixtures",
+        fixtureId
+    ),
+
+    {
+
+        status:
+        document.getElementById(
+            "matchStatus"
+        ).value
+
+    }
+
+);
+
+
+
+// UPDATE RESULT LIVE DATA TOO
+
+const resultSnap =
+await getDocs(
+    query(
+        collection(
+            window.db,
+            "tournament_results"
+        ),
+        where(
+            "fixtureId",
+            "==",
+            fixtureId
+        )
+    )
+);
+
+
+resultSnap.forEach(async(resultDoc)=>{
+
+
+await updateDoc(
+
+    doc(
+        window.db,
+        "tournament_results",
+        resultDoc.id
+    ),
+
+    {
+
+        status:
+        document.getElementById(
+            "matchStatus"
+        ).value,
+
+
+        minute:
+        document.getElementById(
+            "matchMinute"
+        ).value,
+
+
+        events:
+        document.getElementById(
+            "matchEvents"
+        ).value
+        .split("\n")
+        .filter(e=>e.trim())
+
+    }
+
+);
+
+
+});
     document.getElementById(
         "tournamentHomeScore"
     ).value = "";
@@ -3154,15 +4476,16 @@ function getQualifiedTeams(matches){
 
         // THIRD
 
-        thirdPlaced.push({
-            ...teams[2],
-            group:group
-        });
+       if(teams[2]){
 
+thirdPlaced.push({
+    ...teams[2],
+    group:group
+});
+
+}
 
     });
-
-
 
     // Best 8 third placed teams
     thirdPlaced.sort((a,b)=>{
@@ -3379,10 +4702,7 @@ return;
 
 }
 
-
-
 let fixtures=[];
-
 
 
 for(let i=0;i<8;i+=2){
@@ -3449,7 +4769,6 @@ function getQuarterFinalWinners(matches){
 
 
     });
-
 
 
     return winners;
@@ -4413,7 +5732,27 @@ resultsUnsub = onSnapshot(
             table.innerHTML += `
             <tr>
                 <td>${result.match}</td>
-                <td>${result.result}</td>
+               <td>
+
+${result.result}
+
+${
+result.ownGoals &&
+result.ownGoals.length > 0
+?
+`<br>
+<small>
+Own Goals:
+${result.ownGoals.map(
+g =>
+`${g.player} (${g.team})`
+).join(", ")}
+</small>`
+:
+""
+}
+
+</td>
                 <td>${isAdmin
                     ? `<button onclick="deleteResult('${result.id}')">Delete</button>`
                     : "View Only"
@@ -5025,6 +6364,968 @@ async function clearTournamentFixtures(){
     );
 
 }
+function addOwnGoalField(){
+
+    document.getElementById(
+        "ownGoalContainer"
+    ).innerHTML += `
+
+    <div>
+
+        <input
+            type="text"
+            class="ownGoalPlayer"
+            placeholder="Player Name">
+
+        <input
+            type="text"
+            class="ownGoalTeam"
+            placeholder="Team">
+
+    </div>
+
+    `;
+}
+async function loadTopAssists(){
+
+const matchesSnap = await getDocs(
+    collection(window.db,"tournament_results")
+);
+
+let assists = {};
+
+
+matchesSnap.forEach(doc=>{
+
+const match = doc.data();
+
+
+if(match.assists){
+
+match.assists.forEach(a=>{
+
+let key = a.player;
+
+
+if(!assists[key]){
+
+assists[key]={
+
+player:a.player,
+team:a.team,
+assists:0
+
+};
+
+}
+
+assists[key].assists += Number(a.assists || 1);
+
+});
+
+}
+
+});
+
+let list = Object.values(assists);
+
+list.sort((a,b)=>b.assists-a.assists);
+
+let html="";
+
+list.slice(0,10).forEach((p,i)=>{
+
+html+=`
+
+<tr>
+<td>${i+1}</td>
+
+<td>${p.player}</td>
+
+<td>${p.team}</td>
+
+<td>${p.assists}</td>
+
+</tr>
+
+`;
+
+});
+
+document.getElementById("assistBody").innerHTML=html;
+
+}
+async function loadCleanSheets(){
+
+const matchesSnap = await getDocs(
+    collection(window.db,"tournament_results")
+);
+
+let keepers={};
+
+matchesSnap.forEach(doc=>{
+
+const m=doc.data();
+
+if(m.goalkeepers){
+
+m.goalkeepers.forEach(g=>{
+
+if(g.cleanSheet){
+
+let key=g.player;
+
+if(!keepers[key]){
+
+keepers[key]={
+
+player:g.player,
+team:g.team,
+clean:0
+
+};
+
+}
+
+keepers[key].clean++;
+
+}
+
+});
+
+}
+
+});
+
+let list=Object.values(keepers);
+
+list.sort((a,b)=>b.clean-a.clean);
+
+let html="";
+
+list.slice(0,10).forEach((k,i)=>{
+
+
+html+=`
+
+<tr>
+
+<td>${i+1}</td>
+
+<td>${k.player}</td>
+
+<td>${k.team}</td>
+
+<td>${k.clean}</td>
+
+</tr>
+
+`;
+
+});
+
+document.getElementById("cleanSheetBody").innerHTML=html;
+
+}
+function loadTournamentAwards(){
+
+
+let scorers = {};
+let keepers = {};
+
+
+
+// GET SCORERS
+
+onSnapshot(
+
+collection(
+window.db,
+"tournament_results"
+),
+
+snapshot=>{
+
+
+snapshot.forEach(doc=>{
+
+
+let match =
+doc.data();
+
+
+
+if(match.scorers){
+
+
+match.scorers.forEach(p=>{
+
+
+if(p.ownGoal)
+return;
+
+
+if(!scorers[p.name]){
+
+
+scorers[p.name]={
+
+player:p.name,
+team:match.home,
+goals:0
+
+};
+
+}
+
+scorers[p.name].goals +=
+Number(p.goals);
+
+});
+
+}
+
+if(match.goalkeepers){
+
+
+match.goalkeepers.forEach(k=>{
+
+
+if(k.cleanSheet){
+
+
+if(!keepers[k.player]){
+
+
+keepers[k.player]={
+
+player:k.player,
+team:k.team,
+clean:0
+
+};
+
+}
+
+keepers[k.player].clean++;
+
+}
+
+});
+
+
+}
+
+});
+
+let topScorer =
+Object.values(scorers)
+.sort((a,b)=>b.goals-a.goals)[0];
+
+
+
+let topKeeper =
+Object.values(keepers)
+.sort((a,b)=>b.clean-a.clean)[0];
+
+
+
+let table =
+document.getElementById(
+"awardsTable"
+);
+
+table.innerHTML=`
+
+
+<tr>
+
+<td>🥇 Golden Boot</td>
+
+<td>
+${topScorer?.player || "-"}
+</td>
+
+<td>
+${topScorer?.team || "-"}
+</td>
+
+<td>
+${topScorer?.goals || 0} Goals
+</td>
+
+</tr>
+
+<tr>
+
+<td>🧤 Golden Glove</td>
+
+<td>
+${topKeeper?.player || "-"}
+</td>
+
+<td>
+${topKeeper?.team || "-"}
+</td>
+
+<td>
+${topKeeper?.clean || 0} Clean Sheets
+</td>
+
+</tr>
+
+<tr>
+
+<td>⭐ Player Of Tournament</td>
+
+<td>
+Pending
+</td>
+
+<td>
+-
+</td>
+
+<td>
+-
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+function renderQualifiedTeams(){
+
+
+onSnapshot(
+
+collection(
+window.db,
+"tournament_fixtures"
+),
+
+snapshot=>{
+
+
+let matches = [];
+
+
+snapshot.forEach(docSnap=>{
+
+
+let data = docSnap.data();
+
+
+if(
+data.stage === "Group Stage" &&
+data.played === true
+){
+
+matches.push(data);
+
+}
+
+});
+
+if(matches.length === 0){
+
+document.getElementById(
+"qualifiedTeamsContainer"
+).innerHTML =
+"No qualifiers yet";
+
+return;
+
+}
+
+let qualified =
+getQualifiedTeams(matches);
+
+let html = "";
+
+let groups = {};
+
+
+// separate groups
+
+qualified.forEach(team=>{
+
+
+let group =
+team.group || "Qualified";
+
+
+if(!groups[group]){
+
+groups[group]=[];
+
+}
+
+groups[group].push(team);
+
+
+});
+
+Object.keys(groups)
+.sort()
+.forEach(group=>{
+
+
+html += `
+
+<h4>
+Group ${group}
+</h4>
+
+<table>
+
+<tr>
+<th>Position</th>
+<th>Team</th>
+<th>Points</th>
+<th>GD</th>
+</tr>
+
+`;
+
+groups[group]
+.forEach((team,index)=>{
+
+
+html += `
+
+<tr>
+
+<td>
+${index+1}
+</td>
+
+<td>
+${team.team}
+</td>
+
+
+<td>
+${team.points}
+</td>
+
+
+<td>
+${team.gd}
+</td>
+
+
+</tr>
+
+`;
+
+});
+
+html += `
+
+</table>
+
+`;
+
+});
+
+html += `
+
+<h4>
+⭐ Best Third Placed Teams
+</h4>
+
+`;
+
+document.getElementById(
+"qualifiedTeamsContainer"
+).innerHTML = html;
+
+
+}
+
+);
+
+}
+function loadTournamentDashboard(){
+
+
+onSnapshot(
+
+collection(
+window.db,
+"tournament_fixtures"
+),
+
+fixtureSnap=>{
+
+
+let totalMatches = 0;
+
+let played = 0;
+
+let remaining = 0;
+
+let live = 0;
+
+
+
+fixtureSnap.forEach(doc=>{
+
+
+let f =
+doc.data();
+
+
+
+totalMatches++;
+
+
+
+if(f.played){
+
+played++;
+
+}
+else{
+
+remaining++;
+
+}
+
+
+
+if(f.status === "LIVE"){
+
+live++;
+
+}
+
+
+
+});
+
+
+
+document.getElementById(
+"dashMatches"
+).innerHTML =
+totalMatches;
+
+
+
+document.getElementById(
+"dashPlayed"
+).innerHTML =
+played;
+
+
+
+document.getElementById(
+"dashRemaining"
+).innerHTML =
+remaining;
+
+
+
+document.getElementById(
+"dashLive"
+).innerHTML =
+live;
+
+
+
+});
+
+
+
+
+
+// TEAMS COUNT
+
+
+onSnapshot(
+
+collection(
+window.db,
+"tournament_teams"
+),
+
+snap=>{
+
+
+document.getElementById(
+"dashTeams"
+).innerHTML =
+snap.size;
+
+
+}
+
+);
+
+
+
+
+
+// GOALS
+
+
+onSnapshot(
+
+collection(
+window.db,
+"tournament_results"
+),
+
+snap=>{
+
+
+let goals=0;
+
+
+snap.forEach(doc=>{
+
+
+let r =
+doc.data();
+
+
+
+goals +=
+Number(r.homeScore)
++
+Number(r.awayScore);
+
+});
+
+document.getElementById(
+"dashGoals"
+).innerHTML =
+goals;
+
+});
+
+// CHAMPION
+
+
+onSnapshot(
+
+collection(
+window.db,
+"tournament_fixtures"
+),
+
+snap=>{
+
+
+snap.forEach(doc=>{
+
+
+let f =
+doc.data();
+
+
+
+if(
+f.stage==="Final" &&
+f.played
+){
+
+
+let champion =
+getChampion(f);
+
+
+
+document.getElementById(
+"dashChampion"
+).innerHTML =
+"🏆 " + champion;
+
+
+}
+
+});
+
+});
+
+}
+function loadLiveMatchCenter(){
+
+
+onSnapshot(
+
+collection(
+window.db,
+"tournament_fixtures"
+),
+
+snapshot=>{
+
+
+let html = "";
+
+
+
+snapshot.forEach(doc=>{
+
+
+const match =
+doc.data();
+
+
+
+if(match.status !== "LIVE"){
+    return;
+}
+
+
+
+html += `
+
+<div class="card">
+
+
+<h3>
+🔴 LIVE
+</h3>
+
+
+<h3>
+${match.home}
+ 
+${match.homeScore ?? 0}
+
+ -
+
+${match.awayScore ?? 0}
+
+${match.away}
+</h3>
+
+
+
+<p>
+
+⏱ Minute:
+
+${match.minute || 0}'
+
+</p>
+
+
+
+</div>
+
+`;
+
+
+
+});
+
+
+
+if(html===""){
+
+html="No Live Matches";
+
+}
+
+
+document.getElementById(
+"liveMatchCenter"
+).innerHTML = html;
+
+
+
+});
+
+}
+function loadKnockoutBracket(){
+
+
+onSnapshot(
+
+collection(
+window.db,
+"tournament_fixtures"
+),
+
+snapshot=>{
+
+
+let rounds={
+
+"Round of 32":[],
+"Round of 16":[],
+"Quarter Final":[],
+"Semi Final":[],
+"Third Place":[],
+"Final":[]
+
+};
+
+
+
+snapshot.forEach(doc=>{
+
+
+let f=doc.data();
+
+
+
+if(rounds[f.stage]){
+
+
+rounds[f.stage].push(f);
+
+
+}
+
+
+});
+
+
+
+let html =
+`
+<div class="bracket">
+`;
+
+
+
+Object.keys(rounds).forEach(round=>{
+
+
+html += `
+
+<div class="round">
+
+<h3>${round}</h3>
+
+`;
+
+
+
+rounds[round].forEach(match=>{
+
+
+html += `
+
+<div class="match-box">
+
+
+<div class="team">
+
+<span>
+${match.home || "-"}
+</span>
+
+<b>
+${match.homeScore ?? ""}
+</b>
+
+</div>
+
+
+
+<div class="team">
+
+<span>
+${match.away || "-"}
+</span>
+
+<b>
+${match.awayScore ?? ""}
+</b>
+
+</div>
+
+
+
+</div>
+
+`;
+
+
+
+});
+
+
+
+html += "</div>";
+
+
+});
+
+
+
+html += "</div>";
+
+
+
+
+
+// champion
+
+
+snapshot.forEach(doc=>{
+
+
+let f=doc.data();
+
+
+if(
+f.stage==="Final" &&
+f.played
+){
+
+html += `
+
+<div class="champion">
+
+🏆 Champion:
+${getChampion(f)}
+
+</div>
+
+`;
+
+}
+
+});
+
+document.getElementById(
+"knockoutBracket"
+).innerHTML = html;
+
+});
+
+}
+function showSection(sectionId){
+
+document.getElementById(
+"dashboardSection"
+).style.display = "none";
+
+document.getElementById(
+"leagueSection"
+).style.display = "none";
+
+document.getElementById(
+"tournamentSection"
+).style.display = "none";
+
+document.getElementById(
+sectionId
+).style.display = "block";
+
+}
 window.onload = () => {
 
     loadVisitors();
@@ -5033,7 +7334,13 @@ loadTournamentTeams();
     renderTournamentTeams();
     renderTournamentGroups();
     renderTournamentFixtures();
+    renderKnockoutBracket();
     renderScorers();
+    loadPlayerStats();
+    loadFairPlay();
+    renderLiveMatches();
+    updateLiveMinutes();
+    loadTournamentAwards();
     loadTournamentFixtureOptions();
     renderTournamentTables();
     renderFixtures();
@@ -5043,7 +7350,11 @@ loadTournamentTeams();
     updateMatchStatuses();
     setInterval(updateMatchStatuses,60000);
     applyPermissions();
-   
+   loadTopAssists();
+loadCleanSheets();
+renderQualifiedTeams();
+loadTournamentDashboard();
+loadKnockoutBracket();
 
 };
 window.addEventListener("beforeunload", () => {
@@ -5071,5 +7382,6 @@ window.generateTournamentFixtures =
     window.addTournamentResult =
     addTournamentResult;
     </script>
+    </div>
 </body>
 </html>
