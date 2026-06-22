@@ -1237,7 +1237,9 @@ import {
   updateDoc,
   onSnapshot,
   getDoc,
-  setDoc
+  setDoc,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import {
   getAuth,
@@ -1249,9 +1251,8 @@ import {
   onAuthStateChanged,
   setPersistence,
   browserLocalPersistence,
-  signOut,
-  query,
-where
+  signOut
+
 }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 const firebaseConfig = {
@@ -1279,6 +1280,9 @@ window.deleteDoc = deleteDoc;
 window.doc = doc;
 window.updateDoc = updateDoc;
 window.onSnapshot = onSnapshot;
+window.getDoc = getDoc;
+window.query = query;
+window.where = where;
 window.createUserWithEmailAndPassword =
     createUserWithEmailAndPassword;
 
@@ -1325,7 +1329,7 @@ async function getUserRole(uid){
 }
 
 window.getUserRole = getUserRole;
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(window.auth, async (user) => {
 
     if (user) {
 
@@ -3747,60 +3751,100 @@ let scorers = [];
 
 if(scorersText){
 
-   scorers =
+
+scorers =
 scorersText
 .split(",")
-.map(player=>{
+.map(item=>{
 
-    player = player.trim();
 
-    let ownGoal = false;
+let [team,playerText] =
+item.split(":");
 
-    if(
-        player.toUpperCase().startsWith("OG ")
-    ){
 
-        ownGoal = true;
+team = team.trim();
 
-        player = player.substring(3).trim();
-    }
+playerText =
+playerText.trim();
 
-    let parts =
-        player.split(" ");
 
-    let goals =
-        parseInt(
-            parts[parts.length - 1]
-        );
 
-    let name;
+let ownGoal = false;
 
-    if(isNaN(goals)){
 
-        goals = 1;
 
-        name =
-            parts.join(" ");
-    }
-    else{
+if(
+playerText.toUpperCase().startsWith("OG ")
+){
 
-        name =
-            parts
-            .slice(0,-1)
-            .join(" ");
-    }
 
-    return {
+ownGoal = true;
 
-        name,
 
-        goals,
+playerText =
+playerText.substring(3).trim();
 
-        ownGoal
 
-    };
+}
+
+
+
+let parts =
+playerText.split(" ");
+
+
+
+let goals =
+parseInt(
+parts[parts.length - 1]
+);
+
+
+
+let name;
+
+
+
+if(isNaN(goals)){
+
+
+goals = 1;
+
+
+name =
+parts.join(" ");
+
+
+}
+
+else{
+
+
+name =
+parts
+.slice(0,-1)
+.join(" ");
+
+
+}
+
+
+
+return {
+
+
+name,
+
+goals,
+
+team,
+
+ownGoal
+
+};
 
 });
+
 
 }
 const totalScorerGoals =
@@ -3852,16 +3896,6 @@ else{
 
 }
 
-if(homeScore > awayScore){
-
-    winner = fixture.home;
-
-}
-else if(awayScore > homeScore){
-
-    winner = fixture.away;
-
-}
   await addDoc(
 
     collection(
@@ -6535,7 +6569,7 @@ let keepers = {};
 
 
 
-// GET SCORERS
+// GET RESULTS
 
 onSnapshot(
 
@@ -6550,10 +6584,11 @@ snapshot=>{
 snapshot.forEach(doc=>{
 
 
-let match =
-doc.data();
+let match = doc.data();
 
 
+
+// SCORERS
 
 if(match.scorers){
 
@@ -6565,25 +6600,39 @@ if(p.ownGoal)
 return;
 
 
+let goals =
+Number(p.goals || 0);
+
+
+
 if(!scorers[p.name]){
 
 
 scorers[p.name]={
 
 player:p.name,
-team:match.home,
+
+team:
+p.team || 
+match.home,
+
 goals:0
 
 };
 
 }
 
-scorers[p.name].goals +=
-Number(p.goals);
+
+scorers[p.name].goals += goals;
+
 
 });
 
 }
+
+
+
+// CLEAN SHEETS
 
 if(match.goalkeepers){
 
@@ -6600,33 +6649,49 @@ if(!keepers[k.player]){
 keepers[k.player]={
 
 player:k.player,
+
 team:k.team,
+
 clean:0
 
 };
 
 }
 
+
 keepers[k.player].clean++;
 
 }
 
+
 });
 
 
 }
 
+
+
 });
+
+
+
+
+// SORT AWARDS
 
 let topScorer =
 Object.values(scorers)
-.sort((a,b)=>b.goals-a.goals)[0];
-
+.sort((a,b)=>
+b.goals-a.goals
+)[0];
 
 
 let topKeeper =
 Object.values(keepers)
-.sort((a,b)=>b.clean-a.clean)[0];
+.sort((a,b)=>
+b.clean-a.clean
+)[0];
+
+
 
 
 
@@ -6635,7 +6700,10 @@ document.getElementById(
 "awardsTable"
 );
 
-table.innerHTML=`
+
+
+table.innerHTML = `
+
 
 
 <tr>
@@ -6651,10 +6719,13 @@ ${topScorer?.team || "-"}
 </td>
 
 <td>
-${topScorer?.goals || 0} Goals
+${topScorer?.goals ?? 0} Goals
 </td>
 
 </tr>
+
+
+
 
 <tr>
 
@@ -6669,10 +6740,13 @@ ${topKeeper?.team || "-"}
 </td>
 
 <td>
-${topKeeper?.clean || 0} Clean Sheets
+${topKeeper?.clean ?? 0} Clean Sheets
 </td>
 
 </tr>
+
+
+
 
 <tr>
 
@@ -6691,6 +6765,7 @@ Pending
 </td>
 
 </tr>
+
 
 `;
 
