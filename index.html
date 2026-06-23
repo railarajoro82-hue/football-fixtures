@@ -1016,6 +1016,7 @@ onclick="addOwnGoalField()">
 <input id="assistTeam" placeholder="Assist Team">
 
 <input id="keeperName" placeholder="Goalkeeper">
+<input id="keeperTeam" placeholder="Goalkeeper Team">
 
 <select id="cleanSheet">
 
@@ -1023,6 +1024,9 @@ onclick="addOwnGoalField()">
 
 <option value="true">Clean Sheet</option>
 
+</select>
+<select id="keeperTeam">
+    <option value="">Select Team</option>
 </select>
 <h4>🟨 Yellow Cards</h4>
 
@@ -3758,14 +3762,25 @@ scorersText
 .map(item=>{
 
 
-let [team,playerText] =
+let partsSplit =
 item.split(":");
 
+if(partsSplit.length < 2){
 
-team = team.trim();
+console.error(
+"Invalid scorer format:",
+item
+);
 
-playerText =
-playerText.trim();
+return null;
+
+}
+
+let team =
+partsSplit[0].trim();
+
+let playerText =
+partsSplit[1].trim();
 
 
 
@@ -3843,8 +3858,8 @@ ownGoal
 
 };
 
-});
-
+})
+.filter(x => x !== null);
 
 }
 const totalScorerGoals =
@@ -3922,49 +3937,32 @@ else{
 
 
         // ADD ASSISTS HERE
-        assists:[
-
-            {
-                player:
-                document.getElementById(
-                    "assistPlayer"
-                ).value,
-
-                team:
-                document.getElementById(
-                    "assistTeam"
-                ).value,
-
-                assists:1
-            }
-
-        ],
+       assists:
+document.getElementById("assistPlayer")
+.value
+.split(",")
+.map(player=>({
+player:player.trim(),
+team:
+document.getElementById("assistTeam").value,
+assists:1
+}))
+.filter(a=>a.player),
 
 
         // ADD CLEAN SHEET HERE
-        goalkeepers:[
-
-            {
-                player:
-                document.getElementById(
-                    "keeperName"
-                ).value,
-
-
-                team:
-                document.getElementById(
-                    "assistTeam"
-                ).value,
-
-
-                cleanSheet:
-                document.getElementById(
-                    "cleanSheet"
-                ).value === "true"
-            }
-
-        ],
-
+       goalkeepers:
+document.getElementById("keeperName")
+.value
+.split(",")
+.filter(player => player.trim())
+.map(player=>({
+    player: player.trim(),
+    team: "",
+    cleanSheet:
+    document.getElementById("cleanSheet").value === "true"
+}))
+.filter(k=>k.player),
 yellowCards:
 document.getElementById(
 "yellowCards"
