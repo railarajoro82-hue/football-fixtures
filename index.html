@@ -24,10 +24,10 @@
             font-family:Arial, sans-serif;
         }
         body{
-            background:#f4f4f4;
-            font-family:Arial,sans serif;
-            margin:0;
-        }
+    background:#f4f4f4;
+    font-family:Arial, sans-serif;
+    margin:0;
+}
         /*Navigaton*/
         nav{
             background:#1e3a8a;
@@ -43,10 +43,10 @@
             gap:20px;
         }
         nav ul li a{
-            color:white;
-            text-decoration:darkgoldenrod;
-            font-weight:bold;
-        }
+color:white;
+text-decoration:none;
+font-weight:bold;
+}
         /*Hero Section*/
       .hero{
     min-height:100vh;
@@ -90,13 +90,14 @@
             margin-top:30px;
         }
         .card{
-            background:white;
-            padding:20px;
-            width:1000px;
-            border-radius:10px;
-            box-shadow:0 2px 8px rgba(0,0,0,0.2);
-            margin-bottom:20px;
-        }
+background:white;
+padding:20px;
+width:100%;
+max-width:1000px;
+margin:20px auto;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
         /*Upcoming Matches*/
         .matches{
             padding:50px;
@@ -133,18 +134,7 @@
             max-width:1000px;
             margin:auto;
         }
-        .hero{
-    position: relative;
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    overflow: hidden;
-    color: chartreuse;
-}
-
+     
 /* image becomes the background */
 .hero-image{
     position: absolute;
@@ -181,13 +171,34 @@
             margin-bottom:20px;
             box-shadow:0 2px 5px rgba(0,0,0,0.1);
         }
-        input{
-            padding: 10px;
-            margin:5px;
-            width: calc(25% - 12px);
-            font-size:16px;
-            border-radius:6px;
-        }
+       input{
+padding:10px;
+margin:5px;
+font-size:16px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+.form-row input{
+width:calc(25% - 12px);
+}
+
+select{
+padding:10px;
+margin:5px;
+border-radius:6px;
+border:1px solid #ccc;
+font-size:16px;
+}
+
+textarea{
+width:100%;
+padding:10px;
+border-radius:6px;
+border:1px solid #ccc;
+resize:vertical;
+font-size:15px;
+}
         button{
             padding:10px 15px;
             background:#1e3a8a;
@@ -195,6 +206,7 @@
             border:none;
             cursor:pointer;
             border-radius:5px;
+            transition:.3s;
         }
         button:hover{
             background:#3749b0;
@@ -228,11 +240,6 @@
 }
 .admin-only{
     display:none;
-}
-
-
-.round{
-    min-width:250px;
 }
 
 .round h3{
@@ -414,6 +421,21 @@ padding:20px;
 
 }
 
+.champion-banner{
+
+background:gold;
+
+padding:15px;
+
+margin:10px 0;
+
+border-radius:10px;
+
+font-size:20px;
+
+font-weight:bold;
+
+}
     </style>
 </head>
 <body>
@@ -791,15 +813,7 @@ Generate Scorer Fields
 <header>
     <h2>Tournament Management</h2>
 </header>
-<div id="championDisplay"
-     style="
-     background:gold;
-     padding:15px;
-     margin:10px 0;
-     border-radius:10px;
-     font-size:20px;
-     font-weight:bold;
-">
+<div id="championDisplay" class="champion-banner">
 No Champion Yet
 </div>
 <div class="card">
@@ -888,19 +902,31 @@ Loading live matches...
 
         <h3>Tournament Teams</h3>
 
-        <input
-            type="text"
-            id="tournamentTeamName"
-            placeholder="Team Name">
+       <label for="tournamentTeamName">
+Team Name
+</label>
 
-        <input
-            type="text"
-            id="tournamentCoach"
-            placeholder="Coach">
-        <input
-            type="number"
-            id="tournamentTeamStrength"
-            placeholder="Team Strength">
+<input
+type="text"
+id="tournamentTeamName"
+placeholder="Team Name"
+maxlength="50">
+
+<label for="tournamentCoach">
+Coach
+</label>
+
+<input
+type="text"
+id="tournamentCoach"
+placeholder="Coach"
+maxlength="50">
+       <input
+    type="number"
+    id="tournamentTeamStrength"
+    placeholder="Team Strength"
+    min="1"
+    max="100">
 
         <button onclick="addTournamentTeam()">
             Add Tournament Team
@@ -931,41 +957,42 @@ Loading live matches...
     </div>
 
 </div>
-<h2>🔴 Live Matches</h2>
-
-
-<div id="liveMatches">
-
-No Live Matches
-
-</div>
 <div class="card">
 
     <h3>Tournament Groups</h3>
 
     <input
-        type="number"
-        id="numberOfGroups"
-        placeholder="Number of Groups">
-
+    type="number"
+    id="numberOfGroups"
+    placeholder="Number of Groups"
+    min="2"
+    max="32">
     <input
-        type="number"
-        id="qualifiersPerGroup"
-        placeholder="Qualifiers Per Group">
+    type="number"
+    id="qualifiersPerGroup"
+    placeholder="Qualifiers Per Group"
+    min="1"
+    max="8">
 
-    <button onclick="generateGroups()">
+    <button 
+    type="button"
+    onclick="generateGroups()">
         Generate Tournament Groups
     </button>
-    <button onclick="generateTournamentFixtures()">
+
+    <button
+    type="button"
+     onclick="generateTournamentFixtures()">
 Generate Tournament Fixtures
 </button>
-
-
    <div id="groupsContainer"></div>
 
 </div>
+<div class="card">
 <h3>Tournament Fixtures</h3>
-<button onclick="clearTournamentFixtures()">
+<button 
+type="button"
+onclick="clearTournamentFixtures()">
 Clear Tournament Fixtures
 </button>
 <table>
@@ -980,69 +1007,231 @@ Clear Tournament Fixtures
 
     <tbody id="tournamentFixturesTable"></tbody>
 </table>
+</div>
+<div class="card">
 <h2>🏆 Tournament Knockout Bracket</h2>
 
 <div id="knockoutBracket">
 
 Loading bracket...
-
 </div>
-<h3>Add Tournament Result</h3>
+</div>
+<div
+id="tournamentResultAdminSection"
+class="admin-only">
+<h3>⚽ Add Tournament Result</h3>
 
 <select id="tournamentFixtureSelect">
-    <option value="">Select Match</option>
+<option value="">Select Match</option>
+</select>
+
+<div class="score-row">
+
+<label for="tournamentHomeScore">
+Home Score
+</label>
+
+<input
+type="number"
+id="tournamentHomeScore"
+placeholder="Home Score"
+min="0"
+max="99">
+
+<label for="tournamentAwayScore">
+Away Score
+</label>
+
+<input
+type="number"
+id="tournamentAwayScore"
+placeholder="Away Score"
+min="0"
+max="99">
+</div>
+
+<!-- GOAL SCORERS -->
+<div class="card">
+<h4>⚽ Goal Scorers</h4>
+
+<label for="goalTeam">
+Scoring Team
+</label>
+
+<select id="goalTeam">
+
+<option value="">Select Team</option>
+
+</select>
+
+<label for="goalPlayer">
+Player Name
+</label>
+
+<input
+type="text"
+id="goalPlayer"
+placeholder="Player Name"
+maxlength="50">
+
+<input
+type="number"
+id="goalCount"
+value="1"
+min="1"
+max="20">
+
+<button
+type="button"
+onclick="addGoalScorer()">
+Add Goal </button>
+
+<div id="goalScorerList"></div>
+</div>
+<!-- ASSISTS -->
+<div class="card">
+<h4>🎯 Assists</h4>
+
+<label for="assistTeam">
+Assist Team
+</label>
+
+<select id="assistTeam">
+
+<option value="">Select Team</option>
+
+</select>
+<input
+type="text"
+id="assistPlayer"
+placeholder="Player Name"
+maxlength="50">
+<button
+type="button"
+onclick="addAssistPlayer()">
+Add Assist </button>
+
+<div id="assistList"></div>
+</div>
+<!-- CLEAN SHEETS -->
+<div class="card">
+<h4>🧤 Goalkeeper / Clean Sheet</h4>
+
+<label for="keeperTeam">
+Goalkeeper Team
+</label>
+
+<select id="keeperTeam">
+
+<option value="">Select Team</option>
+
 </select>
 
 <input
-    type="number"
-    id="tournamentHomeScore"
-    placeholder="Home Score">
-
-<input
-    type="number"
-    id="tournamentAwayScore"
-    placeholder="Away Score">
-<textarea id="tournamentScorers"
-placeholder="Enter scorers e.g. Mbappe 2, Haaland 1">
-</textarea>
-<div id="ownGoalContainer"></div>
-
-<button type="button"
-onclick="addOwnGoalField()">
-+ Own Goal
-</button>
-<input id="assistPlayer" placeholder="Assist Player">
-
-<input id="assistTeam" placeholder="Assist Team">
-
-<input id="keeperName" placeholder="Goalkeeper">
-<input id="keeperTeam" placeholder="Goalkeeper Team">
+type="text"
+id="keeperName"
+placeholder="Goalkeeper Name"
+maxlength="50">
 
 <select id="cleanSheet">
 
-<option value="false">No Clean Sheet</option>
+<option value="true">
+Clean Sheet
+</option>
 
-<option value="true">Clean Sheet</option>
+<option value="false">
+No Clean Sheet
+</option>
 
 </select>
-<select id="keeperTeam">
+
+<button
+type="button"
+onclick="addGoalkeeper()">
+Add Goalkeeper </button>
+
+<div id="keeperList"></div>
+</div>
+<!-- DISCIPLINE -->
+<div class="card">
+<h4>🟨 / 🟥 Discipline</h4>
+
+<select id="cardType">
+
+<option value="yellow">
+Yellow Card
+</option>
+
+<option value="red">
+Red Card
+</option>
+
+</select>
+
+<label for="cardTeam">
+Card Team
+</label>
+
+<select id="cardTeam">
+
+<option value="">Select Team</option>
+
+</select>
+
+<input
+type="text"
+id="cardPlayer"
+placeholder="Player Name"
+maxlength="50">
+
+<button
+type="button"
+onclick="addCardPlayer()">
+Add Card </button>
+
+<div id="cardList"></div>
+</div>
+<!-- OWN GOALS -->
+<div class="card">
+<h4>🥅 Own Goals</h4>
+
+<label for="ownGoalTeam">
+Team that Scored the Own Goal
+</label>
+
+<select id="ownGoalTeam">
     <option value="">Select Team</option>
 </select>
-<h4>🟨 Yellow Cards</h4>
 
-<textarea 
-id="yellowCards"
-placeholder="Example: John - Team A, Mike - Team B">
-</textarea>
+<label for="ownGoalPlayer">
+Player Name
+</label>
 
-<h4>🟥 Red Cards</h4>
+<input
+type="text"
+id="ownGoalPlayer"
+placeholder="Player Name"
+maxlength="50">
 
-<textarea 
-id="redCards"
-placeholder="Example: Peter - Team A">
-</textarea>
-<div>
-<h4>Live Match</h4>
+<input
+type="number"
+id="ownGoals"
+value="1"
+min="1"
+max="20">
+
+<button
+type="button"
+onclick="addOwnGoal()">
+Add Own Goal
+</button>
+
+<div id="ownGoalList"></div>
+
+</div>
+<!-- LIVE MATCH -->
+<div class="card">
+<h4>📡 Live Match</h4>
 
 <select id="matchStatus">
 
@@ -1060,24 +1249,34 @@ Finished
 
 </select>
 
+<label for="matchMinute">
+Current Minute
+</label>
 
-<input 
+<input
+type="number"
 id="matchMinute"
-placeholder="Minute e.g 65">
+placeholder="Minute"
+min="0"
+max="130">
 
+<label for="matchEvents">
+Match Events
+</label>
 
 <textarea
 id="matchEvents"
-placeholder="Events:
-65' Goal John
-70' Yellow Mike">
+placeholder="65' Goal
+70' Yellow Card
+85' Red Card">
 </textarea>
-
-
 </div>
-<button onclick="addTournamentResult()">
-    Save Tournament Result
-</button>
+<button
+onclick="addTournamentResult()">
+Save Tournament Result
+ </button>
+ 
+ </div>
 <div class="card">
 
 <h3>🏆 Qualified Teams</h3>
@@ -1092,6 +1291,7 @@ Loading...
 <h3>Group Standings</h3>
 
 <div id="tournamentTablesContainer"></div>
+<div class="admin-only">
 <button onclick="createRound32()">
 Generate Round of 32
 </button>
@@ -1110,12 +1310,11 @@ Generate Third Place Match
 <button onclick="createFinalMatch()">
 Generate Final
 </button>
-<h3>🏆 Top Scorers</h3>
-
-<table border="1">
-
+</div>
+<div class="card">
+<h2>⚽ Top Scorers</h2>
+<table>
 <thead>
-
 <tr>
 <th>#</th>
 <th>Player</th>
@@ -1123,40 +1322,53 @@ Generate Final
 <th>Goals</th>
 <th>Matches</th>
 </tr>
-
 </thead>
-<tbody id="ScorersTable">
-
-</tbody>
-
+<tbody id="topScorersBody"></tbody>
 </table>
-
-<h2>👤 Player Statistics</h2>
-
+</div>
+<div class="card">
+<h2>🎯 Top Assists</h2>
 <table>
-
 <thead>
-
 <tr>
-
+<th>#</th>
 <th>Player</th>
 <th>Team</th>
-<th>Matches</th>
-<th>Goals</th>
 <th>Assists</th>
+</tr>
+</thead>
+<tbody id="topAssistsBody"></tbody>
+</table>
+</div>
+<div class="card">
+<h2>🧤 Clean Sheets</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Goalkeeper</th>
+<th>Team</th>
 <th>Clean Sheets</th>
+</tr>
+</thead>
+<tbody id="cleanSheetsBody"></tbody>
+</table>
+</div>
+<div class="card">
+<h2>🟨 Discipline</h2>
+<table>
+<thead>
+<tr>
+<th>Player</th>
+<th>Team</th>
 <th>Yellow</th>
 <th>Red</th>
-
 </tr>
-
 </thead>
-
-<tbody id="playerStatsBody">
-
-</tbody>
-
+<tbody id="disciplineBody"></tbody>
 </table>
+</div>
+<div class="card">
 <h2>🏅 Fair Play Table</h2>
 
 <table>
@@ -1175,49 +1387,11 @@ Generate Final
 
 </thead>
 
-
 <tbody id="fairPlayBody">
 
 </tbody>
 
 </table>
-<div class="stats-container">
-
-<h2>🏆 Top Assists</h2>
-
-<table id="assistTable">
-<thead>
-<tr>
-<th>Rank</th>
-<th>Player</th>
-<th>Team</th>
-<th>Assists</th>
-</tr>
-</thead>
-
-<tbody id="assistBody">
-</tbody>
-
-</table>
-
-<h2>🧤 Clean Sheets</h2>
-
-<table id="cleanSheetTable">
-
-<thead>
-<tr>
-<th>Rank</th>
-<th>Goalkeeper</th>
-<th>Team</th>
-<th>Clean Sheets</th>
-</tr>
-</thead>
-
-<tbody id="cleanSheetBody">
-</tbody>
-
-</table>
-
 </div>
 </section>
 </div>
@@ -1274,7 +1448,7 @@ window.db = getFirestore(app);
 window.auth = getAuth(app);
 
 
-setPersistence(window.auth, browserLocalPersistence);
+await setPersistence(window.auth, browserLocalPersistence);
 
 window.collection = collection;
 window.addDoc = addDoc;
@@ -1310,7 +1484,276 @@ window.firebaseReady = true;
 console.log("Firebase Connected");
 console.log("collection =", window.collection);
 console.log("addDoc =", window.addDoc);
+window.addAssistPlayer = function(){
 
+const player =
+document.getElementById("assistPlayer").value.trim();
+
+const team =
+document.getElementById("assistTeam").value;
+
+if(!player || !team){
+    alert("Enter assist player and team");
+    return;
+}
+
+// Prevent duplicate assist
+const existing =
+assists.find(a=>
+
+a.player.toLowerCase() ===
+player.toLowerCase()
+
+&&
+
+a.team === team
+
+);
+
+if(existing){
+
+existing.assists++;
+
+renderAssists();
+
+document.getElementById(
+"assistPlayer"
+).value="";
+
+return;
+
+}
+
+assists.push({
+
+player,
+
+team,
+
+assists:1
+
+});
+
+renderAssists();
+
+document.getElementById(
+"assistPlayer"
+).value="";
+
+alert("Assist added");
+
+};
+function renderAssists(){
+
+const list =
+document.getElementById(
+"assistList"
+);
+
+list.innerHTML="";
+
+assists.forEach(a=>{
+
+list.innerHTML += `
+
+<div>
+
+🎯 ${a.player}
+(${a.team})
+
+${a.assists > 1 ? " x"+a.assists : ""}
+
+</div>
+
+`;
+
+});
+
+}
+window.addGoalkeeper = function(){
+
+const player =
+document.getElementById("keeperName").value.trim();
+
+const team =
+document.getElementById("keeperTeam").value;
+
+const cleanSheet =
+document.getElementById("cleanSheet").value === "true";
+
+if(!player || !team){
+    alert("Enter goalkeeper and team");
+    return;
+}
+
+// Prevent duplicate goalkeeper
+const exists =
+goalkeepers.find(g=>
+g.player.toLowerCase() === player.toLowerCase()
+&&
+g.team === team
+);
+
+if(exists){
+    alert("This goalkeeper has already been added.");
+    return;
+}
+
+// Only one goalkeeper per team
+const sameTeam =
+goalkeepers.find(g=>g.team===team);
+
+if(sameTeam){
+    alert("Only one goalkeeper can be added for each team.");
+    return;
+}
+
+goalkeepers.push({
+
+player,
+
+team,
+
+cleanSheet
+
+});
+
+renderGoalkeepers();
+
+document.getElementById("keeperName").value="";
+
+alert("Goalkeeper added");
+
+};
+function renderGoalkeepers(){
+
+const list =
+document.getElementById("keeperList");
+
+list.innerHTML="";
+
+goalkeepers.forEach(g=>{
+
+list.innerHTML += `
+
+<div>
+
+🧤 ${g.player} (${g.team})
+
+${g.cleanSheet ? "Clean Sheet" : "No Clean Sheet"}
+
+</div>
+
+`;
+
+});
+
+}
+window.addCardPlayer = function(){
+
+const player =
+document.getElementById("cardPlayer").value.trim();
+
+const team =
+document.getElementById("cardTeam").value;
+
+const type =
+document.getElementById("cardType").value;
+
+if(!player || !team){
+    alert("Enter card player and team");
+    return;
+}
+
+// Prevent duplicate same card
+const list =
+type === "yellow"
+? yellowCards
+: redCards;
+
+const exists =
+list.find(c=>
+
+c.player.toLowerCase() ===
+player.toLowerCase()
+
+&&
+
+c.team === team
+
+);
+
+if(exists){
+
+alert("This card has already been added.");
+
+return;
+
+}
+
+list.push({
+
+player,
+
+team
+
+});
+
+renderCards();
+
+document.getElementById(
+"cardPlayer"
+).value="";
+
+alert("Card added");
+
+};
+function renderCards(){
+
+const list =
+document.getElementById(
+"cardList"
+);
+
+list.innerHTML="";
+
+yellowCards.forEach(card=>{
+
+list.innerHTML += `
+
+<div>
+
+🟨 Yellow Card
+
+${card.player}
+
+(${card.team})
+
+</div>
+
+`;
+
+});
+
+redCards.forEach(card=>{
+
+list.innerHTML += `
+
+<div>
+
+🟥 Red Card
+
+${card.player}
+
+(${card.team})
+
+</div>
+
+`;
+
+});
+
+}
 async function getUserRole(uid){
 
     const snapshot = await getDocs(
@@ -1366,7 +1809,9 @@ let results = [];
 let tournamentTeams = [];
 let tournamentGroups = [];
 let GROUP_NAMES = [];
-
+let selectedFixture = null;
+let tournamentGroupsListenerStarted = false;
+let tournamentTeamsListenerStarted = false;
 function initializeGroups(){
 
     const groupInput =
@@ -1398,6 +1843,11 @@ function initializeGroups(){
         GROUP_NAMES
     );
 }
+let goalScorers = [];
+let assists = [];
+let goalkeepers = [];
+let yellowCards = [];
+let redCards = [];
 let tournamentMatches = [];
 let tournamentResults = [];
 let visitors = [];
@@ -1414,8 +1864,6 @@ const teamsPerPage = 10;
 let upcomingPage = 1;
 const upcomingPerPage = 10;
 const itemsPerPage = 10;
-let currentUser = null;
-let isAdmin = false;
 
 function loadVisitors(){
 
@@ -1476,8 +1924,8 @@ if(role !== "admin"){
     return;
 }
 
-       isAdmin = true;
-       alert("Admin status = " + isAdmin);
+       window.isAdmin = true;
+       alert("Admin status = " + window.isAdmin);
 currentUser = userCredential.user;
 applyPermissions();
 renderTeams();
@@ -1637,11 +2085,11 @@ async function visitorLogin(){
 
     try{
 
-        await signInWithEmailAndPassword(
-            auth,
-            loginInput,
-            password
-        );
+       await signInWithEmailAndPassword(
+    window.auth,
+    loginInput,
+    password
+);
 
         document.getElementById("loginStatus").innerText =
             "Logged in successfully";
@@ -1678,7 +2126,7 @@ async function logout() {
         await signOut(window.auth);
 
         currentUser = null;
-        isAdmin = false;
+      window.isAdmin = true;
 
         document.getElementById(
             "loginForms"
@@ -1708,7 +2156,7 @@ function applyPermissions(){
     .forEach(section => {
 
         section.style.display =
-            isAdmin ? "block" : "none";
+            window.isAdmin ? "block" : "none";
 
     });
 
@@ -1717,7 +2165,7 @@ function applyPermissions(){
     .forEach(section => {
 
         section.style.display =
-            (isAdmin || currentUser)
+            (window.isAdmin || currentUser)
             ? "block"
             : "none";
 
@@ -1762,14 +2210,14 @@ async function googleLogin(){
 
     try {
 
-        const result = await signInWithPopup(auth, provider);
+        const result = await signInWithPopup(window.auth, provider);
 
         const user = result.user;
 
         currentUser = user;
 
         const role = await getUserRole(user.uid);
-        isAdmin = role === "admin";
+        window.isAdmin = role === "admin";
 
         document.getElementById("loginForms").style.display = "none";
         document.getElementById("logoutBtn").style.display = "inline-block";
@@ -1784,9 +2232,10 @@ async function googleLogin(){
     }
 }
 
+
 const scorersPerPage = 10;
 async function addScorer() {
-if(!isAdmin){
+if(!window.isAdmin){
     alert("Only Admin can add scorers");
     return;
 }
@@ -1805,15 +2254,24 @@ if(!isAdmin){
         alert("Fill all fields");
         return;
     }
-await addDoc(
-    collection(window.db, "scorers"),
-    {
-        player: player.trim().toLowerCase(),
-        team: team.trim(),
-        goals
-    }
+try {
+
+
+}
+catch(error){
+
+console.error(
+"Add scorer error:",
+error
 );
 
+alert(
+"Failed to add scorer: " + error.message
+);
+
+return;
+
+}
 
    listenScorers();
 
@@ -1823,7 +2281,10 @@ await addDoc(
 }
 function listenScorers() {
 
-    const table = document.getElementById("scorersTable");
+    const table =
+document.getElementById("scorersTable");
+
+if(!table) return;
 
     if (scorersUnsub) {
         scorersUnsub();
@@ -1910,7 +2371,7 @@ function prevTeamsPage(){
 }
 async function deleteScorer(id){
 
-    if(!isAdmin){
+    if(!window.isAdmin){
         alert("Only Admin");
         return;
     }
@@ -1919,54 +2380,163 @@ async function deleteScorer(id){
         return;
     }
 
-    await deleteDoc(
-        doc(window.db,"scorers",id)
-    );
+    try{
+
+await deleteDoc(
+doc(window.db,"scorers",id)
+);
+
+alert("Deleted");
+
+}
+catch(error){
+
+console.error(error);
+
+alert(
+"Delete failed: " + error.message
+);
+
+}
 }
 async function editScorer(id){
+
+   if(!window.isAdmin){
+        alert("Only Admin");
+        return;
+    }
+
 
     const scorer =
         scorers.find(
             s => s.id === id
         );
 
-    if(!scorer) return;
+
+    if(!scorer){
+        alert("Scorer not found");
+        return;
+    }
+
 
     const player =
-        prompt("Player",scorer.player);
+        prompt(
+            "Player",
+            scorer.player
+        );
+
 
     if(player === null) return;
 
+
+
     const team =
-        prompt("Team",scorer.team);
+        prompt(
+            "Team",
+            scorer.team
+        );
+
 
     if(team === null) return;
 
+
+
     const goals =
-        prompt("Goals",scorer.goals);
+        prompt(
+            "Goals",
+            scorer.goals
+        );
+
 
     if(goals === null) return;
 
-    await updateDoc(
-        doc(window.db,"scorers",id),
-        {
-            player,
-            team,
-            goals:Number(goals)
-        }
-    );
-}
 
+
+    const goalNumber =
+        Number(goals);
+
+
+
+    if(isNaN(goalNumber) || goalNumber < 0){
+
+        alert(
+            "Enter a valid goal number"
+        );
+
+        return;
+
+    }
+
+
+
+    try{
+
+
+        await updateDoc(
+
+            doc(
+                window.db,
+                "scorers",
+                id
+            ),
+
+            {
+
+                player:
+                player.trim().toLowerCase(),
+
+                team:
+                team.trim(),
+
+                goals:
+                goalNumber
+
+            }
+
+        );
+
+
+        alert(
+            "Scorer updated"
+        );
+
+
+    }
+    catch(error){
+
+
+        console.error(
+            "Edit scorer error:",
+            error
+        );
+
+
+        alert(
+            "Failed to update scorer: " +
+            error.message
+        );
+
+
+    }
+
+
+}
       async function generateFixtures() {
-if(!isAdmin){
+if(!window.isAdmin){
     alert("Only Admin can render fixtures");
     return;
 }
 const existing =
-    await getDocs(
-        collection(window.db,"fixtures")
-    );
-
+await getDocs(
+query(
+collection(window.db,"fixtures"),
+where(
+"season",
+"==",
+"2026"
+)
+)
+);
 if(!existing.empty){
     alert(
         "Clear existing fixtures first"
@@ -2012,23 +2582,21 @@ if(!existing.empty){
     away.name !== "BYE"
 ) {
 
-   const fixtureData = {
-    gameweek: round + 1,
-    leg: "First Leg",
-    match: `${home.name} vs ${away.name}`,
-    date: "",
-    venue: home.venue,
-    status: "upcoming",
-    matchType: "league"   // ✅ ADD THIS
+  const fixtureData = {
+
+gameweek: round + 1,
+leg:"First Leg",
+match:`${home.name} vs ${away.name}`,
+date:"",
+venue:home.venue,
+status:"upcoming",
+matchType:"league",
+season:"2026"
+
 };
     // Save locally
     fixtures.push(fixtureData);
 
-    // Save to Firestore
-    await addDoc(
-        collection(window.db, "fixtures"),
-        fixtureData
-    );
 }
 }
 
@@ -2042,48 +2610,124 @@ if(!existing.empty){
         rotation =
             [fixed, ...rotated];
     }
+    try{
+    await Promise.all(
 
+    fixtures.map(
+        fixture =>
+
+        addDoc(
+            collection(window.db,"fixtures"),
+            fixture
+        )
+
+    )
+);
+    }
+    catch(error){
+
+console.error(error);
+
+alert(
+"Fixture generation failed: "+
+error.message
+);
+
+return;
+
+}
+    
     // SECOND LEG
- const firstLegFixtures = fixtures.filter(
+const firstLegFixtures = fixtures.filter(
     f => f.leg === "First Leg"
 );
 
+
+let secondLegFixtures = [];
+
+
 for (const fixture of firstLegFixtures) {
 
-    const [firstHome, firstAway] =
-        fixture.match.split(" vs ");
 
-    const awayVenue =
-        teamListFromDb.find(
-            t => t.name === firstAway
-        )?.venue || "";
+const [
+    firstHome,
+    firstAway
+] =
+fixture.match.split(" vs ");
 
-   const secondLegFixture = {
-    gameweek: fixture.gameweek + rounds,
-    leg: "Second Leg",
-    match: `${firstAway} vs ${firstHome}`,
-    date: "",
-    venue: awayVenue,
-    status: "upcoming",
-    matchType: "league"   // ✅ ADD THIS
+
+
+const awayVenue =
+teamListFromDb.find(
+t => t.name === firstAway
+)?.venue || "";
+
+
+
+const secondLegFixture = {
+
+gameweek:
+fixture.gameweek + rounds,
+
+leg:"Second Leg",
+
+match:
+`${firstAway} vs ${firstHome}`,
+
+date:"",
+
+venue:
+awayVenue,
+
+status:"upcoming",
+
+matchType:"league",
+
+season:"2026"
+
 };
 
-    await addDoc(
-        collection(window.db, "fixtures"),
-        secondLegFixture
-    );
+secondLegFixtures.push(
+secondLegFixture
+);
+
 }
+try{
+await Promise.all(
 
+secondLegFixtures.map(fixture =>
 
+addDoc(
+collection(window.db,"fixtures"),
+fixture
+)
+
+)
+
+);
+}
+catch(error){
+
+console.error(error);
+
+alert(
+"Fixture generation failed: "+
+error.message
+);
+
+return;
+
+}
    renderFixtures();
 renderUpcomingMatches();
 loadFixtureOptions();
 loadGameweekOptions();
 }
 function renderFixtures() {
+const table =
+document.getElementById("fixturesTable");
 
-    const table =
-        document.getElementById("fixturesTable");
+if(!table) return;
 
     if(fixturesListener){
         fixturesListener();
@@ -2155,7 +2799,7 @@ renderUpcomingMatches();
 }
  async function clearFixtures(){
 
-    if(!isAdmin){
+    if(!window.isAdmin){
         alert("Only Admin can clear fixtures");
         return;
     }
@@ -2207,21 +2851,50 @@ renderUpcomingMatches();
 }
 
        async function addTeam() {
-if(!isAdmin){
+if(!window.isAdmin){
     alert("Only Admin can add teams");
     return;
 }
 
-const name = document.getElementById('teamName').value;
-const coach = document.getElementById('coach').value;
-const players = document.getElementById('players').value;
-const venue = document.getElementById('teamVenue').value;
+const name =
+document.getElementById("teamName")
+.value
+.trim();
+const coach = 
+document.getElementById('coach')
+.value
+.trim();
+const players =
+ document.getElementById('players')
+ .value
+ .trim();
+const venue =
+ document.getElementById('teamVenue')
+ .value
+ .trim();
 
 if(!name || !coach || !players){
     alert('please fill all fields');
     return;
 }
 
+const existing = teams.find(
+
+t=>
+
+t.name.toLowerCase()===
+
+name.toLowerCase()
+
+);
+
+if(existing){
+
+alert("Team already exists");
+
+return;
+
+}
 await window.addDoc(
     window.collection(window.db, "teams"),
     {
@@ -2238,65 +2911,55 @@ document.getElementById("teamVenue").value = "";
 
 alert("Team Added Successfully");
 }
-async function addTournamentTeam(){
+function loadGameweekOptions() {
 
-    if(!isAdmin){
-        alert("Only Admin");
-        return;
+    const select =
+document.getElementById("gameweekFilter");
+
+if(!select){
+    return;
+}
+
+const weeks  = [...new Set(fixtures.map(f => f.gameweek))];
+
+    select.innerHTML = `<option value="">All Gameweeks</option>`;
+
+    weeks.sort((a,b) => a - b).forEach(w => {
+        select.innerHTML += `<option value="${w}">Gameweek ${w}</option>`;
+    });
+}
+function formatName(name){
+    return name
+        .split(" ")
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
+}
+function getGroupNames(count){
+
+    const names = [];
+
+    for(let i = 0; i < count; i++){
+
+        names.push(
+            String.fromCharCode(65 + i)
+        );
+
     }
 
-    const name =
-        document.getElementById(
-            "tournamentTeamName"
-        ).value;
-
-    const coach =
-        document.getElementById(
-            "tournamentCoach"
-        ).value;
-
-        const strength=
-        document.getElementById(
-            "tournamentTeamStrength"
-        ).value;
-
-    if(!name || !coach || !strength){
-        alert("Fill all fields");
-        return;
-    }
-
-    await addDoc(
-        collection(
-            window.db,
-            "tournament_teams"
-        ),
-        {
-            name,
-            coach,
-            strength
-        }
-    );
-
-    document.getElementById(
-        "tournamentTeamName"
-    ).value = "";
-
-    document.getElementById(
-        "tournamentCoach"
-    ).value = "";
-
-    document.getElementById(
-        "tournamentTeamStrength"
-    ).value;
-
+    return names;
 }
 function renderTeams() {
 
     if (teamsUnsub) {
-        teamsUnsub(); // unsubscribe old listener
+        teamsUnsub();
     }
 
-    const table = document.getElementById("teamTable");
+    const table =
+        document.getElementById("teamTable");
+
+    if(!table){
+        return;
+    }
 
     teamsUnsub = window.onSnapshot(
         window.collection(window.db, "teams"),
@@ -2344,7 +3007,1009 @@ function renderTeams() {
         }
     );
 }
+function addGoalScorer(){
+
+const player =
+document.getElementById(
+"goalPlayer"
+).value.trim();
+
+const team =
+document.getElementById(
+"goalTeam"
+).value;
+
+const goals =
+parseInt(
+document.getElementById(
+"goalCount"
+).value
+) || 1;
+
+if(!player || !team) return;
+
+if(
+team !== selectedFixture.home &&
+team !== selectedFixture.away
+){
+
+alert(
+"Player must belong to one of the two teams."
+);
+
+return;
+
+}
+const existing =
+goalScorers.find(
+
+g=>
+
+g.player.toLowerCase() ===
+player.toLowerCase()
+
+&&
+
+g.team === team
+
+);
+
+if(existing){
+
+existing.goals += goals;
+
+renderGoalScorers();
+
+document.getElementById(
+"goalPlayer"
+).value="";
+
+return;
+
+}
+goalScorers.push({
+
+player,
+team,
+goals
+
+});
+
+renderGoalScorers();
+
+document.getElementById(
+"goalPlayer"
+).value="";
+
+}
+function renderGoalScorers(){
+
+document.getElementById(
+"goalScorerList"
+).innerHTML =
+
+goalScorers.map((g,index)=>`
+
+<div>
+
+⚽ ${g.player}
+(${g.team})
+x${g.goals}
+
+</div>
+
+`).join("");
+
+}
+async function deleteTeam(id){
+if(!window.isAdmin){
+    alert("Only Admin can delete teams");
+    return;
+}
+
+await deleteDoc(doc(window.db, "teams", id));
+renderTeams();
+}
+     
+  async function editTeam(id){
+
+    const team =
+        teams.find(t => t.id === id);
+
+    if(!team) return;
+
+    const newName =
+        prompt("Team Name",team.name);
+
+    if(newName === null) return;
+
+    const newCoach =
+        prompt("Coach",team.coach);
+
+    if(newCoach === null) return;
+
+    const newPlayers =
+        prompt("Players",team.players);
+
+    if(newPlayers === null) return;
+
+    const newVenue =
+        prompt("Venue",team.venue);
+
+    if(newVenue === null) return;
+
+    await updateDoc(
+        doc(window.db,"teams",id),
+        {
+            name:newName,
+            coach:newCoach,
+            players:newPlayers,
+            venue:newVenue
+        }
+    );
+}
+function generateScorerInputs(){
+
+   const homeScore = Number(document.getElementById("homeScore").value);
+   const awayScore = Number(document.getElementById("awayScore").value);
+
+    const homeContainer =
+        document.getElementById("homeScorerInputs");
+
+    const awayContainer =
+        document.getElementById("awayScorerInputs");
+
+    homeContainer.innerHTML = "";
+    awayContainer.innerHTML = "";
+
+    for(let i = 1; i <= homeScore; i++){
+
+        homeContainer.innerHTML += `
+        <input
+            type="text"
+            class="homeScorer"
+            placeholder="Home Goal ${i} Scorer">
+        `;
+    }
+
+    for(let i = 1; i <= awayScore; i++){
+
+        awayContainer.innerHTML += `
+        <input
+            type="text"
+            class="awayScorer"
+            placeholder="Away Goal ${i} Scorer">
+        `;
+    }
+}
+
+       let resultsVisible = 10;
+     async function addResult() {
+
+    if(!window.isAdmin){
+        alert("Only Admin can add results");
+        return;
+    }
+
+ const fixtureId =
+  document.getElementById("fixtureSelect").value;
+const homeScore =
+ parseInt(document.getElementById("homeScore").value);
+const awayScore =
+ parseInt(document.getElementById("awayScore").value);
+
+if (
+    !fixtureId ||
+    fixtureId === "" ||
+    !Number.isFinite(homeScore) ||
+    !Number.isFinite(awayScore)
+) {
+    alert("Please select a fixture and enter valid scores");
+    return;
+}
+
+const fixture = fixtures?.find(f => f.id === fixtureId);
+
+if(!fixture){
+    alert("Please select a fixture");
+    return;
+}
+
+const existingResult =
+results.find(
+    r => r.match === fixture.match
+);
+
+if(existingResult){
+    alert("A result for this fixture already exists.");
+    return;
+}
+
+    const homeScorers =
+    Array.from(
+        document.querySelectorAll(".homeScorer")
+    )
+    .map(input => input.value.trim().toLowerCase())
+    .filter(name => name);
+
+const awayScorers =
+    Array.from(
+        document.querySelectorAll(".awayScorer")
+    )
+    .map(input => input.value.trim().toLowerCase())
+    .filter(name => name);
+
+    if(homeScorers.length != parseInt(homeScore)){
+        alert(
+            "Home scorers must equal Home Score"
+        );
+        return;
+    }
+
+    if(awayScorers.length != parseInt(awayScore)){
+        alert(
+            "Away scorers must equal Away Score"
+        );
+        return;
+    }
+
+   
+
+if(!existingResult.empty){
+
+alert("Result already exists for this fixture");
+
+return;
+
+}
+    await addDoc(
+    collection(window.db,"league_results"),
+    {
+        fixtureId: fixture.id,
+        match: fixture.match,
+        result: `${homeScore} - ${awayScore}`,
+        homeScorers,
+        awayScorers,
+        createdAt:new Date()
+    }
+);
+updateLeagueTable();
+
+// ✅ ADD THIS RIGHT HERE (IMPORTANT FIX)
+await updateDoc(
+    doc(window.db, "fixtures", fixture.id),
+    {
+        status: "finished"
+    }
+);
+
+    const teams =
+        fixture.match.split(" vs ");
+
+    const homeTeam = teams[0];
+    const awayTeam = teams[1];
+
+    const scorersSnapshot =
+        await getDocs(
+            collection(window.db,"scorers")
+        );
+
+    let firestoreScorers = [];
+
+    scorersSnapshot.forEach(docSnap => {
+
+        firestoreScorers.push({
+            id: docSnap.id,
+            ...docSnap.data()
+        });
+
+    });
+    // ADD THIS HERE
+firestoreScorers.forEach(s => {
+    s.player = (s.player || "").trim().toLowerCase();
+});
+
+ // HOME TEAM SCORERS
+const homeGoalCount = {};
+
+homeScorers.forEach(player => {
+    player = player.trim().toLowerCase();
+    homeGoalCount[player] = (homeGoalCount[player] || 0) + 1;
+});
+
+for (const player in homeGoalCount) {
+
+    const existing = firestoreScorers.find(
+        s =>
+            s.player === player &&
+            s.team === homeTeam
+    );
+
+    if (existing) {
+
+        await updateDoc(
+            doc(window.db, "league_scorers", existing.id),
+            {
+                goals: Number(existing.goals) + homeGoalCount[player]
+            }
+        );
+
+    } else {
+
+        await addDoc(
+            collection(window.db, "league_scorers"),
+            {
+                player,
+                team: homeTeam,
+                goals: homeGoalCount[player]
+            }
+        );
+    }
+}
+// AWAY TEAM SCORERS
+const awayGoalCount = {};
+
+awayScorers.forEach(player => {
+    player = player.trim().toLowerCase();
+    awayGoalCount[player] = (awayGoalCount[player] || 0) + 1;
+});
+
+for (const player in awayGoalCount) {
+
+    const existing = firestoreScorers.find(
+        s =>
+            s.player === player &&
+            s.team === awayTeam
+    );
+
+    if (existing) {
+
+        await updateDoc(
+            doc(window.db, "league_scorers", existing.id),
+            {
+                goals: Number(existing.goals) + awayGoalCount[player]
+            }
+        );
+
+    } else {
+
+        await addDoc(
+            collection(window.db, "league_scorers"),
+            {
+                player,
+                team: awayTeam,
+                goals: awayGoalCount[player]
+            }
+        );
+    }
+}
+
+    document.getElementById(
+        "fixtureSelect"
+    ).value = "";
+
+    document.getElementById(
+        "homeScore"
+    ).value = "";
+
+    document.getElementById(
+        "awayScore"
+    ).value = "";
+
+    document.getElementById(
+        "homeScorerInputs"
+    ).innerHTML = "";
+
+    document.getElementById(
+        "awayScorerInputs"
+    ).innerHTML = "";
+
+    alert("Result Saved Successfully");
+
+}
+
+function renderResult() {
+
+    const table =
+        document.getElementById("resultTable");
+
+   if (resultsUnsub) resultsUnsub();
+
+resultsUnsub = onSnapshot(
+
+collection(window.db, "results"),
+
+(snapshot) => {
+
+const table =
+document.getElementById("resultTable");
+
+if(!table){
+    return;
+}
+        table.innerHTML = "";
+        results = [];
+
+        snapshot.forEach(docSnap => {
+            results.push({
+                id: docSnap.id,
+                ...docSnap.data()
+            });
+        });
+
+        const start = (resultsPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+
+        const pageResults = results.slice(start, end);
+
+        pageResults.forEach((result, index) => {
+            table.innerHTML += `
+            <tr>
+                <td>${result.match}</td>
+               <td>
+
+${result.result}
+
+${
+result.ownGoals &&
+result.ownGoals.length > 0
+?
+`<br>
+<small>
+Own Goals:
+${result.ownGoals.map(
+g =>
+`${g.player} (${g.team})`
+).join(", ")}
+</small>`
+:
+""
+}
+
+</td>
+                <td>
+
+${isAdmin
+? `
+<button onclick="editResult('${result.id}')">
+✏️ Edit
+</button>
+
+<button onclick="deleteResult('${result.id}')">
+🗑 Delete
+</button>
+`
+: "View Only"
+}
+
+</td>
+            </tr>`;
+        });
+
+        updateLeagueTable();
+    }
+);
+}
+async function deleteResult(id){
+
+    if(!window.isAdmin){
+        alert("Only Admin");
+        return;
+    }
+
+    if(!confirm("Delete result?")){
+        return;
+    }
+
+    await deleteDoc(
+       doc(
+window.db,
+"results",
+id
+)
+    );
+}
+async function editResult(index){
+
+if(!window.isAdmin){
+    alert("Only Admin can edit results");
+    return;
+}
+
+const result =
+results.find(r => r.id === id);
+
+if(!result){
+    alert("Result not found");
+    return;
+
+const teams = result.match.split(" vs ");
+
+const homeTeam = teams[0];
+const awayTeam = teams[1];
+
+const scores = result.result.split(" - ");
+
+const newHomeScore =
+prompt(
+    "Home Score",
+    scores[0]
+);
+
+if(newHomeScore === null) return;
+
+const newAwayScore =
+prompt(
+    "Away Score",
+    scores[1]
+);
+
+if(newAwayScore === null) return;
+
+await updateDoc(
+    doc(
+        window.db,
+        "results",
+        result.id
+    ),
+    {
+        result:
+        `${newHomeScore} - ${newAwayScore}`
+    }
+);
+
+alert("Result Updated");
+
+}
+function updateLeagueTable() {
+
+    const tableData = {};
+
+    teams.forEach(team => {
+
+        tableData[team.name] = {
+            team: team.name,
+            played: 0,
+            won: 0,
+            drawn: 0,
+            lost: 0,
+            gf: 0,
+            ga: 0,
+            gd: 0,
+            points: 0
+        };
+
+    });
+
+    results.forEach(result => {
+
+        const parts = result.match.split(" vs ");
+
+        const homeTeam = parts[0];
+        const awayTeam = parts[1];
+
+        const score = result.result.split(" - ");
+
+        const homeGoals = parseInt(score[0]);
+        const awayGoals = parseInt(score[1]);
+
+
+if(!tableData[homeTeam] || !tableData[awayTeam]){
+    return;
+}
+
+tableData[homeTeam].played++;
+tableData[awayTeam].played++;
+        tableData[homeTeam].gf += homeGoals;
+        tableData[homeTeam].ga += awayGoals;
+
+        tableData[awayTeam].gf += awayGoals;
+        tableData[awayTeam].ga += homeGoals;
+
+        if (homeGoals > awayGoals) {
+
+            tableData[homeTeam].won++;
+            tableData[awayTeam].lost++;
+
+            tableData[homeTeam].points += 3;
+
+        }
+        else if (homeGoals < awayGoals) {
+
+            tableData[awayTeam].won++;
+            tableData[homeTeam].lost++;
+
+            tableData[awayTeam].points += 3;
+
+        }
+        else {
+
+            tableData[homeTeam].drawn++;
+            tableData[awayTeam].drawn++;
+
+            tableData[homeTeam].points += 1;
+            tableData[awayTeam].points += 1;
+        }
+
+
+    });
+
+    Object.values(tableData).forEach(team => {
+
+        team.gd = team.gf - team.ga;
+
+    });
+
+    const sortedTeams = Object.values(tableData)
+        .sort((a, b) =>
+            b.points - a.points ||
+            b.gd - a.gd ||
+            b.gf - a.gf
+        );
+
+    renderLeagueTable(sortedTeams);
+}
+function renderLeagueTable(data) {
+
+    const table =
+        document.getElementById("leagueTable");
+
+    if(!table){
+        return;
+    }
+
+    table.innerHTML = "";
+
+    data.forEach((team, index) => {
+
+        table.innerHTML += `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${team.team}</td>
+            <td>${team.played}</td>
+            <td>${team.won}</td>
+            <td>${team.drawn}</td>
+            <td>${team.lost}</td>
+            <td>${team.gf}</td>
+            <td>${team.ga}</td>
+            <td>${team.gd}</td>
+            <td>${team.points}</td>
+        </tr>
+        `;
+    });
+}
+function renderUpcomingMatches(){
+
+   const table =
+document.getElementById(
+"upcomingMatchesTable"
+);
+
+if(!table){
+    return;
+}
+
+table.innerHTML = "";
+
+    table.innerHTML = "";
+
+    const playedMatches =
+        results.map(
+            r => r.match.trim().toLowerCase()
+        );
+
+    const upcoming =
+        fixtures.filter(
+            f =>
+            !playedMatches.includes(
+                f.match.trim().toLowerCase()
+            )
+        );
+
+    const start =
+        (upcomingPage-1)*itemsPerPage;
+
+    const end =
+        start+itemsPerPage;
+
+    const pageUpcoming =
+        upcoming.slice(start,end);
+
+    pageUpcoming.forEach(match=>{
+
+        table.innerHTML += `
+        <tr>
+            <td>${match.date || "Not Set"}</td>
+            <td>${match.match}</td>
+            <td>${match.venue}</td>
+            <td>${getStatusBadge(match.status)}</td>
+        </tr>
+        `;
+    });
+
+    const totalPages =
+        Math.ceil(
+            upcoming.length /
+            itemsPerPage
+        );
+
+    document.getElementById(
+        "upcomingPageInfo"
+    ).innerText =
+        `Page ${upcomingPage} of ${totalPages||1}`;
+}
+function getStatusBadge(status) {
+    if (status === "upcoming") {
+        return `<span style="color:orange;font-weight:bold;">Upcoming</span>`;
+    }
+    if (status === "live") {
+        return `<span style="color:red;font-weight:bold;">LIVE</span>`;
+    }
+    if (status === "finished") {
+        return `<span style="color:green;font-weight:bold;">Finished</span>`;
+    }
+    return status;
+}
+async function updateMatchStatuses() {
+
+    const now = new Date();
+
+    for (const match of fixtures) {
+
+        if(!match.date){
+            continue;
+        }
+
+        const matchTime = new Date(match.date);
+
+        const endTime = new Date(matchTime);
+        endTime.setMinutes(endTime.getMinutes() + 90);
+
+        let newStatus = "";
+
+        if(now < matchTime){
+            newStatus = "upcoming";
+        }
+        else if(now >= matchTime && now <= endTime){
+            newStatus = "live";
+        }
+        else{
+            newStatus = "finished";
+        }
+
+        // Only update Firestore if the status changed
+        if(match.status !== newStatus){
+
+            await updateDoc(
+                doc(window.db, "fixtures", match.id),
+                {
+                    status: newStatus
+                }
+            );
+
+        }
+    }
+
+    renderFixtures();
+    renderUpcomingMatches();
+}
+async function editFixtureById(id) {
+
+    if(!window.isAdmin) {
+        alert("Only Admin can edit fixtures");
+        return;
+    }
+
+    const newDate =
+        prompt("Enter date and time (YYYY-MM-DD HH:MM)");
+
+    if (!newDate) return;
+
+    const fixtureDate = new Date(newDate);
+    const now = new Date();
+
+    let status = "upcoming";
+
+    if (fixtureDate <= now) {
+
+        const endTime = new Date(fixtureDate);
+        endTime.setMinutes(endTime.getMinutes() + 90);
+
+        if (now <= endTime) {
+            status = "live";
+        } else {
+            status = "finished";
+        }
+    }
+
+    await updateDoc(
+        doc(window.db, "fixtures", id),
+        {
+            date: newDate,
+            status: status
+        }
+    );
+
+    renderFixtures();
+    renderUpcomingMatches();
+}
+function loadFixtureOptions() {
+
+    const select =
+        document.getElementById("fixtureSelect");
+
+    if(!select){
+        return;
+    }
+
+    // Remember the current selection
+    const currentValue = select.value;
+
+    select.innerHTML =
+        '<option value="">Select Fixture</option>';
+
+    const sortedFixtures = [...fixtures]
+        .filter(f => f.status !== "finished")
+        .sort((a,b) => a.gameweek - b.gameweek);
+
+    sortedFixtures.forEach(fixture => {
+
+        select.innerHTML += `
+        <option value="${fixture.id}">
+            GW ${fixture.gameweek} - ${fixture.match}
+        </option>`;
+    });
+
+    // Restore the user's previous selection
+    if(currentValue){
+        select.value = currentValue;
+    }
+}
+function togglePassword(id){
+
+    const field =
+        document.getElementById(id);
+
+    if(field.type === "password"){
+        field.type = "text";
+    }else{
+        field.type = "password";
+    }
+}
+
+function nextResultsPage(){
+    resultsPage++;
+    renderResult();
+}
+
+function prevResultsPage(){
+    if(resultsPage > 1){
+        resultsPage--;
+        renderResult();
+    }
+}
+
+function nextUpcomingPage(){
+    const totalPages =
+        Math.ceil(
+            fixtures.filter(f =>
+                !results.some(r =>
+                    r.match.trim().toLowerCase() ===
+                    f.match.trim().toLowerCase()
+                )
+            ).length / upcomingPerPage
+        );
+
+    if(upcomingPage < totalPages){
+        upcomingPage++;
+        renderUpcomingMatches();
+    }
+}
+
+function prevUpcomingPage(){
+    if(upcomingPage > 1){
+        upcomingPage--;
+        renderUpcomingMatches();
+    }
+}
+function filterByGameweek() {
+    const value = document.getElementById("gameweekFilter").value;
+
+    if (value === "") {
+        activeGameweekView = null;
+    } else {
+        activeGameweekView = parseInt(value);
+    }
+
+    renderFixtures();
+}
+async function addTournamentTeam(){
+
+    if(!window.isAdmin){
+        alert("Only Admin");
+        return;
+    }
+
+    const name =
+        document.getElementById(
+            "tournamentTeamName"
+        ).value;
+
+    const coach =
+        document.getElementById(
+            "tournamentCoach"
+        ).value;
+
+     const strength =
+    parseInt(
+        document.getElementById(
+            "tournamentTeamStrength"
+        ).value
+    );
+
+    if(
+    !name.trim() ||
+    !coach.trim() ||
+    isNaN(strength)
+){
+    alert("Fill all fields");
+    return;
+}
+
+if(strength < 1 || strength > 100){
+    alert("Strength must be between 1 and 100");
+    return;
+}
+
+const existing =
+    tournamentTeams.find(
+        t =>
+        t.name.toLowerCase() ===
+        name.trim().toLowerCase()
+    );
+
+if(existing){
+    alert("Team already exists.");
+    return;
+}
+try{
+    await addDoc(
+        collection(
+            window.db,
+            "tournament_teams"
+        ),
+       {
+    name: name.trim(),
+    coach: coach.trim(),
+    strength
+}
+    );
+}
+catch(error){
+    console.error(error);
+    alert("Failed to save team.")
+}
+    document.getElementById(
+        "tournamentTeamName"
+    ).value = "";
+
+    document.getElementById(
+        "tournamentCoach"
+    ).value = "";
+
+    document.getElementById(
+    "tournamentTeamStrength"
+).value = "";
+
+}
+
 function renderTournamentTeams(){
+
+    if(tournamentTeamsListenerStarted){
+        return;
+    }
+
+    tournamentTeamsListenerStarted = true;
 
     onSnapshot(
 
@@ -2376,14 +4041,14 @@ function renderTournamentTeams(){
                 table.innerHTML += `
                 <tr>
 
-                    <td>${team.name}</td>
-                    <td>${team.coach}</td>
-                    <td>${team.strength}</td>
+                   <td>${escapeHTML(team.name)}</td>
+                    <td>${escapeHTML(team.coach)}</td>
+                    <td>${escapeHTML(team.strength)}</td>
 
                     <td>
 
-                        ${
-isAdmin
+                       ${
+window.isAdmin
 ?
 `
 <button onclick="editTournamentTeam('${team.id}')">
@@ -2409,10 +4074,25 @@ Delete
     );
 
 }
+function escapeHTML(text){
+
+    return text
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
 function renderTournamentGroups(){
 
-    onSnapshot(
+    if(tournamentGroupsListenerStarted){
+        return;
+    }
 
+    tournamentGroupsListenerStarted = true;
+
+    onSnapshot(
         collection(
             window.db,
             "tournament_groups"
@@ -2472,7 +4152,7 @@ groups.sort((a,b)=>
                    <ul>
 
 ${
-    group.teams.map(
+    (group.teams || []).map(
         team =>
         `<li>${team}</li>`
     ).join("")
@@ -2481,9 +4161,17 @@ ${
 </ul>
 
 
+${
+window.isAdmin
+?
+`
 <button onclick="editTournamentGroup('${group.id}')">
     Edit Group
 </button>
+`
+:
+""
+}
                 </div>
 
                 `;
@@ -2805,104 +4493,7 @@ g =>
     );
 
 }
-function renderKnockoutBracket(){
 
-onSnapshot(
-
-collection(
-window.db,
-"tournament_fixtures"
-),
-
-snapshot=>{
-
-let rounds={
-
-"Round of 32":[],
-"Round of 16":[],
-"Quarter Final":[],
-"Semi Final":[],
-"Third Place":[],
-"Final":[]
-
-};
-
-snapshot.forEach(doc=>{
-
-let match = doc.data();
-
-if(rounds[match.stage]){
-
-rounds[match.stage].push(match);
-
-}
-
-});
-
-const container =
-document.getElementById(
-"knockoutBracket"
-);
-
-if(!container) return;
-
-container.innerHTML="";
-
-Object.keys(rounds).forEach(round=>{
-
-let html=`
-
-<div class="bracket-column">
-
-<h3>${round}</h3>
-
-`;
-
-rounds[round].forEach(match=>{
-
-
-html+=`
-
-
-<div class="bracket-match">
-
-
-<div class="bracket-team">
-
-<span>${match.home}</span>
-
-<b>
-${match.homeScore ?? "-"}
-</b>
-
-</div>
-
-<div class="bracket-team">
-
-<span>${match.away}</span>
-
-<b>
-${match.awayScore ?? "-"}
-</b>
-
-</div>
-
-</div>
-
-`;
-
-});
-
-html+=`</div>`;
-container.innerHTML += html;
-
-});
-
-}
-
-);
-
-}
 
 function renderScorers(){
 
@@ -2962,39 +4553,22 @@ matches:0
 
 }
 
-
-
 players[player.name].goals +=
 player.goals;
 
-
-
 players[player.name].matches++;
-
-
 
 // assign team
 
-if(match.home){
-
 players[player.name].team =
-match.home;
-
-}
-
+player.team || "";
 
 });
 
-
-
 });
-
-
 
 let ranking =
 Object.values(players);
-
-
 
 ranking.sort((a,b)=>{
 
@@ -3002,25 +4576,16 @@ return b.goals - a.goals;
 
 });
 
-
-
 const table =
 document.getElementById(
-"scorersTable"
+"topScorersBody"
 );
-
-
 
 if(!table) return;
 
-
-
 table.innerHTML="";
 
-
 let position=1;
-
-
 
 ranking.forEach(player=>{
 
@@ -3063,13 +4628,11 @@ window.db,
 "tournament_results"
 ),
 
-
 snapshot=>{
-
 
 const box =
 document.getElementById(
-"liveMatches"
+"liveMatchCenter"
 );
 
 box.innerHTML="";
@@ -3137,63 +4700,62 @@ ${
 }
 function updateLiveMinutes(){
 
+setInterval(async ()=>{
 
-onSnapshot(
+const snapshot =
+await getDocs(
 
 collection(
 window.db,
 "tournament_results"
-),
 
-snapshot=>{
+)
 
+);
 
 snapshot.forEach(async docSnap=>{
 
-
-let match =
+const match =
 docSnap.data();
 
+if(
 
-if(match.status==="LIVE"){
+match.status === "LIVE" &&
 
+Number(match.minute) < 90
 
-let minute =
-Number(match.minute || 0);
-
-
-
-if(minute < 90){
-
+){
 
 await updateDoc(
 
 doc(
+
 window.db,
+
 "tournament_results",
+
 docSnap.id
+
 ),
 
 {
 
-minute: minute + 1
+minute:
+Number(match.minute || 0) + 1
 
 }
 
 );
-
-}
 
 }
 
 });
 
-}
-);
+},60000);
 
 }
+
 function loadPlayerStats(){
-
 
 onSnapshot(
 
@@ -3202,149 +4764,56 @@ window.db,
 "tournament_results"
 ),
 
-
 snapshot=>{
-
 
 let players={};
 
-
-
 snapshot.forEach(doc=>{
 
-
 const match = doc.data();
-
-
-
-/* COUNT MATCHES */
-
-let teams=[
-match.home,
-match.away
-];
-
-teams.forEach(team=>{
-
-
-let key=team;
-
-
-
-if(!players[key]){
-
-
-players[key]={
-
-player:team,
-team:team,
-matches:0,
-goals:0,
-assists:0,
-clean:0,
-yellow:0,
-red:0
-};
-
-}
-
-players[key].matches++;
-
-});
-
 
 /* GOALS */
 
 if(match.scorers){
 
-
 match.scorers.forEach(s=>{
 
+if(!players[s.name]){
 
-let name=s.name;
+players[s.name]={
 
-
-
-if(!players[name]){
-
-
-players[name]={
-player:name,
-team:"",
+player:s.name,
+team:s.team || "",
 matches:0,
 goals:0,
 assists:0,
 clean:0,
 yellow:0,
 red:0
-};
 
+};
 
 }
 
-
-
-players[name].goals +=
-Number(s.goals);
-
-
+players[s.name].goals += Number(s.goals);
+players[s.name].matches++;
 
 });
 
-
 }
-
 
 /* ASSISTS */
 
-
 if(match.assists){
-
 
 match.assists.forEach(a=>{
 
-
 if(!players[a.player]){
-
 
 players[a.player]={
 
 player:a.player,
-team:a.team,
-matches:0,
-goals:0,
-assists:0,
-clean:0,
-yellow:0,
-red:0
-
-};
-
-
-}
-
-players[a.player].assists +=
-Number(a.assists);
-
-});
-
-}
-
-/* YELLOW CARDS */
-
-
-if(match.yellowCards){
-
-match.yellowCards.forEach(card=>{
-
-
-if(!players[card]){
-
-
-players[card]={
-
-player:card,
-team:"",
+team:a.team || "",
 matches:0,
 goals:0,
 assists:0,
@@ -3356,47 +4825,14 @@ red:0
 
 }
 
-
-players[card].yellow++;
-
-
-});
-
-}
-
-/* RED CARDS */
-
-
-if(match.redCards){
-
-match.redCards.forEach(card=>{
-
-
-if(!players[card]){
-
-
-players[card]={
-
-player:card,
-team:"",
-matches:0,
-goals:0,
-assists:0,
-clean:0,
-yellow:0,
-red:0
-
-};
-
-}
-
-players[card].red++;
+players[a.player].assists += Number(a.assists);
+players[a.player].matches++;
 
 });
 
 }
+
 /* CLEAN SHEETS */
-
 
 if(match.goalkeepers){
 
@@ -3404,14 +4840,12 @@ match.goalkeepers.forEach(g=>{
 
 if(g.cleanSheet){
 
-
 if(!players[g.player]){
-
 
 players[g.player]={
 
 player:g.player,
-team:g.team,
+team:g.team || "",
 matches:0,
 goals:0,
 assists:0,
@@ -3424,6 +4858,7 @@ red:0
 }
 
 players[g.player].clean++;
+players[g.player].matches++;
 
 }
 
@@ -3431,55 +4866,161 @@ players[g.player].clean++;
 
 }
 
+/* YELLOW CARDS */
+
+if(match.yellowCards){
+
+match.yellowCards.forEach(card=>{
+
+if(!players[card.player]){
+
+players[card.player]={
+
+player:card.player,
+team:card.team || "",
+matches:0,
+goals:0,
+assists:0,
+clean:0,
+yellow:0,
+red:0
+
+};
+
+}
+
+players[card.player].yellow++;
+
 });
+
+}
+
+/* RED CARDS */
+
+if(match.redCards){
+
+match.redCards.forEach(card=>{
+
+if(!players[card.player]){
+
+players[card.player]={
+
+player:card.player,
+team:card.team || "",
+matches:0,
+goals:0,
+assists:0,
+clean:0,
+yellow:0,
+red:0
+
+};
+
+}
+
+players[card.player].red++;
+
+});
+
+}
 
 let list =
 Object.values(players);
-list.sort(
-(a,b)=>b.goals-a.goals
-);
 
-let table =
+/* TOP SCORERS */
+
+const scorers =
+[...list]
+.filter(p=>p.goals>0)
+.sort((a,b)=>b.goals-a.goals);
+
 document.getElementById(
-"playerStatsBody"
-);
+"topScorersBody"
+).innerHTML =
 
-table.innerHTML="";
-
-list.forEach(p=>{
-
-
-table.innerHTML += `
+scorers.map((p,index)=>`
 
 <tr>
-
+<td>${index+1}</td>
 <td>${p.player}</td>
-
 <td>${p.team}</td>
-
-<td>${p.matches}</td>
-
 <td>${p.goals}</td>
-
-<td>${p.assists}</td>
-
-<td>${p.clean}</td>
-
-<td>${p.yellow || 0}</td>
-
-<td>${p.red || 0}</td>
-
 </tr>
 
-`;
+`).join("");
+
+/* TOP ASSISTS */
+
+const assists =
+[...list]
+.filter(p=>p.assists>0)
+.sort((a,b)=>b.assists-a.assists);
+
+document.getElementById(
+"topAssistsBody"
+).innerHTML =
+
+assists.map((p,index)=>`
+
+<tr>
+<td>${index+1}</td>
+<td>${p.player}</td>
+<td>${p.team}</td>
+<td>${p.assists}</td>
+</tr>
+
+`).join("");
+
+/* CLEAN SHEETS */
+
+const cleanSheets =
+[...list]
+.filter(p=>p.clean>0)
+.sort((a,b)=>b.clean-a.clean);
+
+document.getElementById(
+"cleanSheetsBody"
+).innerHTML =
+
+cleanSheets.map((p,index)=>`
+
+<tr>
+<td>${index+1}</td>
+<td>${p.player}</td>
+<td>${p.team}</td>
+<td>${p.clean}</td>
+</tr>
+
+`).join("");
+
+/* DISCIPLINE */
+
+const discipline =
+[...list]
+.filter(
+p=>p.yellow>0 || p.red>0
+);
+
+document.getElementById(
+"disciplineBody"
+).innerHTML =
+
+discipline.map(p=>`
+
+<tr>
+<td>${p.player}</td>
+<td>${p.team}</td>
+<td>${p.yellow}</td>
+<td>${p.red}</td>
+</tr>
+
+`).join("");
 
 });
 
+});
 }
 
-);
-
-}
 function loadFairPlay(){
 
 
@@ -3505,19 +5046,6 @@ let match =
 doc.data();
 
 
-
-
-let cards=[
-
-...(match.yellowCards || []),
-
-...(match.redCards || [])
-
-];
-
-
-
-
 [match.home,match.away]
 .forEach(team=>{
 
@@ -3537,24 +5065,15 @@ points:0
 
 };
 
-
 }
 
-
-
 });
-
-
-
 
 
 (match.yellowCards || [])
 .forEach(card=>{
 
-
-let team =
-card.split("-")[1];
-
+let team = card.team;
 
 if(teams[team]){
 
@@ -3567,16 +5086,10 @@ teams[team].points +=1;
 });
 
 
-
-
-
 (match.redCards || [])
 .forEach(card=>{
 
-
-let team =
-card.split("-")[1];
-
+let team = card.team;
 
 if(teams[team]){
 
@@ -3586,25 +5099,19 @@ teams[team].points +=3;
 
 }
 
-
 });
 
 
-
 });
-
-
 
 
 let ranking =
 Object.values(teams);
 
 
-
 ranking.sort(
 (a,b)=>a.points-b.points
 );
-
 
 
 let table =
@@ -3613,13 +5120,10 @@ document.getElementById(
 );
 
 
-
 table.innerHTML="";
 
 
-
 ranking.forEach((t,i)=>{
-
 
 table.innerHTML +=`
 
@@ -3641,11 +5145,14 @@ table.innerHTML +=`
 
 });
 
+
 }
 
 );
 
+
 }
+
 function loadTournamentFixtureOptions(){
 
     const select =
@@ -3700,9 +5207,92 @@ function loadTournamentFixtureOptions(){
     );
 
 }
+document.addEventListener("change", async (e)=>{
+
+if(
+e.target.id !==
+"tournamentFixtureSelect"
+) return;
+
+const fixtureId = e.target.value;
+
+if(!fixtureId) return;
+
+const fixtureDoc =
+await getDoc(
+doc(
+window.db,
+"tournament_fixtures",
+fixtureId
+)
+);
+
+selectedFixture =
+fixtureDoc.data();
+
+populateTeamDropdowns();
+
+});
+
+function populateTeamDropdowns(){
+
+if(!selectedFixture) return;
+
+const teams = [
+
+selectedFixture.home,
+selectedFixture.away
+
+];
+
+const dropdowns = [
+
+"goalTeam",
+"assistTeam",
+"keeperTeam",
+"cardTeam"
+
+];
+
+dropdowns.forEach(id=>{
+
+const select =
+document.getElementById(id);
+
+if(!select) return;
+
+select.innerHTML =
+'<option value="">Select Team</option>';
+
+teams.forEach(team=>{
+
+select.innerHTML += `
+
+<option value="${team}">
+${team}
+</option>
+
+`;
+
+});
+
+});
+
+}
 async function addTournamentResult(){
 
-    if(!isAdmin){
+    console.log(
+document.getElementById("tournamentFixtureSelect")
+);
+
+console.log(
+document.getElementById("tournamentHomeScore")
+);
+
+console.log(
+document.getElementById("tournamentAwayScore")
+);
+    if(!window.isAdmin){
         alert("Only Admin");
         return;
     }
@@ -3725,11 +5315,17 @@ async function addTournamentResult(){
                 "tournamentAwayScore"
             ).value
         );
+ const ownGoals = ownGoalScorers.map(goal => ({
 
-        const scorersText =
-document.getElementById(
-"tournamentScorers"
-).value;
+player: goal.player,
+
+team: goal.team,
+
+goals: Number(goal.goals)
+
+}));
+
+ 
     if(
         !fixtureId ||
         isNaN(homeScore) ||
@@ -3750,118 +5346,17 @@ document.getElementById(
 
     const fixture =
         fixtureDoc.data();
-let scorers = [];
+let scorers = goalScorers.map(player => ({
 
+name: player.player,
 
-if(scorersText){
+team: player.team,
 
+goals: Number(player.goals),
 
-scorers =
-scorersText
-.split(",")
-.map(item=>{
+ownGoal: false
 
-
-let partsSplit =
-item.split(":");
-
-if(partsSplit.length < 2){
-
-console.error(
-"Invalid scorer format:",
-item
-);
-
-return null;
-
-}
-
-let team =
-partsSplit[0].trim();
-
-let playerText =
-partsSplit[1].trim();
-
-
-
-let ownGoal = false;
-
-
-
-if(
-playerText.toUpperCase().startsWith("OG ")
-){
-
-
-ownGoal = true;
-
-
-playerText =
-playerText.substring(3).trim();
-
-
-}
-
-
-
-let parts =
-playerText.split(" ");
-
-
-
-let goals =
-parseInt(
-parts[parts.length - 1]
-);
-
-
-
-let name;
-
-
-
-if(isNaN(goals)){
-
-
-goals = 1;
-
-
-name =
-parts.join(" ");
-
-
-}
-
-else{
-
-
-name =
-parts
-.slice(0,-1)
-.join(" ");
-
-
-}
-
-
-
-return {
-
-
-name,
-
-goals,
-
-team,
-
-ownGoal
-
-};
-
-})
-.filter(x => x !== null);
-
-}
+}));
 const totalScorerGoals =
 scorers.reduce(
     (total,player)=>
@@ -3869,16 +5364,24 @@ scorers.reduce(
     0
 );
 
+const totalOwnGoals =
+ownGoals.reduce(
+    (total,goal)=>
+    total + Number(goal.goals),
+    0
+);
 
 const totalMatchGoals =
 homeScore + awayScore;
 
-
-
-if(totalScorerGoals !== totalMatchGoals){
+if(
+    totalScorerGoals +
+    totalOwnGoals !==
+    totalMatchGoals
+){
 
     alert(
-        `Scorer goals (${totalScorerGoals}) do not match score goals (${totalMatchGoals})`
+`Goals (${totalScorerGoals}) + Own Goals (${totalOwnGoals}) do not equal Match Score (${totalMatchGoals})`
     );
 
     return;
@@ -3935,51 +5438,15 @@ else{
 
         scorers,
 
+assists,
 
-        // ADD ASSISTS HERE
-       assists:
-document.getElementById("assistPlayer")
-.value
-.split(",")
-.map(player=>({
-player:player.trim(),
-team:
-document.getElementById("assistTeam").value,
-assists:1
-}))
-.filter(a=>a.player),
+goalkeepers,
 
+yellowCards,
 
-        // ADD CLEAN SHEET HERE
-       goalkeepers:
-document.getElementById("keeperName")
-.value
-.split(",")
-.filter(player => player.trim())
-.map(player=>({
-    player: player.trim(),
-    team: "",
-    cleanSheet:
-    document.getElementById("cleanSheet").value === "true"
-}))
-.filter(k=>k.player),
-yellowCards:
-document.getElementById(
-"yellowCards"
-).value
-.split(",")
-.map(card=>card.trim())
-.filter(card=>card),
+redCards,
 
-
-redCards:
-document.getElementById(
-"redCards"
-).value
-.split(",")
-.map(card=>card.trim())
-.filter(card=>card),
-        ownGoals,
+ownGoals,
 
        status:
 
@@ -4029,7 +5496,6 @@ await updateDoc(
 
 // LIVE MATCH STATUS UPDATE
 
-
 await updateDoc(
 
     doc(
@@ -4049,8 +5515,6 @@ await updateDoc(
 
 );
 
-
-
 // UPDATE RESULT LIVE DATA TOO
 
 const resultSnap =
@@ -4068,9 +5532,7 @@ await getDocs(
     )
 );
 
-
 resultSnap.forEach(async(resultDoc)=>{
-
 
 await updateDoc(
 
@@ -4114,15 +5576,25 @@ await updateDoc(
     document.getElementById(
         "tournamentAwayScore"
     ).value = "";
-    document.getElementById(
-    "tournamentScorers"
-).value = "";
 
     alert(
         "Tournament result saved"
     );
+    goalScorers = [];
+goalkeepers = [];
+assists = [];
+yellowCards = [];
+
+redCards = [];
+
+renderCards();
+renderAssists();
+renderGoalkeepers();
+renderGoalScorers();
 await checkGroupStageComplete();
 }
+
+
 function renderTournamentTables(){
 
     onSnapshot(
@@ -4849,10 +6321,7 @@ awayScore:null
 
 }
 
-
-
 return fixtures;
-
 
 }
 function getSemiFinalLosers(matches){
@@ -5001,6 +6470,27 @@ window.db,
 "tournament_fixtures"
 )
 );
+let round32Exists = false;
+
+snapshot.forEach(doc=>{
+
+const data = doc.data();
+
+if(data.stage === "Round of 32"){
+
+round32Exists = true;
+
+}
+
+});
+
+if(round32Exists){
+
+alert("Round of 32 already exists");
+
+return;
+
+}
 
 let matches=[];
 
@@ -5038,6 +6528,27 @@ window.db,
 "tournament_fixtures"
 )
 );
+let round16Exists = false;
+
+snapshot.forEach(doc=>{
+
+const data = doc.data();
+
+if(data.stage === "Round of 16"){
+
+round16Exists = true;
+
+}
+
+});
+
+if(round16Exists){
+
+alert("Round of 16 already exists");
+
+return;
+
+}
 
 let matches=[];
 snapshot.forEach(doc=>{
@@ -5050,6 +6561,15 @@ matches.push(data);
 }
 
 });
+if(matches.some(match => !match.played)){
+
+alert(
+"Complete all Round of 32 matches before generating Round Of 16."
+);
+
+return;
+
+}
 let round16 = generateRoundOf16(matches);
 if(!round16) return;
 for(let game of round16){
@@ -5070,11 +6590,29 @@ window.db,
 )
 );
 
+let quarterExists = false;
 
+snapshot.forEach(doc=>{
+
+const data = doc.data();
+
+if(data.stage === "Quarter Final"){
+
+quarterExists = true;
+
+}
+
+});
+
+if(quarterExists){
+
+alert("Quarter Finals already exist");
+
+return;
+
+}
 
 let matches=[];
-
-
 
 snapshot.forEach(doc=>{
 
@@ -5088,6 +6626,15 @@ matches.push(data);
 }
 
 });
+if(matches.some(match => !match.played)){
+
+alert(
+"Complete all Round of 16 matches before generating Quarter Finals."
+);
+
+return;
+
+}
 
 let quarterFinals =
 generateQuarterFinal(matches);
@@ -5116,7 +6663,27 @@ window.db,
 )
 );
 
+let semiExists = false;
 
+snapshot.forEach(doc=>{
+
+const data = doc.data();
+
+if(data.stage === "Semi Final"){
+
+semiExists = true;
+
+}
+
+});
+
+if(semiExists){
+
+alert("Semi Finals already exist");
+
+return;
+
+}
 
 let matches=[];
 
@@ -5136,7 +6703,15 @@ matches.push(data);
 
 });
 
+if(matches.some(match => !match.played)){
 
+alert(
+"Complete all Quarter Final matches before generating Semi Finals."
+);
+
+return;
+
+}
 
 let semiFinals =
 generateSemiFinal(matches);
@@ -5166,21 +6741,14 @@ alert("Semi Finals Generated Successfully");
 }
 async function createThirdPlaceMatch(){
 
-if(existingThirdPlace.length > 0){
 
-    alert("Third Place Match already exists");
-
-    return;
-
-}
     let snapshot = await getDocs(
         collection(
             window.db,
             "tournament_fixtures"
         )
     );
-    const existingThirdPlace = [];
-
+    
 snapshot.forEach(doc=>{
 
     let data = doc.data();
@@ -5192,6 +6760,13 @@ snapshot.forEach(doc=>{
     }
 
 });
+if(existingThirdPlace.length > 0){
+
+alert("Third Place Match already exists");
+
+return;
+
+}
 
     let matches = [];
 
@@ -5206,6 +6781,15 @@ snapshot.forEach(doc=>{
         }
 
     });
+    if(matches.some(match => !match.played)){
+
+alert(
+"Complete all Semi Final matches before generating Third Place."
+);
+
+return;
+
+}
 
     let thirdPlace =
     generateThirdPlaceMatch(matches);
@@ -5310,7 +6894,7 @@ function getRunnerUp(finalMatch){
 }
 async function generateTournamentFixtures(){
 
-    if(!isAdmin){
+   if(!window.isAdmin){
         alert("Only Admin");
         return;
     }
@@ -5348,6 +6932,15 @@ async function generateTournamentFixtures(){
         const teams =
             group.teams;
 
+            if(new Set(teams).size !== teams.length){
+
+alert(
+`Duplicate team found in ${group.group}`
+);
+
+return;
+
+}
         for(
             let i = 0;
             i < teams.length;
@@ -5355,39 +6948,85 @@ async function generateTournamentFixtures(){
         ){
 
             for(
-                let j = i + 1;
-                j < teams.length;
-                j++
-            ){
+let j=i+1;
+j<teams.length;
+j++
+){
 
                 await addDoc(
 
-                    collection(
-                        window.db,
-                        "tournament_fixtures"
-                    ),
+collection(
+window.db,
+"tournament_fixtures"
+),
 
-                    {
-                        group:
-                            group.group,
+{
 
-                        home:
-                            teams[i],
+group:
+group.group,
 
-                        away:
-                            teams[j],
+home:
+teams[i],
 
-                        match:
-                            `${teams[i]} vs ${teams[j]}`,
+away:
+teams[j],
 
-                        stage:
-                            "Group Stage",
+match:
+`${teams[i]} vs ${teams[j]}`,
 
-                        played:
-                            false
-                    }
+stage:
+"Group Stage",
 
-                );
+played:false,
+
+status:"UPCOMING",
+
+homeScore:null,
+
+awayScore:null,
+
+createdAt:new Date()
+
+}
+
+);
+await addDoc(
+
+collection(
+window.db,
+"tournament_fixtures"
+),
+
+{
+
+group:
+group.group,
+
+home:
+teams[j],
+
+away:
+teams[i],
+
+match:
+`${teams[j]} vs ${teams[i]}`,
+
+stage:
+"Group Stage",
+
+played:false,
+
+status:"UPCOMING",
+
+homeScore:null,
+
+awayScore:null,
+
+createdAt:new Date()
+
+}
+
+);
 
             }
 
@@ -5402,7 +7041,7 @@ async function generateTournamentFixtures(){
 }
 async function deleteTournamentTeam(id){
 
-    if(!isAdmin){
+   if(!window.isAdmin){
         return;
     }
 
@@ -5418,7 +7057,7 @@ async function deleteTournamentTeam(id){
 async function editTournamentTeam(id){
 
     const team =
-        teams.find(t => t.id === id);
+        tournamentTeams.find(t => t.id === id);
 
     if(!team) return;
 
@@ -5446,774 +7085,11 @@ doc(window.db,"tournament_teams",id),
         }
     );
 }
-async function deleteTeam(id){
-if(!isAdmin){
-    alert("Only Admin can delete teams");
-    return;
-}
 
-await deleteDoc(doc(window.db, "teams", id));
-renderTeams();
-}
-     
-  async function editTeam(id){
-
-    const team =
-        teams.find(t => t.id === id);
-
-    if(!team) return;
-
-    const newName =
-        prompt("Team Name",team.name);
-
-    if(newName === null) return;
-
-    const newCoach =
-        prompt("Coach",team.coach);
-
-    if(newCoach === null) return;
-
-    const newPlayers =
-        prompt("Players",team.players);
-
-    if(newPlayers === null) return;
-
-    const newVenue =
-        prompt("Venue",team.venue);
-
-    if(newVenue === null) return;
-
-    await updateDoc(
-        doc(window.db,"teams",id),
-        {
-            name:newName,
-            coach:newCoach,
-            players:newPlayers,
-            venue:newVenue
-        }
-    );
-}
-function generateScorerInputs(){
-
-   const homeScore = Number(document.getElementById("homeScore").value);
-   const awayScore = Number(document.getElementById("awayScore").value);
-
-    const homeContainer =
-        document.getElementById("homeScorerInputs");
-
-    const awayContainer =
-        document.getElementById("awayScorerInputs");
-
-    homeContainer.innerHTML = "";
-    awayContainer.innerHTML = "";
-
-    for(let i = 1; i <= homeScore; i++){
-
-        homeContainer.innerHTML += `
-        <input
-            type="text"
-            class="homeScorer"
-            placeholder="Home Goal ${i} Scorer">
-        `;
-    }
-
-    for(let i = 1; i <= awayScore; i++){
-
-        awayContainer.innerHTML += `
-        <input
-            type="text"
-            class="awayScorer"
-            placeholder="Away Goal ${i} Scorer">
-        `;
-    }
-}
-
-       let resultsVisible = 10;
-     async function addResult() {
-
-    if(!isAdmin){
-        alert("Only Admin can add results");
-        return;
-    }
-
- const fixtureId =
-  document.getElementById("fixtureSelect").value;
-const homeScore =
- parseInt(document.getElementById("homeScore").value);
-const awayScore =
- parseInt(document.getElementById("awayScore").value);
-
-if (
-    !fixtureId ||
-    fixtureId === "" ||
-    !Number.isFinite(homeScore) ||
-    !Number.isFinite(awayScore)
-) {
-    alert("Please select a fixture and enter valid scores");
-    return;
-}
-
-const fixture = fixtures?.find(f => f.id === fixtureId);
-
-if(!fixture){
-    alert("Please select a fixture");
-    return;
-}
-    const homeScorers =
-    Array.from(
-        document.querySelectorAll(".homeScorer")
-    )
-    .map(input => input.value.trim().toLowerCase())
-    .filter(name => name);
-
-const awayScorers =
-    Array.from(
-        document.querySelectorAll(".awayScorer")
-    )
-    .map(input => input.value.trim().toLowerCase())
-    .filter(name => name);
-
-    if(homeScorers.length != parseInt(homeScore)){
-        alert(
-            "Home scorers must equal Home Score"
-        );
-        return;
-    }
-
-    if(awayScorers.length != parseInt(awayScore)){
-        alert(
-            "Away scorers must equal Away Score"
-        );
-        return;
-    }
-
-    await addDoc(
-    collection(window.db,"results"),
-    {
-        match: fixture.match,
-        result: `${homeScore} - ${awayScore}`,
-        homeScorers,
-        awayScorers
-    }
-);
-updateLeagueTable();
-
-// ✅ ADD THIS RIGHT HERE (IMPORTANT FIX)
-await updateDoc(
-    doc(window.db, "fixtures", fixture.id),
-    {
-        status: "finished"
-    }
-);
-
-    const teams =
-        fixture.match.split(" vs ");
-
-    const homeTeam = teams[0];
-    const awayTeam = teams[1];
-
-    const scorersSnapshot =
-        await getDocs(
-            collection(window.db,"scorers")
-        );
-
-    let firestoreScorers = [];
-
-    scorersSnapshot.forEach(docSnap => {
-
-        firestoreScorers.push({
-            id: docSnap.id,
-            ...docSnap.data()
-        });
-
-    });
-    // ADD THIS HERE
-firestoreScorers.forEach(s => {
-    s.player = (s.player || "").trim().toLowerCase();
-});
-
- // HOME TEAM SCORERS
-const homeGoalCount = {};
-
-homeScorers.forEach(player => {
-    player = player.trim().toLowerCase();
-    homeGoalCount[player] = (homeGoalCount[player] || 0) + 1;
-});
-
-for (const player in homeGoalCount) {
-
-    const existing = firestoreScorers.find(
-        s =>
-            s.player === player &&
-            s.team === homeTeam
-    );
-
-    if (existing) {
-
-        await updateDoc(
-            doc(window.db, "scorers", existing.id),
-            {
-                goals: Number(existing.goals) + homeGoalCount[player]
-            }
-        );
-
-    } else {
-
-        await addDoc(
-            collection(window.db, "scorers"),
-            {
-                player,
-                team: homeTeam,
-                goals: homeGoalCount[player]
-            }
-        );
-    }
-}
-// AWAY TEAM SCORERS
-const awayGoalCount = {};
-
-awayScorers.forEach(player => {
-    player = player.trim().toLowerCase();
-    awayGoalCount[player] = (awayGoalCount[player] || 0) + 1;
-});
-
-for (const player in awayGoalCount) {
-
-    const existing = firestoreScorers.find(
-        s =>
-            s.player === player &&
-            s.team === awayTeam
-    );
-
-    if (existing) {
-
-        await updateDoc(
-            doc(window.db, "scorers", existing.id),
-            {
-                goals: Number(existing.goals) + awayGoalCount[player]
-            }
-        );
-
-    } else {
-
-        await addDoc(
-            collection(window.db, "scorers"),
-            {
-                player,
-                team: awayTeam,
-                goals: awayGoalCount[player]
-            }
-        );
-    }
-}
-
-    document.getElementById(
-        "fixtureSelect"
-    ).value = "";
-
-    document.getElementById(
-        "homeScore"
-    ).value = "";
-
-    document.getElementById(
-        "awayScore"
-    ).value = "";
-
-    document.getElementById(
-        "homeScorerInputs"
-    ).innerHTML = "";
-
-    document.getElementById(
-        "awayScorerInputs"
-    ).innerHTML = "";
-
-    alert("Result Saved Successfully");
-
-}
-
-function renderResult() {
-
-    const table =
-        document.getElementById("resultTable");
-
-   if (resultsUnsub) resultsUnsub();
-
-resultsUnsub = onSnapshot(
-    collection(window.db, "results"),
-    (snapshot) => {
-
-        const table =
-            document.getElementById("resultTable");
-
-        table.innerHTML = "";
-        results = [];
-
-        snapshot.forEach(docSnap => {
-            results.push({
-                id: docSnap.id,
-                ...docSnap.data()
-            });
-        });
-
-        const start = (resultsPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-
-        const pageResults = results.slice(start, end);
-
-        pageResults.forEach((result, index) => {
-            table.innerHTML += `
-            <tr>
-                <td>${result.match}</td>
-               <td>
-
-${result.result}
-
-${
-result.ownGoals &&
-result.ownGoals.length > 0
-?
-`<br>
-<small>
-Own Goals:
-${result.ownGoals.map(
-g =>
-`${g.player} (${g.team})`
-).join(", ")}
-</small>`
-:
-""
-}
-
-</td>
-                <td>${isAdmin
-                    ? `<button onclick="deleteResult('${result.id}')">Delete</button>`
-                    : "View Only"
-                }</td>
-            </tr>`;
-        });
-
-        updateLeagueTable();
-    }
-);
-}
-async function deleteResult(id){
-
-    if(!isAdmin){
-        alert("Only Admin");
-        return;
-    }
-
-    if(!confirm("Delete result?")){
-        return;
-    }
-
-    await deleteDoc(
-       doc(
-window.db,
-"results",
-id
-)
-    );
-}
-function editResult(index) {
-if(!isAdmin){
-    alert("Only Admin can edit results");
-return;
-}
-    const result = results[index];
-
-    const teams = result.match.split(" vs ");
-
-    const currentHomeTeam = teams[0];
-    const currentAwayTeam = teams[1];
-
-    const scores = result.result.split(" - ");
-
-    const currentHomeScore = scores[0];
-    const currentAwayScore = scores[1];
-
-    const newHomeTeam =
-        prompt("Edit Home Team:", currentHomeTeam);
-
-    if (newHomeTeam === null) return;
-
-    const newAwayTeam =
-        prompt("Edit Away Team:", currentAwayTeam);
-
-    if (newAwayTeam === null) return;
-
-    const newHomeScore =
-        prompt("Edit Home Score:", currentHomeScore);
-
-    if (newHomeScore === null) return;
-
-    const newAwayScore =
-        prompt("Edit Away Score:", currentAwayScore);
-
-    if (newAwayScore === null) return;
-
-results[index] = {
-    match: `${newHomeTeam} vs ${newAwayTeam}`,
-    result: `${newHomeScore} - ${newAwayScore}`,
-    homeScorers: result.homeScorers || [],
-    awayScorers: result.awayScorers || []
-};
-
-
-    renderResult();
-  
-    updateLeagueTable();
-}
-function updateLeagueTable() {
-
-    const tableData = {};
-
-    teams.forEach(team => {
-
-        tableData[team.name] = {
-            team: team.name,
-            played: 0,
-            won: 0,
-            drawn: 0,
-            lost: 0,
-            gf: 0,
-            ga: 0,
-            gd: 0,
-            points: 0
-        };
-
-    });
-
-    results.forEach(result => {
-
-        const parts = result.match.split(" vs ");
-
-        const homeTeam = parts[0];
-        const awayTeam = parts[1];
-
-        const score = result.result.split(" - ");
-
-        const homeGoals = parseInt(score[0]);
-        const awayGoals = parseInt(score[1]);
-
-
-if(!tableData[homeTeam] || !tableData[awayTeam]){
-    return;
-}
-
-if(!tableData[homeTeam] || !tableData[awayTeam]){
-    return;
-}
-
-tableData[homeTeam].played++;
-tableData[awayTeam].played++;
-        tableData[homeTeam].gf += homeGoals;
-        tableData[homeTeam].ga += awayGoals;
-
-        tableData[awayTeam].gf += awayGoals;
-        tableData[awayTeam].ga += homeGoals;
-
-        if (homeGoals > awayGoals) {
-
-            tableData[homeTeam].won++;
-            tableData[awayTeam].lost++;
-
-            tableData[homeTeam].points += 3;
-
-        }
-        else if (homeGoals < awayGoals) {
-
-            tableData[awayTeam].won++;
-            tableData[homeTeam].lost++;
-
-            tableData[awayTeam].points += 3;
-
-        }
-        else {
-
-            tableData[homeTeam].drawn++;
-            tableData[awayTeam].drawn++;
-
-            tableData[homeTeam].points += 1;
-            tableData[awayTeam].points += 1;
-        }
-
-
-    });
-
-    Object.values(tableData).forEach(team => {
-
-        team.gd = team.gf - team.ga;
-
-    });
-
-    const sortedTeams = Object.values(tableData)
-        .sort((a, b) =>
-            b.points - a.points ||
-            b.gd - a.gd ||
-            b.gf - a.gf
-        );
-
-    renderLeagueTable(sortedTeams);
-}
-function renderLeagueTable(data) {
-
-    const table =
-        document.getElementById("leagueTable");
-
-    table.innerHTML = "";
-
-    data.forEach((team, index) => {
-
-        table.innerHTML += `
-        <tr>
-            <td>${index + 1}</td>
-            <td>${team.team}</td>
-            <td>${team.played}</td>
-            <td>${team.won}</td>
-            <td>${team.drawn}</td>
-            <td>${team.lost}</td>
-            <td>${team.gf}</td>
-            <td>${team.ga}</td>
-            <td>${team.gd}</td>
-            <td>${team.points}</td>
-        </tr>
-        `;
-    });
-}
-function renderUpcomingMatches(){
-
-    const table =
-        document.getElementById(
-            "upcomingMatchesTable"
-        );
-
-    table.innerHTML = "";
-
-    const playedMatches =
-        results.map(
-            r => r.match.trim().toLowerCase()
-        );
-
-    const upcoming =
-        fixtures.filter(
-            f =>
-            !playedMatches.includes(
-                f.match.trim().toLowerCase()
-            )
-        );
-
-    const start =
-        (upcomingPage-1)*itemsPerPage;
-
-    const end =
-        start+itemsPerPage;
-
-    const pageUpcoming =
-        upcoming.slice(start,end);
-
-    pageUpcoming.forEach(match=>{
-
-        table.innerHTML += `
-        <tr>
-            <td>${match.date || "Not Set"}</td>
-            <td>${match.match}</td>
-            <td>${match.venue}</td>
-            <td>${getStatusBadge(match.status)}</td>
-        </tr>
-        `;
-    });
-
-    const totalPages =
-        Math.ceil(
-            upcoming.length /
-            itemsPerPage
-        );
-
-    document.getElementById(
-        "upcomingPageInfo"
-    ).innerText =
-        `Page ${upcomingPage} of ${totalPages||1}`;
-}
-function getStatusBadge(status) {
-    if (status === "upcoming") {
-        return `<span style="color:orange;font-weight:bold;">Upcoming</span>`;
-    }
-    if (status === "live") {
-        return `<span style="color:red;font-weight:bold;">LIVE</span>`;
-    }
-    if (status === "finished") {
-        return `<span style="color:green;font-weight:bold;">Finished</span>`;
-    }
-    return status;
-}
-function updateMatchStatuses() {
-    const now = new Date();
-
-    fixtures.forEach(match => {
-       if(!match.date){
-    return;
-}
-
-const matchTime = new Date(match.date);
-
-        // match duration = 90 minutes
-        const endTime = new Date(matchTime);
-        endTime.setMinutes(endTime.getMinutes() + 90);
-
-        if (now < matchTime) {
-            match.status = "upcoming";
-        } 
-        else if (now >= matchTime && now <= endTime) {
-            match.status = "live";
-        } 
-        else {
-            match.status = "finished";
-        }
-    });
-    
-
-    renderFixtures();
-    renderUpcomingMatches();
-}
-async function editFixtureById(id) {
-
-    if (!isAdmin) {
-        alert("Only Admin can edit fixtures");
-        return;
-    }
-
-    const newDate = prompt("Enter date and time (YYYY-MM-DD HH:MM)");
-
-    if (!newDate) return;
-
-    await updateDoc(
-        doc(window.db, "fixtures", id),
-        {
-            date: newDate
-        }
-    );
-
-    renderFixtures();
-    renderUpcomingMatches();
-}
-function loadFixtureOptions() {
-
-    const select =
-        document.getElementById("fixtureSelect");
-
-    select.innerHTML =
-        '<option value="">Select Fixture</option>';
-
-    const sortedFixtures = [...fixtures]
-        .filter(f => f.status !== "finished")
-        .sort((a,b) => a.gameweek - b.gameweek);
-
-    sortedFixtures.forEach((fixture) => {
-
-        select.innerHTML += `
-        <option value="${fixture.id}">
-            GW ${fixture.gameweek} - ${fixture.match}
-        </option>`;
-    });
-    if (select.options.length > 1) {
-    select.selectedIndex = 1; // auto-select first fixture
-}
-}
-function togglePassword(id){
-
-    const field =
-        document.getElementById(id);
-
-    if(field.type === "password"){
-        field.type = "text";
-    }else{
-        field.type = "password";
-    }
-}
-
-function nextResultsPage(){
-    resultsPage++;
-    renderResult();
-}
-
-function prevResultsPage(){
-    if(resultsPage > 1){
-        resultsPage--;
-        renderResult();
-    }
-}
-
-function nextUpcomingPage(){
-    const totalPages =
-        Math.ceil(
-            fixtures.filter(f =>
-                !results.some(r =>
-                    r.match.trim().toLowerCase() ===
-                    f.match.trim().toLowerCase()
-                )
-            ).length / upcomingPerPage
-        );
-
-    if(upcomingPage < totalPages){
-        upcomingPage++;
-        renderUpcomingMatches();
-    }
-}
-
-function prevUpcomingPage(){
-    if(upcomingPage > 1){
-        upcomingPage--;
-        renderUpcomingMatches();
-    }
-}
-function filterByGameweek() {
-    const value = document.getElementById("gameweekFilter").value;
-
-    if (value === "") {
-        activeGameweekView = null;
-    } else {
-        activeGameweekView = parseInt(value);
-    }
-
-    renderFixtures();
-}
-function loadGameweekOptions() {
-
-    const select = document.getElementById("gameweekFilter");
-
-    const weeks = [...new Set(fixtures.map(f => f.gameweek))];
-
-    select.innerHTML = `<option value="">All Gameweeks</option>`;
-
-    weeks.sort((a,b) => a - b).forEach(w => {
-        select.innerHTML += `<option value="${w}">Gameweek ${w}</option>`;
-    });
-}
-function formatName(name){
-    return name
-        .split(" ")
-        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(" ");
-}
-function getGroupNames(count){
-
-    const names = [];
-
-    for(let i = 0; i < count; i++){
-
-        names.push(
-            String.fromCharCode(65 + i)
-        );
-
-    }
-
-    return names;
-}
 
 async function generateGroups(){
 
-    if(!isAdmin){
+    if(!window.isAdmin){
         alert("Only Admin");
         return;
     }
@@ -6367,7 +7243,7 @@ async function loadTournamentTeams(){
 }
 async function clearTournamentFixtures(){
 
-    if(!isAdmin){
+   if(!window.isAdmin){
         return;
     }
 
@@ -6484,7 +7360,12 @@ html+=`
 
 });
 
-document.getElementById("assistBody").innerHTML=html;
+const assistsContainer =
+    document.getElementById("topAssists");
+
+if(!assistsContainer) return;
+
+assistsContainer.innerHTML = html;
 
 }
 async function loadCleanSheets(){
@@ -6556,7 +7437,12 @@ html+=`
 
 });
 
-document.getElementById("cleanSheetBody").innerHTML=html;
+const cleanSheetContainer =
+    document.getElementById("cleanSheets");
+
+if(!cleanSheetContainer) return;
+
+cleanSheetContainer.innerHTML = html;
 
 }
 function loadTournamentAwards(){
@@ -7128,97 +8014,7 @@ document.getElementById(
 });
 
 }
-function loadLiveMatchCenter(){
 
-
-onSnapshot(
-
-collection(
-window.db,
-"tournament_fixtures"
-),
-
-snapshot=>{
-
-
-let html = "";
-
-
-
-snapshot.forEach(doc=>{
-
-
-const match =
-doc.data();
-
-
-
-if(match.status !== "LIVE"){
-    return;
-}
-
-
-
-html += `
-
-<div class="card">
-
-
-<h3>
-🔴 LIVE
-</h3>
-
-
-<h3>
-${match.home}
- 
-${match.homeScore ?? 0}
-
- -
-
-${match.awayScore ?? 0}
-
-${match.away}
-</h3>
-
-
-
-<p>
-
-⏱ Minute:
-
-${match.minute || 0}'
-
-</p>
-
-
-
-</div>
-
-`;
-
-
-
-});
-
-
-
-if(html===""){
-
-html="No Live Matches";
-
-}
-
-
-document.getElementById(
-"liveMatchCenter"
-).innerHTML = html;
-
-
-
-});
-
-}
 function loadKnockoutBracket(){
 
 
@@ -7340,10 +8136,6 @@ html += "</div>";
 
 html += "</div>";
 
-
-
-
-
 // champion
 
 
@@ -7399,15 +8191,101 @@ sectionId
 ).style.display = "block";
 
 }
-window.onload = () => {
+function checkAdmin(){
 
+    const adminSection =
+        document.getElementById(
+            "tournamentResultAdminSection"
+        );
+
+    if(!adminSection) return;
+
+    console.log("isAdmin =", isAdmin);
+
+    if(window.isAdmin){
+        adminSection.style.display = "block";
+    }else{
+        adminSection.style.display = "none";
+    }
+
+}
+function updateAdminUI(){
+
+    const resultSection =
+        document.getElementById(
+            "tournamentResultAdminSection"
+        );
+
+    if(resultSection){
+
+        resultSection.style.display =
+            isAdmin
+                ? "block"
+                : "none";
+    }
+
+}
+function loadTournamentTeamDropdowns(){
+
+onSnapshot(
+collection(window.db,"tournament_teams"),
+snapshot=>{
+
+let teams=[];
+
+snapshot.forEach(doc=>{
+teams.push(doc.data().name);
+});
+
+
+[
+"goalTeam",
+"assistTeam",
+"keeperTeam",
+"cardTeam"
+].forEach(id=>{
+
+
+const select =
+document.getElementById(id);
+
+
+if(!select) return;
+
+
+select.innerHTML =
+`<option value="">
+Select Team
+</option>`;
+
+
+teams.forEach(team=>{
+
+select.innerHTML +=
+`
+<option value="${team}">
+${team}
+</option>
+`;
+
+});
+
+
+});
+
+
+});
+
+}
+window.onload = () => {
+    updateAdminUI();
+checkAdmin();
     loadVisitors();
 loadTournamentTeams();
     renderTeams();
     renderTournamentTeams();
     renderTournamentGroups();
     renderTournamentFixtures();
-    renderKnockoutBracket();
     renderScorers();
     loadPlayerStats();
     loadFairPlay();
@@ -7428,7 +8306,7 @@ loadCleanSheets();
 renderQualifiedTeams();
 loadTournamentDashboard();
 loadKnockoutBracket();
-
+loadTournamentTeamDropdowns();
 };
 window.addEventListener("beforeunload", () => {
 
@@ -7454,6 +8332,7 @@ window.generateTournamentFixtures =
     clearTournamentFixtures;
     window.addTournamentResult =
     addTournamentResult;
+}
     </script>
     </div>
 </body>
